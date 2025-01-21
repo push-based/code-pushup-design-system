@@ -15,9 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@frontend/code-pushup-utils": [
-        "libs/code-pushup-utils/src/index.ts"
-      ]
+      "@design-system/usage-reports-utils": [
+        "libs/design-system/usage-reports-utils/src/index.ts"
+      ],
+      "@frontend/code-pushup-utils": ["libs/code-pushup-utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
