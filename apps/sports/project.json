@@ -83,6 +83,22 @@
         "staticFilePath": "dist/apps/sports/browser",
         "spa": true
       }
+    },
+    "code-pushup": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "npx @code-pushup/cli --config=apps/sports/code-pushup.config.ts --tsconfig=tsconfig.base.json --progress=false"
+        ]
+      }
+    },
+    "code-pushup-ds-report": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "npx @code-pushup/cli --config=apps/sports/code-pushup.ds-adoption-reports.config.ts --tsconfig=tsconfig.base.json --progress=false"
+        ]
+      }
     }
   }
 }
