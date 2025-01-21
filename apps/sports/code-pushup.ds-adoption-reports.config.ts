@@ -4,12 +4,12 @@ import { mergeConfigs } from '@frontend/code-pushup-utils';
 export default mergeConfigs(
   {
     persist: {
-      outputDir: '.code-pushup/sports-web-app',
+      outputDir: '.code-pushup/sports',
       format: ['json', 'md'],
     },
   },
   await dsAdoptionReportConfig({
-    directory: 'packages/sports/web/app',
+    directory: 'apps/sports',
     projectSlug: 'sports-ds-report',
     reportsTitle: 'Sports DS Report',
     replacements: [
