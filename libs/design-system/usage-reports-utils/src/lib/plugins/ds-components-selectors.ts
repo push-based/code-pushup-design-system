@@ -1,0 +1,16 @@
+export const dsComponentsSelectors: Record<string, string> = {
+  'ds-button': 'DsButton',
+  'ds-pill': 'DsPill',
+  'ds-card': 'DsCard',
+  'ds-card-expandable': 'DsExpandableCard',
+  'ds-card-header': 'DsCardHeader',
+  'ds-badge': 'DsBadge',
+  'ds-counter': 'DsCounter',
+  'ds-divider': 'DsDivider',
+  'ds-loading-spinner': 'DsLoadingSpinner',
+  'ds-scrollbar': 'DsScrollbar',
+  'ds-segmented-control': 'DsSegmentedControl',
+  'ds-segmented-option': 'DsSegmentedOption',
+  'ds-tabs-group': 'DsTabsGroup',
+  'ds-tab': 'DsTab',
+};

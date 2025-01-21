@@ -21,6 +21,14 @@
       "options": {
         "jestConfig": "libs/design-system/usage-reports-utils/jest.config.ts"
       }
-    }
+    },
+     "code-pushup": {
+            "executor": "nx:run-commands",
+            "options": {
+                "commands": [
+                    "npx @code-pushup/cli --config=libs/design-system/usage-reports-utils/code-pushup.config.ts --tsconfig=tsconfig.base.json --progress=false"
+                ]
+            }
+        }
   }
 }
