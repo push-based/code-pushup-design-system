@@ -74,6 +74,7 @@ describe('findNodesByCssClass', () => {
       expect(nodes).toHaveLength(3);
       expect(nodes).toEqual(expectedResult);
     });
+
     it('should find 2 btn and one foo node in NESTED_HTML', () => {
       const nodes = findNodesByCssClass(NESTED_HTML, ['btn', 'foo']);
 

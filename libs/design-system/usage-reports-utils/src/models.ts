@@ -31,7 +31,6 @@ export type DsComponentReplacementConfig = {
 };
 
 export type DsAdoptionPluginOptions = {
-  projectSlug: string;
   directory: string;
   replacements?: DsComponentReplacementConfig[];
 };
