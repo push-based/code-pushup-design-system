@@ -61,7 +61,7 @@ export function mapTmplAstElementsToIssues(
     source: {
       file: filePath,
       position: {
-        startLine: element.sourceSpan.start.line,
+        startLine: element.sourceSpan.start.line + 1,
       },
     },
   }));
