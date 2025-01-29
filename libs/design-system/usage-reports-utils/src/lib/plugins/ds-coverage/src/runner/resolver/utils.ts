@@ -1,4 +1,4 @@
-import { ParsedComponent, ResolvedComponent } from '../utils';
+import { ParsedComponent, ResolvedComponent } from '../types';
 import { resolveComponentTemplate } from './template.resolver.';
 import { resolveComponentStyles } from './styles.resolver';
 import { TmplAstElement } from '@angular/compiler';
@@ -19,13 +19,7 @@ export async function resolveComponentFiles(
     'styles-assets',
   ]
 ): Promise<ResolvedComponent> {
-  let {
-    templateUrl: _,
-    template: __,
-    styleUrls: ___,
-    styles: ____,
-    ...baseComponent
-  } = comp as ResolvedComponent;
+  let baseComponent = comp as ResolvedComponent;
 
   for (const key of resolveAssets) {
     switch (key) {

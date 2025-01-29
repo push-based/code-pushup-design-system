@@ -1,13 +1,9 @@
 import { PluginConfig } from '@code-pushup/models';
-import { runnerFunction } from './runner/create-runner';
+import { CreateRunnerConfig, runnerFunction } from './runner/create-runner';
 import { getAudits } from './utils';
 import { ANGULAR_DS_COVERAGE_PLUGIN_SLUG } from './constants';
-import { ComponentReplacement } from './types';
 
-export type AngularDsCoveragePluginConfig = {
-  directory: string;
-  dsComponents: ComponentReplacement[];
-};
+export type AngularDsCoveragePluginConfig = CreateRunnerConfig;
 
 /**
  * Plugin to measure and assert usage of DesignSystem components in an Angular project.

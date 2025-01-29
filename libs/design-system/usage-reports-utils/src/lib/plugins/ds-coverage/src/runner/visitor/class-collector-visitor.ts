@@ -40,8 +40,8 @@ export class ClassCollectorVisitor implements TmplAstVisitor<void> {
     this.targetClass = className;
   }
 
-  getMatchingElements(): TmplAstElement[] {
-    return this.matchingElements;
+  getMatchingElements<O = TmplAstElement>(transform?: (o: TmplAstElement) => O): O[] {
+    return transform ? this.matchingElements.map(transform) : this.matchingElements as O[];
   }
 
   visitAll(nodes: TmplAstNode[]): void {

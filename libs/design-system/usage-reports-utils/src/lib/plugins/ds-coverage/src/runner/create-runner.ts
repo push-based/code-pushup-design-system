@@ -1,13 +1,19 @@
 import { AuditOutputs } from '@code-pushup/models';
 import { findAndParseComponents } from './parse-component';
 import { resolveComponentFiles } from './resolver/utils';
-import { DsCoveragePluginConfig } from '../ds.plugin';
 import { getAuditOutput } from './utils';
+import { ComponentReplacement } from '../types';
+import { slugify } from '@code-pushup/utils';
+
+export type CreateRunnerConfig = {
+  directory: string;
+  dsComponents: ComponentReplacement[];
+};
 
 export async function runnerFunction({
   directory,
   dsComponents,
-}: DsCoveragePluginConfig): Promise<AuditOutputs> {
+}: CreateRunnerConfig): Promise<AuditOutputs> {
   const parsedComponents = findAndParseComponents({ directory });
 
   const resolvedComponents = await Promise.all(
@@ -15,6 +21,12 @@ export async function runnerFunction({
   );
 
   return dsComponents.flatMap((dsComponent) => {
-    return getAuditOutput(resolvedComponents, dsComponent);
+    return getAuditOutput(
+      {
+        slug: `coverage-${slugify(dsComponent.componentName)}`,
+      },
+      resolvedComponents,
+      dsComponent
+    );
   });
 }

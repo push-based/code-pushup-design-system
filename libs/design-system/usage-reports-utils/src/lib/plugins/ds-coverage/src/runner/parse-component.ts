@@ -1,7 +1,7 @@
 import ts from 'typescript';
 import { fastFindInFiles, FastFindInFiles } from 'fast-find-in-files';
 import { ParsedAsset, ParsedComponent, Props } from './types';
-import { styleAndTemplateProps } from './constants';
+import { ANGULAR_COMPONENT_REGEX, styleAndTemplateProps } from './constants';
 
 /**
  * Finds and parses Angular components in a directory.
@@ -14,7 +14,7 @@ export function findAndParseComponents(opt: {
   directory: string;
 }): ParsedComponent[] {
   // Needle to search for Angular components (it does not catch if the class is imported for Angular)
-  const needle = '@Component';
+  const needle = ANGULAR_COMPONENT_REGEX;
 
   const filteredComponents: FastFindInFiles[] = fastFindInFiles({
     ...opt,

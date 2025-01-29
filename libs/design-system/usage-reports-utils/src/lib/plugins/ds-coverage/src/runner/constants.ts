@@ -4,3 +4,5 @@ export const styleAndTemplateProps = [
   'styles',
   'styleUrls',
 ] as const;
+
+export const ANGULAR_COMPONENT_REGEX = '@Component';

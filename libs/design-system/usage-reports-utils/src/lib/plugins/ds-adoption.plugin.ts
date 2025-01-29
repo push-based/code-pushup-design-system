@@ -61,11 +61,8 @@ export async function runnerFunction(
   const dsComponentsUsage = await getDsComponentsUsageAuditOutput(
     options.directory
   );
-  const dsComponentsUsageHints =
-    await getClassToBeReplacedWithDsComponentAuditOutput(options);
-  const dsTokenOverrides = await getTokensOverrideAuditOutput(
-    options.directory
-  );
+  const dsComponentsUsageHints = await getClassToBeReplacedWithDsComponentAuditOutput(options);
+  const dsTokenOverrides = await getTokensOverrideAuditOutput(options.directory);
   return [dsComponentsUsage, dsComponentsUsageHints, dsTokenOverrides];
 }
 

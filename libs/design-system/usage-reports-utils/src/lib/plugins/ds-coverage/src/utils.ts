@@ -7,7 +7,7 @@ export function getAudits(
   componentReplacements: ComponentReplacement[]
 ): Audit[] {
   return componentReplacements.map(({ componentName }) => ({
-    slug: slugify(componentName),
+    slug: `coverage-${slugify(componentName)}`,
     title: componentName,
     description: `Check usage of ${componentName} in the project`,
   }));
@@ -16,8 +16,8 @@ export function getAudits(
 export function getAngularDsCoverageCategoryRefs(
   componentReplacements: ComponentReplacement[]
 ): CategoryRef[] {
-  return componentReplacements.map(({ componentName }) => ({
-    slug: slugify(componentName),
+  return getAudits(componentReplacements).map(({ slug }) => ({
+    slug,
     plugin: ANGULAR_DS_COVERAGE_PLUGIN_SLUG,
     type: 'audit',
     weight: 1,

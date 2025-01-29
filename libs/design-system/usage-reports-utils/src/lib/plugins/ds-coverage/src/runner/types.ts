@@ -48,3 +48,16 @@ export type ParsedComponent = ComponentBase &
 export type ResolvedComponent = ComponentBase &
   ParsedComponentWithResolvedStyles &
   ParsedComponentWithResolvedTemplate;
+
+export type MatchingElement = {
+  name: string;
+  sourceSpan: {
+    start: {
+      file: {
+        url: string;
+      };
+      line: number;
+      col?: number;
+    };
+  };
+};
