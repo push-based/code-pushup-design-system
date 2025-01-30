@@ -1,24 +1,22 @@
-import ts from 'typescript';
 import { fastFindInFiles, FastFindInFiles } from 'fast-find-in-files';
-import { ParsedAsset, ParsedComponent, Props } from './types';
+import ts from 'typescript';
 import { ANGULAR_COMPONENT_REGEX, styleAndTemplateProps } from './constants';
+import { ParsedComponent, Props } from './types';
 
 /**
  * Finds and parses Angular components in a directory.
  * It uses `fast-find-in-files` to find the components and `typescript` to parse them.
  *
- * It returns an array of `ParsedComponent`.
- * @param opt
+ * @param opt Options with the directory to search for components.
+ * @returns Array of `ParsedComponent`.
  */
 export function findAndParseComponents(opt: {
   directory: string;
-}): ParsedComponent[] {
-  // Needle to search for Angular components (it does not catch if the class is imported for Angular)
-  const needle = ANGULAR_COMPONENT_REGEX;
+}) {
 
-  const filteredComponents: FastFindInFiles[] = fastFindInFiles({
+  const filteredComponents = fastFindInFiles({
     ...opt,
-    needle,
+    needle: ANGULAR_COMPONENT_REGEX, // Needle to search for Angular components (it does not catch if the class is imported for Angular)
   }).filter(({ totalHits }) => totalHits > 0);
 
   return parseComponents(filteredComponents);
@@ -34,7 +32,7 @@ export function findAndParseComponents(opt: {
  */
 export function parseComponents(
   crawlerResult: FastFindInFiles[]
-): ParsedComponent[] {
+) {
   const filePaths = new Set(crawlerResult.map((file) => file.filePath));
 
   const program = ts.createProgram([...filePaths], {
@@ -51,8 +49,10 @@ export function parseComponents(
 
 /**
  * Extracts Angular component details from a TypeScript source file.
+ * @param sourceFile TypeScript source file.
+ * @returns Array of `ParsedComponent`.
  */
-function parseSourceFile(sourceFile: ts.SourceFile): ParsedComponent[] {
+function parseSourceFile(sourceFile: ts.SourceFile) {
   const components: ParsedComponent[] = [];
 
   ts.forEachChild(sourceFile, (node) => {
@@ -65,24 +65,24 @@ function parseSourceFile(sourceFile: ts.SourceFile): ParsedComponent[] {
 
     const className = node.name?.text ?? 'UnnamedClass';
 
-    (ts.getDecorators(node) ?? []).forEach((decorator) => {
+    (ts.getDecorators(node) ?? []).forEach(decorator => {
       if (!ts.isCallExpression(decorator.expression)) return;
       const expression = decorator.expression.expression;
       if (!ts.isIdentifier(expression)) return;
 
       const decoratorName = expression.text;
+
       const component: ParsedComponent = {
         className,
         decoratorName,
         filePath: sourceFile.fileName,
       };
 
-      parseDecoratorArguments(
-        decorator.expression.arguments,
+      components.push(getComponentWithExtractedDecoratorArguments(
         component,
+        decorator.expression.arguments,
         sourceFile
-      );
-      components.push(component);
+      ));
     });
   });
 
@@ -90,51 +90,76 @@ function parseSourceFile(sourceFile: ts.SourceFile): ParsedComponent[] {
 }
 
 /**
- * Parses the arguments of a decorator to extract component metadata.
+ * Gets the component with the decorator arguments extracted.
+ * @param component Parsed component.
+ * @param args Decorator arguments.
+ * @param sourceFile TypeScript source file.
+ * @returns Parsed component with the decorator arguments extracted.
  */
-function parseDecoratorArguments(
-  args: ts.NodeArray<ts.Expression>,
+function getComponentWithExtractedDecoratorArguments(
   component: ParsedComponent,
+  args: ts.NodeArray<ts.Expression>,
   sourceFile: ts.SourceFile
-): void {
-  if (args.length === 0 || !ts.isObjectLiteralExpression(args[0])) return;
+): ParsedComponent {
 
-  args[0].properties.forEach((prop) => {
-    if (!ts.isPropertyAssignment(prop) || !ts.isIdentifier(prop.name)) return;
+  if (args.length === 0 || !ts.isObjectLiteralExpression(args[0])) {
+    return component;
+  }
+
+  return args[0].properties.reduce((acc, prop) => {
+    if (!ts.isPropertyAssignment(prop) || !ts.isIdentifier(prop.name)) {
+      return acc;
+    }
 
     const propName = prop.name.escapedText as Props;
-    if (!styleAndTemplateProps.includes(propName)) return;
+    if (!styleAndTemplateProps.includes(propName)) {
+      return acc;
+    }
 
     const startLine = sourceFile.getLineAndCharacterOfPosition(
       prop.initializer.pos
     ).line;
 
     if (propName === 'templateUrl' || propName === 'template') {
-      component[propName] = {
-        value: prop.initializer.getText(sourceFile).replace(/^['"]|['"]$/g, ''), // Remove quotes
-        startLine,
+      return {
+        ...acc,
+        [propName]: {
+          value: prop.initializer.getText(sourceFile).replace(/^['"]|['"]$/g, ''),
+          startLine,
+        }
       };
-    } else if (propName === 'styles' || propName === 'styleUrls') {
-      component[propName] = extractArrayValues(
-        prop.initializer,
-        startLine,
-        sourceFile
-      );
     }
-  });
+
+    if (propName === 'styles' || propName === 'styleUrls') {
+      return {
+        ...acc,
+        [propName]: extractArrayValues(
+          prop.initializer,
+          startLine,
+          sourceFile
+        )
+      };
+    }
+
+    return acc;
+  }, component);
 }
 
 /**
  * Extracts values from an array initializer.
+ * @param node Array initializer.
+ * @param startLine Start line of the array initializer.
+ * @param sourceFile TypeScript source file.
+ * @returns Array of `ParsedAsset`.
  */
 function extractArrayValues(
   node: ts.Expression,
   startLine: number,
   sourceFile: ts.SourceFile
-): ParsedAsset[] {
+) {
   if (!ts.isArrayLiteralExpression(node)) return [];
 
-  return node.elements.filter(ts.isStringLiteral).map((element) => ({
+  return node.elements.filter(ts.isStringLiteral).map(element => ({
     value: element.getText(sourceFile).replace(/^['"]|['"]$/g, ''), // Remove quotes
     startLine,
   }));
