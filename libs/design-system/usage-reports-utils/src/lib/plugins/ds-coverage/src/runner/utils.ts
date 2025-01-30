@@ -1,10 +1,10 @@
 import { ResolvedComponent } from './types';
 
+import { TmplAstElement } from '@angular/compiler';
 import { Audit, AuditOutput, Issue } from '@code-pushup/models';
+import path from 'node:path';
 import { ComponentReplacement } from '../types';
 import { ClassCollectorVisitor } from './visitor/class-collector-visitor';
-import { TmplAstElement } from '@angular/compiler';
-import path from 'node:path';
 
 export function getAuditOutput(
   audit: Pick<Audit, 'slug'>,
@@ -18,13 +18,12 @@ export function getAuditOutput(
 
     return matchingCssClasses.flatMap((cssClass) => {
       const visitor = new ClassCollectorVisitor(cssClass);
-
       visitor.visitAll(
-        //template ? template.ast.nodes : templateUrl ? templateUrl.ast.nodes : []
         template ? template.ast.nodes : templateUrl ? templateUrl.ast.nodes : []
       );
 
       return mapTmplAstElementsToIssues(
+        comp,
         visitor.getMatchingElements(),
         // if a templateUrl is given the filePath has to change
         templateUrl
@@ -37,9 +36,8 @@ export function getAuditOutput(
 
   return {
     ...audit,
-    displayValue: `${allIssues.length} class${
-      allIssues.length !== 1 ? 's' : ''
-    } found`,
+    displayValue: `${allIssues.length} class${allIssues.length !== 1 ? 's' : ''
+      } found`,
     score: allIssues.length === 0 ? 1 : 0,
     value: allIssues.length,
     details: {
@@ -49,9 +47,15 @@ export function getAuditOutput(
 }
 
 /**
- * Converts matching `TmplAstElement's` from a visitor into Issues.
+ *  Converts matching `TmplAstElement's` from a visitor into Issues.
+ * @param comp Component that contains the matching elements. Used to get the template start line in order to calculate the real line of the issue.
+ * @param matchingElements Elements that match the target class.
+ * @param filePath File path of the component.
+ * @param targetClass Target class that is being searched for.
+ * @returns Array of Issues.
  */
 export function mapTmplAstElementsToIssues(
+  comp: ResolvedComponent,
   matchingElements: TmplAstElement[],
   filePath: string,
   targetClass: string
@@ -62,7 +66,8 @@ export function mapTmplAstElementsToIssues(
     source: {
       file: filePath,
       position: {
-        startLine: element.sourceSpan.start.line,
+        startLine:
+          element.sourceSpan.start.line + (comp.template?.startLine || 0) + 1, // +1 because the line number in the report is 1-indexed
       },
     },
   }));
