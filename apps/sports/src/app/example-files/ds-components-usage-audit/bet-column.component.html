@@ -1,0 +1,63 @@
+@if (vm$ | async; as vm) {
+    @if (vm.isEditBet) {
+        <ng-container *msComponentProxy="editbetComponent"></ng-container>
+    } @else {
+        <ds-tabs-group
+            msThemedTabs
+            [themedSize]="tabSize"
+            scrollable="false"
+            indicator="underline"
+            fullWidthTabs="true"
+            size="large"
+            [themedInverse]="themeInverseIndicator"
+            inverse="true"
+            variant="horizontal"
+            (activeTabChanged)="tabSelected($event)"
+            [activeTab]="active()">
+            <ds-tab [name]="betColumnType.Betslip.toString()">
+                <ng-container *dsTabHeader="let selected">
+                    {{ betslipTitle }}
+                    @if (!!vm.betslipPickCount) {
+                        <ds-notification-bubble
+                            inverse="true"
+                            msThemedNotification
+                            size="medium"
+                            [isSelected]="selected"
+                            [themeInverse]="themeInverseIndicator"
+                            [themedVariant]="variant"
+                            [themedSize]="counterSize"
+                            [selectedVariant]="selectedTabBubbleVariant">
+                            {{ vm.betslipPickCount }}</ds-notification-bubble
+                        >
+                    }
+                </ng-container>
+                <div *dsTabContent>
+                    <ng-container *msComponentProxy="betslipComponent"></ng-container>
+                </div>
+            </ds-tab>
+            @if (!vm.hideMyBets) {
+                <ds-tab [name]="betColumnType.MyBets.toString()">
+                    <ng-container *dsTabHeader="let selected">
+                        {{ myBetsTitle }}
+                        @if (vm.myBetsCount && vm.myBetsCount !== '0') {
+                            <ds-notification-bubble
+                                inverse="true"
+                                msThemedNotification
+                                size="medium"
+                                [isSelected]="selected"
+                                [themeInverse]="themeInverseIndicator"
+                                [themedVariant]="variant"
+                                [themedSize]="counterSize"
+                                [selectedVariant]="selectedTabBubbleVariant">
+                                {{ vm.myBetsCount }}</ds-notification-bubble
+                            >
+                        }
+                    </ng-container>
+                    <div *dsTabContent>
+                        <ng-container *msComponentProxy="myBetsComponent"></ng-container>
+                    </div>
+                </ds-tab>
+            }
+        </ds-tabs-group>
+    }
+}

@@ -1,0 +1,24 @@
+@import '../all-configs';
+@import '../variables/variables';
+
+@import '../../../../../../styles/sports/event-details/event-details';
+
+// TODO Design System: cleanup media switcher overrides when event details page header is migrated
+.media-switcher {
+    /* stylelint-disable-next-line selector-disallowed-list */
+    .ds-segmented-control .ds-segmented-control-container .ds-segmented-controls.ds-segment-inverse {
+        --ds-segment-control-color-bg: var(--semantic-color-opacity-active);
+    }
+
+    /* stylelint-disable-next-line selector-disallowed-list */
+    .ds-segment-selected {
+        --ds-segement-item-selected-color-bg: var(--semantic-color-surface-container-lowest-selected);
+        --ds-segement-item-selected-color-label: var(--semantic-color-l2-tabs-filled-on-background-selected);
+    }
+
+    /* stylelint-disable-next-line selector-disallowed-list */
+    .ds-segment-item {
+        --ds-segement-item-enabled-color-label: var(--semantic-color-on-supporting-green-base);
+        --ds-segement-item-enabled-color-icon: var(--semantic-color-on-supporting-green-base);
+    }
+}
