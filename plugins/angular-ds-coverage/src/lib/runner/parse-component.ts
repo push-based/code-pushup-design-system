@@ -32,7 +32,7 @@ export function findAndParseComponents(opt: {
  */
 export function parseComponents(
   crawlerResult: FastFindInFiles[]
-) {
+): ParsedComponent[] {
   const filePaths = new Set(crawlerResult.map((file) => file.filePath));
 
   const program = ts.createProgram([...filePaths], {

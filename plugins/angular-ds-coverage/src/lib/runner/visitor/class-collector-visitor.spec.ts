@@ -32,9 +32,9 @@ describe('ClassCollectorVisitor', () => {
 
     expect(visitor.getMatchingElements()).toStrictEqual([
       expect.objectContaining({
-        attributes: expect.arrayContaining([
+        attributes: [
           expect.objectContaining({ name: 'class', value: 'count' }),
-        ]),
+        ],
       }),
     ]);
   });
@@ -47,9 +47,9 @@ describe('ClassCollectorVisitor', () => {
 
     expect(visitor.getMatchingElements()).toStrictEqual([
       expect.objectContaining({
-        attributes: expect.arrayContaining([
+        attributes: [
           expect.objectContaining({ name: 'class', value: 'a count b' }),
-        ]),
+        ],
       }),
     ]);
   });
@@ -77,9 +77,7 @@ describe('ClassCollectorVisitor', () => {
 
     expect(visitor.getMatchingElements()).toStrictEqual([
       expect.objectContaining({
-        inputs: expect.arrayContaining([
-          expect.objectContaining({ name: 'count' }),
-        ]),
+        inputs: [expect.objectContaining({ name: 'count' })],
       }),
     ]);
   });
@@ -110,19 +108,19 @@ describe('ClassCollectorVisitor', () => {
 
     expect(visitor.getMatchingElements()).toStrictEqual([
       expect.objectContaining({
-        inputs: expect.arrayContaining([
+        inputs: [
           expect.objectContaining({
             name: 'ngClass',
             value: expect.objectContaining({
               ast: expect.objectContaining({
-                expressions: expect.arrayContaining([
+                expressions: [
                   expect.objectContaining({ value: 'count' }),
                   expect.objectContaining({ value: 'second' }),
-                ]),
+                ],
               }),
             }),
           }),
-        ]),
+        ],
       }),
     ]);
   });
