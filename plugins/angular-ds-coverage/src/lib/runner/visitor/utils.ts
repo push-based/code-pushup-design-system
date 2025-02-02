@@ -1,36 +1,37 @@
 import { TmplAstElement } from '@angular/compiler';
 import { Issue } from '@code-pushup/models';
-import { Source } from 'postcss';
+import { Rule } from 'postcss';
 
 export function tmplAstElementToIssue(
   element: TmplAstElement,
   targetClass: string
 ): Issue {
   return {
-    message: `Element <code>${element.name}</code> has class <code>${targetClass}</code> applied.`,
+    message: `Element <code>${element.name}</code> has class <code>${targetClass}</code> applied. Use the DS component instead.`,
     severity: 'info',
     source: {
       file: element.sourceSpan.start.file.url,
       position: {
-        startLine: element.startSourceSpan?.start.offset,
-        endLine: element.endSourceSpan?.end.offset,
+        startLine: element.startSourceSpan?.start.line,
+        endLine: element.endSourceSpan?.end.line,
+        startColumn: element.startSourceSpan?.start.col,
+        endColumn: element.endSourceSpan?.end.col,
       },
     },
   };
 }
 
-export function stylesAstElementToIssue(
-  source: Source,
-  className: string
-): Issue {
+export function stylesAstRuleToIssue({ source, selector }: Rule, className: string): Issue {
   return {
-    message: `Class <code>${className}</code> is defined in the stylesheet. Use the DS component instead.`,
+    message: `Class <code>${className}</code> used in selector <code>${selector}</code> in the component styles. Use the DS component instead.`,
     severity: 'info',
     source: {
       file: source?.input.file ?? '',
       position: {
         startLine: source?.start?.line ?? 0,
-        endLine: source.end?.line ?? 0,
+        endLine: source?.end?.line ?? 0,
+        startColumn: source?.start?.column ?? 0,
+        endColumn: source?.end?.column ?? 0,
       },
     },
   };

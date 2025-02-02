@@ -2,7 +2,7 @@ import { CssAstVisitor } from './stylesheet.visitor';
 import { DiagnosticsAware } from './diagnostics.js';
 import { Rule } from 'postcss';
 import { Issue } from '@code-pushup/models';
-import { stylesAstElementToIssue } from './utils';
+import { stylesAstRuleToIssue } from './utils';
 
 export type ClassUsageStylesheetVisitor = CssAstVisitor & DiagnosticsAware;
 
@@ -17,10 +17,10 @@ export const createClassUsageStylesheetVisitor = (options: {
       return diagnostics;
     },
 
-    visitRule({ selector, source }) {
-      matchingClassNames({ selector }, targetClassNames).forEach(
+    visitRule(rule: Rule) {
+      matchingClassNames({ selector: rule.selector }, targetClassNames).forEach(
         (className) => {
-          diagnostics.push(stylesAstElementToIssue(source, className));
+          diagnostics.push(stylesAstRuleToIssue(rule, className));
         }
       );
     },

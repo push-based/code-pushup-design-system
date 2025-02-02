@@ -166,12 +166,12 @@ function extractArrayValues(
     switch (element.kind) {
       case ts.SyntaxKind.StringLiteral:
         return {
-          value: element.getText(sourceFile).replace(/^['"]|['"]$/g, ''), // Remove quotes
+          value: element.getText(sourceFile).replace(/^['`"]|['"]$/g, ''), // Remove quotes
           startLine,
         };
       case ts.SyntaxKind.FirstTemplateToken:
         return {
-          value: element.getText(sourceFile),
+          value: element.getText(sourceFile).replace(/^['`"]|['"]$/g, ''),
           startLine,
         };
     }
