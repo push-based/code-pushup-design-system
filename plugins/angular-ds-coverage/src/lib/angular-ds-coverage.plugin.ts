@@ -23,7 +23,7 @@ export function angularDsCoverage(
       'A plugin to measure and assert usage of styles in a Angular project.',
     audits: getAudits(options.dsComponents),
     runner: () => runnerFunction(options),
-  };
+  } as const;
 }
 
 export default angularDsCoverage;

@@ -16,7 +16,7 @@ export async function angularDsCoveragePluginCoreConfig({
       }),
     ],
     categories: await angularDsCoveragePluginCategories({ dsComponents }),
-  } satisfies CoreConfig;
+  } as const satisfies CoreConfig;
 }
 
 export async function angularDsCoveragePluginCategories({

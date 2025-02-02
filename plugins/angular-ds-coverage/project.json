@@ -14,6 +14,9 @@
         "tsConfig": "plugins/angular-ds-coverage/tsconfig.lib.json",
         "assets": ["plugins/angular-ds-coverage/*.md"]
       }
+    },
+    "angular-ds-coverage-demo": {
+      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/ds-coverage-example/code-pushup.config.ts --onlyPlugins=angular-ds-coverage"
     }
   }
 }
