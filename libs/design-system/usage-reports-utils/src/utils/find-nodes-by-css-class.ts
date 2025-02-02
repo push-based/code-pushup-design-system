@@ -6,7 +6,6 @@ export type ClassCollectorResult = {
   cssClass: string;
   lineOfCode: number;
 };
-
 export function findNodesByCssClass(
   fileContent: string,
   cssClasses: string[]

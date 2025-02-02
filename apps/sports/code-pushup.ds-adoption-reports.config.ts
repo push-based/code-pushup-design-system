@@ -1,4 +1,3 @@
-import { angularDsCoverageCoreConfig } from '@design-system/usage-reports-utils';
 import { mergeConfigs } from '@frontend/code-pushup-utils';
 import { ComponentReplacement } from '../../plugins/angular-ds-coverage/src/index.js';
 import { angularDsCoveragePluginCoreConfig } from '../../plugins/angular-ds-coverage/src/core.config.js';

@@ -5,19 +5,19 @@ import { ComponentStylesData, DsCssVarsUsage } from '../../models';
 
 export const dsDeprecatedCssVarsAuditSlug = 'angular-ds-deprecated-css-vars';
 
-function displayValue(numberOfFiles: number): string {
-  return `${pluralizeToken(
-    'component',
-    numberOfFiles
-  )} using deprecated css variables`;
-}
-
 export async function getDeprecatedCssVarsAuditOutput(
   componentStylesData: ComponentStylesData[],
   cssVarsUsage: { componentSelector: string; result: DsCssVarsUsage }[],
   deprecatedCssVars: string[],
   deprecatedCssVarsFilePath: string
 ): Promise<AuditOutput> {
+  function displayValue(numberOfFiles: number): string {
+    return `${pluralizeToken(
+      'component',
+      numberOfFiles
+    )} using deprecated css variables`;
+  }
+
   const auditOutput: AuditOutput = {
     slug: dsDeprecatedCssVarsAuditSlug,
     score: 1,

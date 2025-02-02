@@ -1,27 +1,34 @@
 import { CoreConfig } from '@code-pushup/models';
-import dsReportPlugin, {
-  AngularDsCoveragePluginConfig,
-  getAngularDsCoverageCategoryRefs,
-} from '../plugins/ds-coverage/index';
 
-export async function angularDsCoverageCoreConfig({
+import { DsComponentReplacementConfig } from '../../models';
+import dsReportPlugin, {
+  recommendedRefs as dsRecommendedRefs,
+} from '../plugins/ds-adoption.plugin';
+
+export const dsAdoptionReportConfig = async ({
   directory,
-  dsComponents,
-}: AngularDsCoveragePluginConfig) {
-  return {
+  projectSlug,
+  reportsTitle,
+  replacements = [],
+}: {
+  directory: string;
+  projectSlug: string;
+  reportsTitle: string;
+  replacements?: DsComponentReplacementConfig[];
+}) =>
+  ({
     plugins: [
       dsReportPlugin({
         directory,
-        dsComponents,
+        projectSlug,
+        replacements,
       }),
     ],
     categories: [
       {
-        slug: 'design-system-coverage',
-        title: 'Design System Coverage',
-        description: 'Usage of design system components',
-        refs: getAngularDsCoverageCategoryRefs(dsComponents),
+        slug: 'ds-health',
+        title: reportsTitle,
+        refs: [...dsRecommendedRefs()],
       },
     ],
-  } satisfies CoreConfig;
-}
+  } satisfies CoreConfig);
