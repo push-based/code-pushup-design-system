@@ -21,7 +21,10 @@ export function tmplAstElementToIssue(
   };
 }
 
-export function stylesAstRuleToIssue({ source, selector }: Rule, className: string): Issue {
+export function stylesAstRuleToIssue(
+  { source, selector }: Rule,
+  className: string
+): Issue {
   return {
     message: `Class <code>${className}</code> used in selector <code>${selector}</code> in the component styles. Use the DS component instead.`,
     severity: 'info',
