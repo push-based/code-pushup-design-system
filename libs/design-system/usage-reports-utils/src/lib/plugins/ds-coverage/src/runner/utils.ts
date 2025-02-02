@@ -36,8 +36,9 @@ export function getAuditOutput(
 
   return {
     ...audit,
-    displayValue: `${allIssues.length} class${allIssues.length !== 1 ? 's' : ''
-      } found`,
+    displayValue: `${allIssues.length} class${
+      allIssues.length !== 1 ? 's' : ''
+    } found`,
     score: allIssues.length === 0 ? 1 : 0,
     value: allIssues.length,
     details: {

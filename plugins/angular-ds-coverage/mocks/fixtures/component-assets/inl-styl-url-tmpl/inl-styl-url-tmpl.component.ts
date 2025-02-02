@@ -11,6 +11,4 @@ import { Component } from '@angular/core';
     `,
   ],
 })
-export class InlStylUrlTmplComponent {
-
-}
+export class InlStylUrlTmplComponent {}

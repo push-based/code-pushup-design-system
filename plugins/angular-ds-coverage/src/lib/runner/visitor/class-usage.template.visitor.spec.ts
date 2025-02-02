@@ -1,12 +1,12 @@
-import { TmplAstTextAttribute, parseTemplate } from '@angular/compiler';
+import { parseTemplate } from '@angular/compiler';
 
-import { ClassCollectorVisitor } from './class-collector-visitor';
+import { ClassUsageTemplateVisitor } from './class-usage.template.visitor';
 
 describe('ClassCollectorVisitor', () => {
-  let visitor: ClassCollectorVisitor;
+  let visitor: ClassUsageTemplateVisitor;
 
   beforeEach(() => {
-    visitor = new ClassCollectorVisitor('count');
+    visitor = new ClassUsageTemplateVisitor('count');
   });
 
   it('should not find class when it is not a class-binding', () => {

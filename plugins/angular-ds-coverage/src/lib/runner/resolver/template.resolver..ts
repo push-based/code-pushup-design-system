@@ -1,20 +1,23 @@
-import { ParsedComponent, ParsedComponentWithResolvedTemplate } from '../utils';
 import { parseTemplate } from '@angular/compiler';
 import path from 'node:path';
 import { resolveFileCached } from './file.resolver';
+import {
+  ParsedDecoratorConfigWithResolvedTemplate,
+  ParsedDecoratorConfig,
+} from '../types';
 
 /**
  * Resolves the template of a component, parsing it with Angular's compiler.
  * Returns a partial `ParsedComponentWithResolvedTemplate` that contains the AST
  * @param comp
  */
-export async function resolveComponentTemplate<T extends ParsedComponent>(
+export async function resolveComponentTemplate<T extends ParsedDecoratorConfig>(
   comp: T
 ): Promise<
-  Pick<ParsedComponentWithResolvedTemplate, 'templateUrl' | 'template'>
+  Pick<ParsedDecoratorConfigWithResolvedTemplate, 'templateUrl' | 'template'>
 > {
   let resolvedComponent: Pick<
-    ParsedComponentWithResolvedTemplate,
+    ParsedDecoratorConfigWithResolvedTemplate,
     'templateUrl' | 'template'
   > = {};
   if (comp?.template) {

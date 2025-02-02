@@ -21,7 +21,9 @@ export async function angularDsCoveragePluginCoreConfig({
 
 export async function angularDsCoveragePluginCategories({
   dsComponents,
-}: Pick<AngularDsCoveragePluginConfig, 'dsComponents'>): Promise<CategoryConfig[]> {
+}: Pick<AngularDsCoveragePluginConfig, 'dsComponents'>): Promise<
+  CategoryConfig[]
+> {
   return [
     {
       slug: 'design-system-coverage',

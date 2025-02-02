@@ -14,7 +14,7 @@ export type ParsedComponentWithTemplateUrlProp<T extends ParsedAsset> = {
   templateUrl?: T;
   template?: never;
 };
-export type ParsedComponentWithResolvedTemplate =
+export type ParsedDecoratorConfigWithResolvedTemplate =
   | ParsedComponentWithTemplateProp<ParsedAsset & { ast: ParsedTemplate }>
   | ParsedComponentWithTemplateUrlProp<ParsedAsset & { ast: ParsedTemplate }>;
 export type ParsedComponentWithStylesProp<T extends ParsedAsset> = {
@@ -36,7 +36,7 @@ export type ComponentBase = {
   selector?: string;
 };
 
-export type ParsedComponent = ComponentBase &
+export type ParsedDecoratorConfig = ComponentBase &
   (
     | ParsedComponentWithTemplateProp<ParsedAsset>
     | ParsedComponentWithTemplateUrlProp<ParsedAsset>
@@ -47,7 +47,7 @@ export type ParsedComponent = ComponentBase &
   );
 export type ResolvedComponent = ComponentBase &
   ParsedComponentWithResolvedStyles &
-  ParsedComponentWithResolvedTemplate;
+  ParsedDecoratorConfigWithResolvedTemplate;
 
 export type MatchingElement = {
   name: string;

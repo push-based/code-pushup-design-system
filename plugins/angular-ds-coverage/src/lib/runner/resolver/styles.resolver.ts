@@ -1,19 +1,19 @@
-import {
-  ParsedAsset,
-  ParsedComponent,
-  ParsedComponentWithResolvedStyles,
-} from '../utils';
 import path from 'node:path';
 import postcss, { Root } from 'postcss';
 import safeParser from 'postcss-safe-parser';
 import { resolveFileCached } from './file.resolver';
+import {
+  ParsedAsset,
+  ParsedComponentWithResolvedStyles,
+  ParsedDecoratorConfig,
+} from '../types';
 
 /**
  * Resolves the styles of a component, parsing them with PostCSS
  * and returning a partial `ParsedComponentWithResolvedStyles` that contains the AST
  * @param comp
  */
-export async function resolveComponentStyles<T extends ParsedComponent>(
+export async function resolveComponentStyles<T extends ParsedDecoratorConfig>(
   comp: T
 ): Promise<Pick<ParsedComponentWithResolvedStyles, 'styles' | 'styleUrls'>> {
   let resolvedComponent: Pick<

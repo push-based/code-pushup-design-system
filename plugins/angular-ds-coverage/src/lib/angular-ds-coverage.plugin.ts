@@ -2,6 +2,7 @@ import { PluginConfig } from '@code-pushup/models';
 import { CreateRunnerConfig, runnerFunction } from './runner/create-runner';
 import { getAudits } from './utils';
 import { ANGULAR_DS_COVERAGE_PLUGIN_SLUG } from './constants';
+import css from 'postcss';
 
 export type AngularDsCoveragePluginConfig = CreateRunnerConfig;
 

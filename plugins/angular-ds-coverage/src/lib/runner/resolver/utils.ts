@@ -1,4 +1,4 @@
-import { ParsedComponent, ResolvedComponent } from '../types';
+import { ParsedDecoratorConfig, ResolvedComponent } from '../types';
 import { resolveComponentStyles } from './styles.resolver';
 import { resolveComponentTemplate } from './template.resolver.';
 
@@ -11,7 +11,7 @@ import { resolveComponentTemplate } from './template.resolver.';
  * @param resolveAssets
  */
 export async function resolveComponentFiles(
-  comp: ParsedComponent,
+  comp: ParsedDecoratorConfig,
   resolveAssets: ('template-assets' | 'styles-assets')[] = [
     'template-assets',
     'styles-assets',

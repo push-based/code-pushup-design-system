@@ -1,56 +1,62 @@
 import { ResolvedComponent } from './types';
-
-import { TmplAstElement } from '@angular/compiler';
-import { Audit, AuditOutput, Issue } from '@code-pushup/models';
+import { AuditOutput, Issue } from '@code-pushup/models';
 import path from 'node:path';
-import { ComponentReplacement } from '../types';
-import { ClassCollectorVisitor } from './visitor/class-collector-visitor';
+import { ClassUsageTemplateVisitor } from './visitor/class-usage.template.visitor';
+import { createClassUsageStylesheetVisitor } from './visitor/class-usage.stylesheet.visitor';
+import { pluralize } from '@code-pushup/utils';
+import {
+  visitEachStyleNode,
+  visitEachTmplChild,
+} from './visitor/template.walk';
 
-/**
- * Get the audit output for a component.
- * @param audit Audit object.
- * @param components Array of `ResolvedComponent`.
- * @param componentReplacement Component replacement object. Containing the DS Component name and the CSS classes that matches it.
- * @returns Audit output.
- */
-export function getAuditOutput(
-  audit: Pick<Audit, 'slug'>,
+export function getClassUsageIssues(
   components: ResolvedComponent[],
-  componentReplacement: ComponentReplacement
-): AuditOutput {
-  
-  const { componentName, matchingCssClasses } = componentReplacement;
+  matchingCssClasses: string[]
+) {
+  return components.flatMap((component) => {
+    const { template, templateUrl } = component;
+    const visitor = new ClassUsageTemplateVisitor(matchingCssClasses);
+    const nodes = template?.ast.nodes ?? templateUrl?.ast.nodes ?? [];
+    visitEachTmplChild(nodes, visitor);
 
-  const allIssues: Issue[] = components.flatMap(component => {
-    
-    const { template, templateUrl, filePath } = component;
-
-    return matchingCssClasses.flatMap(cssClass => {
-      const visitor = new ClassCollectorVisitor(cssClass);
-
-      const nodes = template?.ast.nodes ?? templateUrl?.ast.nodes ?? [];
-      visitor.visitAll(nodes);
-
-      return mapTmplAstElementsToIssues(
-        component,
-        visitor.getMatchingElements(),
-        // if a templateUrl is given the filePath has to change
-        templateUrl
-          ? path.join(path.dirname(filePath), templateUrl.value)
-          : filePath,
-        componentName
-      );
+    return visitor.getIssue().map((issue) => {
+      return adjustIssueSource(component, issue);
     });
   });
+}
 
+export function getClassDefinitionIssues(
+  components: ResolvedComponent[],
+  matchingCssClasses: string[]
+) {
+  return components.flatMap((component) => {
+    const { styles = [], styleUrls = [] } = component;
+    const visitor = createClassUsageStylesheetVisitor({
+      classNames: matchingCssClasses,
+    });
+    return [...styles, ...styleUrls].flatMap((style) => {
+      visitEachStyleNode(style.ast, visitor);
+      return visitor.getIssue().map((issue) => {
+        return adjustIssueSource(component, issue);
+      });
+    });
+  });
+}
+
+/**
+ * Creates a scored audit output.
+ * @param slug
+ * @param issues
+ * @returns Audit output.
+ */
+export function getAuditOutput(slug: string, issues: Issue[]): AuditOutput {
   return {
-    ...audit,
-    displayValue: `${allIssues.length} class${allIssues.length !== 1 ? 's' : ''
-      } found`,
-    score: allIssues.length === 0 ? 1 : 0,
-    value: allIssues.length,
+    slug,
+    displayValue: `${issues.length} ${pluralize('class', issues.length)} found`,
+    score: issues.length === 0 ? 1 : 0,
+    value: issues.length,
     details: {
-      issues: allIssues,
+      issues,
     },
   };
 }
@@ -58,26 +64,26 @@ export function getAuditOutput(
 /**
  * Converts matching `TmplAstElement's` from a visitor into Issues.
  * @param component Component that contains the matching elements. Used to get the template start line in order to calculate the real line of the issue.
- * @param matchingElements Elements that match the target class.
- * @param filePath File path of the component.
- * @param targetClass Target class that is being searched for.
+ * @param issue
  * @returns Array of Issues.
  */
-export function mapTmplAstElementsToIssues(
+export function adjustIssueSource(
   component: ResolvedComponent,
-  matchingElements: TmplAstElement[],
-  filePath: string,
-  targetClass: string
-): Issue[] {
-  return matchingElements.map((element) => ({
-    message: `Element \`<${element.name}>\` contains the targeted class '${targetClass}'.`,
-    severity: 'warning',
+  issue: Issue
+): Issue {
+  const { template, templateUrl, filePath } = component;
+  return {
+    ...issue,
     source: {
-      file: filePath,
+      file: templateUrl
+        ? path.join(path.dirname(filePath), templateUrl.value)
+        : filePath,
       position: {
         startLine:
-          element.sourceSpan.start.line + (component.template?.startLine || 0) + 1, // +1 because the line number in the report is 1-indexed
+          (issue?.source?.position?.startLine ?? 0) +
+          (template?.startLine ?? 0) +
+          1, // +1 because the line number in the report is 1-indexed
       },
     },
-  }));
+  };
 }

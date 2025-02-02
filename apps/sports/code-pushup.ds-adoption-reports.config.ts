@@ -1,7 +1,7 @@
 import { angularDsCoverageCoreConfig } from '@design-system/usage-reports-utils';
 import { mergeConfigs } from '@frontend/code-pushup-utils';
-// eslint-disable-next-line @nx/enforce-module-boundaries
-import type { ComponentReplacement } from '../../libs/design-system/usage-reports-utils/src/lib/plugins/ds-coverage';
+import { ComponentReplacement } from '../../plugins/angular-ds-coverage/src/index.js';
+import { angularDsCoveragePluginCoreConfig } from '../../plugins/angular-ds-coverage/src/core.config.js';
 
 const dsComponents: ComponentReplacement[] = [
   {
@@ -90,7 +90,7 @@ export default mergeConfigs(
       format: ['json', 'md'],
     },
   },
-  await angularDsCoverageCoreConfig({
+  await angularDsCoveragePluginCoreConfig({
     directory: 'apps/sports',
     dsComponents,
   })

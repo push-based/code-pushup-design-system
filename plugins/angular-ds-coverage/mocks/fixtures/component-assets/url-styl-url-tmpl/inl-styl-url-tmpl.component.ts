@@ -5,6 +5,4 @@ import { Component } from '@angular/core';
   templateUrl: './inl-styl-url-tmpl.component.html',
   styleUrls: ['inl-styl-url-tmpl.component.css'],
 })
-export class InlStylUrlTmplComponent {
-
-}
+export class InlStylUrlTmplComponent {}

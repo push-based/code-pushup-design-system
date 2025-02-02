@@ -1,7 +1,7 @@
 import { fastFindInFiles, FastFindInFiles } from 'fast-find-in-files';
-import ts from 'typescript';
+import ts, { type Node } from 'typescript';
 import { ANGULAR_COMPONENT_REGEX, styleAndTemplateProps } from './constants';
-import { ParsedComponent, Props } from './types';
+import { ParsedDecoratorConfig, Props } from './types';
 
 /**
  * Finds and parses Angular components in a directory.
@@ -10,10 +10,7 @@ import { ParsedComponent, Props } from './types';
  * @param opt Options with the directory to search for components.
  * @returns Array of `ParsedComponent`.
  */
-export function findAndParseComponents(opt: {
-  directory: string;
-}) {
-
+export function findAndParseComponents(opt: { directory: string }) {
   const filteredComponents = fastFindInFiles({
     ...opt,
     needle: ANGULAR_COMPONENT_REGEX, // Needle to search for Angular components (it does not catch if the class is imported for Angular)
@@ -32,7 +29,7 @@ export function findAndParseComponents(opt: {
  */
 export function parseComponents(
   crawlerResult: FastFindInFiles[]
-): ParsedComponent[] {
+): ParsedDecoratorConfig[] {
   const filePaths = new Set(crawlerResult.map((file) => file.filePath));
 
   const program = ts.createProgram([...filePaths], {
@@ -43,8 +40,16 @@ export function parseComponents(
 
   return program
     .getSourceFiles()
-    .filter((file) => filePaths.has(file.fileName))
-    .flatMap(parseSourceFile);
+    .filter((file: ts.SourceFile) => filePaths.has(file.fileName))
+    .flatMap((sourceFile: ts.SourceFile) => {
+      /*
+      @TODO Use the visitor to extract the components
+      const visitor = new DecoratorAssetsVisitor();
+      visitEachChild<ParsedDecoratorConfig>(sourceFile, visitor);
+      return visitor.getComponents();
+      */
+      return parseSourceFile(sourceFile);
+    });
 }
 
 /**
@@ -53,9 +58,9 @@ export function parseComponents(
  * @returns Array of `ParsedComponent`.
  */
 function parseSourceFile(sourceFile: ts.SourceFile) {
-  const components: ParsedComponent[] = [];
+  const components: ParsedDecoratorConfig[] = [];
 
-  ts.forEachChild(sourceFile, (node) => {
+  ts.visitEachChild(sourceFile, (node: Node) => {
     if (
       !ts.isClassDeclaration(node) ||
       node.kind !== ts.SyntaxKind.ClassDeclaration
@@ -65,24 +70,26 @@ function parseSourceFile(sourceFile: ts.SourceFile) {
 
     const className = node.name?.text ?? 'UnnamedClass';
 
-    (ts.getDecorators(node) ?? []).forEach(decorator => {
+    (ts.getDecorators(node) ?? []).forEach((decorator) => {
       if (!ts.isCallExpression(decorator.expression)) return;
       const expression = decorator.expression.expression;
       if (!ts.isIdentifier(expression)) return;
 
       const decoratorName = expression.text;
 
-      const component: ParsedComponent = {
+      const component: ParsedDecoratorConfig = {
         className,
         decoratorName,
         filePath: sourceFile.fileName,
       };
 
-      components.push(getComponentWithExtractedDecoratorArguments(
-        component,
-        decorator.expression.arguments,
-        sourceFile
-      ));
+      components.push(
+        getComponentWithExtractedDecoratorArguments(
+          component,
+          decorator.expression.arguments,
+          sourceFile
+        )
+      );
     });
   });
 
@@ -97,11 +104,10 @@ function parseSourceFile(sourceFile: ts.SourceFile) {
  * @returns Parsed component with the decorator arguments extracted.
  */
 function getComponentWithExtractedDecoratorArguments(
-  component: ParsedComponent,
+  component: ParsedDecoratorConfig,
   args: ts.NodeArray<ts.Expression>,
   sourceFile: ts.SourceFile
-): ParsedComponent {
-
+): ParsedDecoratorConfig {
   if (args.length === 0 || !ts.isObjectLiteralExpression(args[0])) {
     return component;
   }
@@ -124,20 +130,18 @@ function getComponentWithExtractedDecoratorArguments(
       return {
         ...acc,
         [propName]: {
-          value: prop.initializer.getText(sourceFile).replace(/^['"]|['"]$/g, ''),
+          value: prop.initializer
+            .getText(sourceFile)
+            .replace(/^['"]|['"]$/g, ''),
           startLine,
-        }
+        },
       };
     }
 
     if (propName === 'styles' || propName === 'styleUrls') {
       return {
         ...acc,
-        [propName]: extractArrayValues(
-          prop.initializer,
-          startLine,
-          sourceFile
-        )
+        [propName]: extractArrayValues(prop.initializer, startLine, sourceFile),
       };
     }
 
@@ -157,10 +161,19 @@ function extractArrayValues(
   startLine: number,
   sourceFile: ts.SourceFile
 ) {
-  if (!ts.isArrayLiteralExpression(node)) return [];
-
-  return node.elements.filter(ts.isStringLiteral).map(element => ({
-    value: element.getText(sourceFile).replace(/^['"]|['"]$/g, ''), // Remove quotes
-    startLine,
-  }));
+  if (ts.isArrayLiteralExpression(node) === false) return [];
+  return node.elements.map((element) => {
+    switch (element.kind) {
+      case ts.SyntaxKind.StringLiteral:
+        return {
+          value: element.getText(sourceFile).replace(/^['"]|['"]$/g, ''), // Remove quotes
+          startLine,
+        };
+      case ts.SyntaxKind.FirstTemplateToken:
+        return {
+          value: element.getText(sourceFile),
+          startLine,
+        };
+    }
+  });
 }

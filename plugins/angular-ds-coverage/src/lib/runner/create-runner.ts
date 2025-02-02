@@ -3,7 +3,11 @@ import { slugify } from '@code-pushup/utils';
 import { ComponentReplacement } from '../types';
 import { findAndParseComponents } from './parse-component';
 import { resolveComponentFiles } from './resolver/utils';
-import { getAuditOutput } from './utils';
+import {
+  getAuditOutput,
+  getClassDefinitionIssues,
+  getClassUsageIssues,
+} from './utils';
 
 export type CreateRunnerConfig = {
   directory: string;
@@ -18,7 +22,6 @@ export async function runnerFunction({
   directory,
   dsComponents,
 }: CreateRunnerConfig): Promise<AuditOutputs> {
-
   // Once the components are parsed, we can resolve the styles and templates.
   const parsedComponents = findAndParseComponents({ directory });
   // The parsed components contains general information about the component and the styles and templates, if inline they contain the template and styles already, if not, the path to the template and styles.
@@ -29,13 +32,17 @@ export async function runnerFunction({
   );
 
   // Once the components are resolved, we can get the audit output for each component.
-  return dsComponents.flatMap(dsComponent => {
+  return dsComponents.flatMap((dsComponent) => {
+    const { matchingCssClasses } = dsComponent;
+
+    const allIssues = [
+      ...getClassUsageIssues(resolvedComponents, matchingCssClasses),
+      ...getClassDefinitionIssues(resolvedComponents, matchingCssClasses),
+    ];
+
     return getAuditOutput(
-      {
-        slug: `coverage-${slugify(dsComponent.componentName)}`,
-      },
-      resolvedComponents,
-      dsComponent
+      `coverage-${slugify(dsComponent.componentName)}`,
+      allIssues
     );
   });
 }
