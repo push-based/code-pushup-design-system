@@ -1,13 +1,13 @@
 // Implement a custom visitor
 import { TypeScriptAstVisitor } from './ts.visitor';
 import ts from 'typescript';
-import { ParsedDecoratorConfig, Props } from '../types';
+import { ParsedComponent, Props } from '../types';
 import { styleAndTemplateProps } from '../constants';
 
 export class DecoratorAssetsVisitor implements TypeScriptAstVisitor<void> {
-  private readonly components: ParsedDecoratorConfig[] = [];
+  private readonly components: ParsedComponent[] = [];
 
-  getComponents(): ParsedDecoratorConfig[] {
+  getComponents(): ParsedComponent[] {
     return this.components;
   }
 
@@ -39,12 +39,12 @@ function getParsedDecoratorConfig(
   expr: ts.Expression,
   args: ts.NodeArray<ts.Expression>,
   context: ts.ClassDeclaration
-): ParsedDecoratorConfig {
+): ParsedComponent {
   const className = context.name?.text ?? 'UnnamedClass';
   const sourceFile = context.getSourceFile();
 
   return args[0].properties.reduce(
-    (acc: ParsedDecoratorConfig, prop: ts.Expression) => {
+    (acc: ParsedComponent, prop: ts.Expression) => {
       if (!ts.isPropertyAssignment(prop) || !ts.isIdentifier(prop.name)) {
         return acc;
       }

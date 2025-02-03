@@ -1,7 +1,7 @@
 import { fastFindInFiles, FastFindInFiles } from 'fast-find-in-files';
 import ts, { type Node } from 'typescript';
 import { ANGULAR_COMPONENT_REGEX, styleAndTemplateProps } from './constants';
-import { ParsedDecoratorConfig, Props } from './types';
+import { ParsedComponent, ParsedComponentClass, Props } from './types';
 
 /**
  * Finds and parses Angular components in a directory.
@@ -29,7 +29,7 @@ export function findAndParseComponents(opt: { directory: string }) {
  */
 export function parseComponents(
   crawlerResult: FastFindInFiles[]
-): ParsedDecoratorConfig[] {
+): ParsedComponent[] {
   const filePaths = new Set(crawlerResult.map((file) => file.filePath));
 
   const program = ts.createProgram([...filePaths], {
@@ -58,7 +58,7 @@ export function parseComponents(
  * @returns Array of `ParsedComponent`.
  */
 function parseSourceFile(sourceFile: ts.SourceFile) {
-  const components: ParsedDecoratorConfig[] = [];
+  const components: ParsedComponentClass[] = [];
 
   ts.visitEachChild(sourceFile, (node: Node) => {
     if (
@@ -77,7 +77,7 @@ function parseSourceFile(sourceFile: ts.SourceFile) {
 
       const decoratorName = expression.text;
 
-      const component: ParsedDecoratorConfig = {
+      const component: ParsedComponent = {
         className,
         decoratorName,
         filePath: sourceFile.fileName,
@@ -104,10 +104,10 @@ function parseSourceFile(sourceFile: ts.SourceFile) {
  * @returns Parsed component with the decorator arguments extracted.
  */
 function getComponentWithExtractedDecoratorArguments(
-  component: ParsedDecoratorConfig,
+  component: ParsedComponent,
   args: ts.NodeArray<ts.Expression>,
   sourceFile: ts.SourceFile
-): ParsedDecoratorConfig {
+): ParsedComponent {
   if (args.length === 0 || !ts.isObjectLiteralExpression(args[0])) {
     return component;
   }

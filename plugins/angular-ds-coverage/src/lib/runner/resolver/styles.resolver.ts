@@ -5,7 +5,7 @@ import { resolveFileCached } from './file.resolver';
 import {
   ParsedAsset,
   ParsedComponentWithResolvedStyles,
-  ParsedDecoratorConfig,
+  ParsedComponent,
 } from '../types';
 
 /**
@@ -13,7 +13,7 @@ import {
  * and returning a partial `ParsedComponentWithResolvedStyles` that contains the AST
  * @param comp
  */
-export async function resolveComponentStyles<T extends ParsedDecoratorConfig>(
+export async function resolveComponentStyles<T extends ParsedComponent>(
   comp: T
 ): Promise<Pick<ParsedComponentWithResolvedStyles, 'styles' | 'styleUrls'>> {
   let resolvedComponent: Pick<

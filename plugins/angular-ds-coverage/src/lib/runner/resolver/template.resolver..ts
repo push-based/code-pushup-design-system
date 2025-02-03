@@ -3,7 +3,7 @@ import path from 'node:path';
 import { resolveFileCached } from './file.resolver';
 import {
   ParsedDecoratorConfigWithResolvedTemplate,
-  ParsedDecoratorConfig,
+  ParsedComponent,
 } from '../types';
 
 /**
@@ -11,7 +11,7 @@ import {
  * Returns a partial `ParsedComponentWithResolvedTemplate` that contains the AST
  * @param comp
  */
-export async function resolveComponentTemplate<T extends ParsedDecoratorConfig>(
+export async function resolveComponentTemplate<T extends ParsedComponent>(
   comp: T
 ): Promise<
   Pick<ParsedDecoratorConfigWithResolvedTemplate, 'templateUrl' | 'template'>

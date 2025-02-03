@@ -29,14 +29,18 @@ export type ParsedComponentWithResolvedStyles =
   | ParsedComponentWithStylesProp<ParsedAsset & { ast: Root }>
   | ParsedComponentWithStyleUrlProp<ParsedAsset & { ast: Root }>;
 
-export type ComponentBase = {
+export type ComponentClassBase = {
   filePath: string;
   decoratorName: string;
   className: string;
   selector?: string;
 };
 
-export type ParsedDecoratorConfig = ComponentBase &
+export type ParsedComponentClass = ComponentClassBase & {
+  sourceFile: Node;
+}
+
+export type ParsedComponent = ComponentClassBase &
   (
     | ParsedComponentWithTemplateProp<ParsedAsset>
     | ParsedComponentWithTemplateUrlProp<ParsedAsset>
@@ -45,7 +49,7 @@ export type ParsedDecoratorConfig = ComponentBase &
     | ParsedComponentWithStylesProp<ParsedAsset>
     | ParsedComponentWithStyleUrlProp<ParsedAsset>
   );
-export type ResolvedComponent = ComponentBase &
+export type ResolvedComponent = ComponentClassBase &
   ParsedComponentWithResolvedStyles &
   ParsedDecoratorConfigWithResolvedTemplate;
 
