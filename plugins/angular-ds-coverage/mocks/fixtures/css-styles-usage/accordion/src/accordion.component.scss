@@ -1,0 +1,69 @@
+@use './../../accordion' as ds-accordion;
+
+.ds-accordion {
+    @include ds-accordion.shared;
+
+    box-sizing: border-box;
+    display: grid;
+    grid-template-rows: auto auto;
+
+    .ds-accordion-header-wrapper {
+        min-height: var(--ds-accordion-size-min-height);
+    }
+
+    .ds-accordion-content {
+        content-visibility: auto;
+    }
+
+    ds-accordion-content {
+        display: block;
+        padding: var(--ds-accordion-space-content-padding-top, 0) var(--ds-accordion-space-content-padding-right, 0)
+            var(--ds-accordion-space-content-padding-bottom, 0) var(--ds-accordion-space-content-padding-left, 0);
+    }
+
+    .ds-accordion-content-closed {
+        display: none;
+    }
+
+    &.ds-accordion-transparent {
+        @include ds-accordion.transparent;
+    }
+
+    &.ds-accordion-surface-highest {
+        @include ds-accordion.surface-highest;
+    }
+
+    &.ds-accordion-surface-high {
+        @include ds-accordion.surface-high;
+    }
+
+    &.ds-accordion-surface-low {
+        @include ds-accordion.surface-low;
+    }
+
+    &.ds-accordion-surface-lowest {
+        @include ds-accordion.surface-lowest;
+    }
+
+    &.ds-accordion-inverse {
+        &.ds-accordion-transparent {
+            @include ds-accordion.transparent-inverse;
+        }
+
+        &.ds-accordion-surface-highest {
+            @include ds-accordion.surface-highest-inverse;
+        }
+
+        &.ds-accordion-surface-high {
+            @include ds-accordion.surface-high-inverse;
+        }
+
+        &.ds-accordion-surface-low {
+            @include ds-accordion.surface-low-inverse;
+        }
+
+        &.ds-accordion-surface-lowest {
+            @include ds-accordion.surface-lowest-inverse;
+        }
+    }
+}

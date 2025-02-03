@@ -20,6 +20,12 @@
     },
     "assets-demo": {
       "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/component-assets/code-pushup.config.ts --onlyPlugins=angular-ds-coverage"
+    },
+    "deprecated-styles-usage-demo": {
+      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/deprecated-styles-usage/code-pushup.config.ts --onlyPlugins=angular-ds-coverage"
+    },
+    "css-styles-usage-demo": {
+      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/css-styles-usage/code-pushup.config.ts --onlyPlugins=angular-ds-coverage"
     }
   }
 }
