@@ -1,0 +1,167 @@
+@mixin large {
+    /** @deprecated This token is no longer available in Figma (2024-12-16T17:13:16.553Z) */
+    --ds-radio-size-border-width: var(--semantic-size-xhalf);
+    /** @deprecated This token is no longer available in Figma (2024-12-16T17:13:16.553Z) */
+    --ds-radio-size-min-height: var(--semantic-size-x6);
+    /** @deprecated This token is no longer available in Figma (2024-12-16T17:13:16.553Z) */
+    --ds-radio-size-min-width: var(--semantic-size-x6);
+    --ds-radio-size-select-border-width: var(--semantic-size-xhalf);
+    --ds-radio-size-select-min-height: var(--semantic-size-x6);
+    --ds-radio-size-select-min-width: var(--semantic-size-x6);
+    --ds-radio-size-selected-indicator: var(--semantic-size-x3);
+    --ds-radio-space-inline: var(--semantic-spacing-inline-md);
+    --ds-radio-space-padding-bottom: var(--semantic-spacing-container-padding-lg);
+    --ds-radio-space-padding-left: var(--semantic-spacing-container-padding-xs);
+    --ds-radio-space-padding-right: var(--semantic-spacing-container-padding-xs);
+    --ds-radio-space-padding-top: var(--semantic-spacing-container-padding-lg);
+    --ds-radio-space-stack: var(--semantic-spacing-stack-xs);
+}
+
+/** @deprecated This mixin is no longer available in Figma */
+@mixin large-condensed {
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-size-select-border-width: var(--semantic-size-xhalf);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-size-select-min-height: var(--semantic-size-x6);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-size-select-min-width: var(--semantic-size-x6);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-size-selected-indicator: var(--semantic-size-x3);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-space-inline: var(--semantic-spacing-inline-md);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-space-padding-bottom: var(--semantic-spacing-container-padding-sm);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-space-padding-left: var(--semantic-spacing-container-padding-xs);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-space-padding-right: var(--semantic-spacing-container-padding-xs);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-space-padding-top: var(--semantic-spacing-container-padding-sm);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-space-stack: var(--semantic-spacing-stack-xs);
+}
+
+@mixin medium {
+    --ds-radio-size-select-border-width: var(--semantic-size-xquarter);
+    --ds-radio-size-select-min-height: var(--semantic-size-x4);
+    --ds-radio-size-select-min-width: var(--semantic-size-x4);
+    --ds-radio-size-selected-indicator: var(--semantic-size-x2);
+    --ds-radio-space-inline: var(--semantic-spacing-inline-xs);
+    --ds-radio-space-padding-bottom: var(--semantic-spacing-container-padding-sm);
+    --ds-radio-space-padding-left: var(--semantic-spacing-container-padding-xs);
+    --ds-radio-space-padding-right: var(--semantic-spacing-container-padding-xs);
+    --ds-radio-space-padding-top: var(--semantic-spacing-container-padding-sm);
+    --ds-radio-space-stack: var(--semantic-spacing-stack-none);
+}
+
+/** @deprecated This mixin is no longer available in Figma */
+@mixin medium-condensed {
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-size-select-border-width: var(--semantic-size-xquarter);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-size-select-min-height: var(--semantic-size-x4);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-size-select-min-width: var(--semantic-size-x4);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-size-selected-indicator: var(--semantic-size-x2);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-space-inline: var(--semantic-spacing-inline-xs);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-space-padding-bottom: var(--semantic-spacing-container-padding-xs);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-space-padding-left: var(--semantic-spacing-container-padding-xs);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-space-padding-right: var(--semantic-spacing-container-padding-xs);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-space-padding-top: var(--semantic-spacing-container-padding-xs);
+    /** @deprecated This token is no longer available in Figma (2025-01-24T14:25:30.525Z) */
+    --ds-radio-space-stack: var(--semantic-spacing-stack-none);
+}
+
+@mixin selected {
+    --ds-radio-active-color-bg: var(--semantic-color-opacity-transparent);
+    --ds-radio-active-color-border: var(--semantic-color-utility-active);
+    --ds-radio-active-color-label: var(--semantic-color-on-surface-base);
+    --ds-radio-active-color-selected-indicator: var(--semantic-color-utility-active);
+    --ds-radio-active-color-subtext: var(--semantic-color-on-surface-subtle);
+    --ds-radio-disabled-color-bg: var(--semantic-color-opacity-transparent);
+    --ds-radio-disabled-color-border: var(--semantic-color-disabled-base);
+    --ds-radio-disabled-color-label: var(--semantic-color-disabled-base);
+    --ds-radio-disabled-color-selected-indicator: var(--semantic-color-disabled-base);
+    --ds-radio-disabled-color-subtext: var(--semantic-color-disabled-base);
+    --ds-radio-enabled-color-bg: var(--semantic-color-opacity-transparent);
+    --ds-radio-enabled-color-border: var(--semantic-color-utility-base);
+    --ds-radio-enabled-color-label: var(--semantic-color-on-surface-base);
+    --ds-radio-enabled-color-selected-indicator: var(--semantic-color-utility-base);
+    --ds-radio-enabled-color-subtext: var(--semantic-color-on-surface-subtle);
+    --ds-radio-hover-color-bg: var(--semantic-color-opacity-transparent);
+    --ds-radio-hover-color-border: var(--semantic-color-utility-hover);
+    --ds-radio-hover-color-label: var(--semantic-color-on-surface-base);
+    --ds-radio-hover-color-selected-indicator: var(--semantic-color-utility-hover);
+    --ds-radio-hover-color-subtext: var(--semantic-color-on-surface-subtle);
+}
+
+@mixin shared {
+    --ds-radio-radius-border: var(--semantic-radius-max);
+    /** @deprecated This token is no longer available in Figma (2024-12-20T01:36:43.111Z) */
+    --ds-radio-size-min-height: var(--semantic-size-x6);
+    --ds-radio-size-min-tap-target: var(--semantic-size-x6);
+    --ds-radio-space-inline: var(--semantic-spacing-inline-md);
+}
+
+/** @deprecated This mixin is no longer available in Figma */
+@mixin small {
+    /** @deprecated This token is no longer available in Figma (2024-12-16T17:13:16.553Z) */
+    --ds-radio-size-border-width: var(--semantic-size-xquarter);
+    /** @deprecated This token is no longer available in Figma (2024-12-16T17:13:16.553Z) */
+    --ds-radio-size-min-height: var(--semantic-size-x4);
+    /** @deprecated This token is no longer available in Figma (2024-12-16T17:13:16.553Z) */
+    --ds-radio-size-min-width: var(--semantic-size-x4);
+    /** @deprecated This token is no longer available in Figma (2025-01-07T13:56:23.883Z) */
+    --ds-radio-size-select-border-width: var(--semantic-size-xquarter);
+    /** @deprecated This token is no longer available in Figma (2025-01-07T13:56:23.883Z) */
+    --ds-radio-size-select-min-height: var(--semantic-size-x4);
+    /** @deprecated This token is no longer available in Figma (2025-01-07T13:56:23.883Z) */
+    --ds-radio-size-select-min-width: var(--semantic-size-x4);
+    /** @deprecated This token is no longer available in Figma (2025-01-07T13:56:23.883Z) */
+    --ds-radio-size-selected-indicator: var(--semantic-size-x2);
+    /** @deprecated This token is no longer available in Figma (2025-01-07T13:56:23.883Z) */
+    --ds-radio-space-padding-bottom: var(--semantic-spacing-container-padding-sm);
+    /** @deprecated This token is no longer available in Figma (2025-01-07T13:56:23.883Z) */
+    --ds-radio-space-padding-left: var(--semantic-spacing-container-padding-xs);
+    /** @deprecated This token is no longer available in Figma (2025-01-07T13:56:23.883Z) */
+    --ds-radio-space-padding-right: var(--semantic-spacing-container-padding-xs);
+    /** @deprecated This token is no longer available in Figma (2025-01-07T13:56:23.883Z) */
+    --ds-radio-space-padding-top: var(--semantic-spacing-container-padding-sm);
+}
+
+/** @deprecated This mixin is no longer available in Figma */
+@mixin small-condensed {
+    /** @deprecated This token is no longer available in Figma (2025-01-07T13:56:23.883Z) */
+    --ds-radio-space-padding-bottom: var(--semantic-spacing-container-padding-xs);
+    /** @deprecated This token is no longer available in Figma (2025-01-07T13:56:23.883Z) */
+    --ds-radio-space-padding-left: var(--semantic-spacing-container-padding-xs);
+    /** @deprecated This token is no longer available in Figma (2025-01-07T13:56:23.883Z) */
+    --ds-radio-space-padding-right: var(--semantic-spacing-container-padding-xs);
+    /** @deprecated This token is no longer available in Figma (2025-01-07T13:56:23.883Z) */
+    --ds-radio-space-padding-top: var(--semantic-spacing-container-padding-xs);
+}
+
+@mixin unselected {
+    --ds-radio-active-color-bg: var(--semantic-color-opacity-transparent);
+    --ds-radio-active-color-border: var(--semantic-color-utility-active);
+    --ds-radio-active-color-label: var(--semantic-color-on-surface-base);
+    --ds-radio-active-color-subtext: var(--semantic-color-on-surface-subtle);
+    --ds-radio-disabled-color-bg: var(--semantic-color-opacity-transparent);
+    --ds-radio-disabled-color-border: var(--semantic-color-disabled-base);
+    --ds-radio-disabled-color-label: var(--semantic-color-disabled-base);
+    --ds-radio-disabled-color-subtext: var(--semantic-color-disabled-base);
+    --ds-radio-enabled-color-bg: var(--semantic-color-opacity-transparent);
+    --ds-radio-enabled-color-border: var(--semantic-color-utility-base);
+    --ds-radio-enabled-color-label: var(--semantic-color-on-surface-base);
+    --ds-radio-enabled-color-subtext: var(--semantic-color-on-surface-subtle);
+    --ds-radio-hover-color-bg: var(--semantic-color-opacity-transparent);
+    --ds-radio-hover-color-border: var(--semantic-color-utility-hover);
+    --ds-radio-hover-color-label: var(--semantic-color-on-surface-base);
+    --ds-radio-hover-color-subtext: var(--semantic-color-on-surface-subtle);
+}
