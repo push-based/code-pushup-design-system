@@ -17,6 +17,9 @@
     },
     "angular-ds-coverage-demo": {
       "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/ds-coverage-demo/code-pushup.config.ts --onlyPlugins=angular-ds-coverage"
+    },
+    "assets-demo": {
+      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/component-assets/code-pushup.config.ts --onlyPlugins=angular-ds-coverage"
     }
   }
 }

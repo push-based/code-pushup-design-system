@@ -6,7 +6,11 @@ describe('ClassCollectorVisitor', () => {
   let visitor: ClassUsageTemplateVisitor;
 
   beforeEach(() => {
-    visitor = new ClassUsageTemplateVisitor('count');
+    visitor = new ClassUsageTemplateVisitor({
+      componentName: 'CounterComponent',
+      matchingCssClasses: ['count'],
+      docsUrl: 'my.doc#CounterComponent',
+    });
   });
 
   it('should not find class when it is not a class-binding', () => {
@@ -19,22 +23,20 @@ describe('ClassCollectorVisitor', () => {
 
     const ast = parseTemplate(template, 'template.html');
 
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toHaveLength(0);
+    expect(visitor.getIssues()).toHaveLength(0);
   });
 
   it('<div class="count">1</div> should find node with css class', () => {
     const template = `<div class="count">1</div>`;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
-        attributes: [
-          expect.objectContaining({ name: 'class', value: 'count' }),
-        ],
+        message: expect.stringContaining('CounterComponent'),
       }),
     ]);
   });
@@ -43,9 +45,9 @@ describe('ClassCollectorVisitor', () => {
     const template = `<div class="a count b">1</div>`;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         attributes: [
           expect.objectContaining({ name: 'class', value: 'a count b' }),
@@ -58,9 +60,9 @@ describe('ClassCollectorVisitor', () => {
     const template = `<div [class.count]="true">2</div>`;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         inputs: expect.arrayContaining([
           expect.objectContaining({ name: 'count' }),
@@ -73,9 +75,9 @@ describe('ClassCollectorVisitor', () => {
     const template = `<div [class.count]="false">2</div>`;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         inputs: [expect.objectContaining({ name: 'count' })],
       }),
@@ -86,27 +88,27 @@ describe('ClassCollectorVisitor', () => {
     const template = `<div [class.a]="true">3</div>`;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toHaveLength(0);
+    expect(visitor.getIssues()).toHaveLength(0);
   });
 
   it('<div [class.a]="false">3</div> should not find node when other class is used in class-binding', () => {
     const template = `<div [class.a]="false">3</div>`;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toHaveLength(0);
+    expect(visitor.getIssues()).toHaveLength(0);
   });
 
   it("<div [ngClass]=\"['count', 'second']\">5</div> should find node when class is used in ngClass-binding", () => {
     const template = `<div [ngClass]="['count', 'second']">5</div>`;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         inputs: [
           expect.objectContaining({
@@ -129,9 +131,9 @@ describe('ClassCollectorVisitor', () => {
     const template = `<div [ngClass]="{ count: true, second: true, third: true }">6</div>`;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         inputs: expect.arrayContaining([
           expect.objectContaining({
@@ -155,9 +157,9 @@ describe('ClassCollectorVisitor', () => {
     const template = `<div [ngClass]="{ count: false, second: true, third: true }">6</div>`;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         inputs: expect.arrayContaining([
           expect.objectContaining({
@@ -181,9 +183,9 @@ describe('ClassCollectorVisitor', () => {
     const template = `<div [ngClass]="{ 'count second': true }">7</div>`;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         inputs: expect.arrayContaining([
           expect.objectContaining({
@@ -205,9 +207,9 @@ describe('ClassCollectorVisitor', () => {
     const template = `<div [ngClass]="{ 'count second': false }">7</div>`;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         inputs: expect.arrayContaining([
           expect.objectContaining({
@@ -240,9 +242,9 @@ describe('ClassCollectorVisitor', () => {
       `;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         attributes: expect.arrayContaining([
           expect.objectContaining({ name: 'id', value: '1' }),
@@ -273,9 +275,9 @@ describe('ClassCollectorVisitor', () => {
       `;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         attributes: expect.arrayContaining([
           expect.objectContaining({ name: 'id', value: '1' }),
@@ -306,9 +308,9 @@ describe('ClassCollectorVisitor', () => {
       `;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         attributes: expect.arrayContaining([
           expect.objectContaining({ name: 'id', value: '1' }),
@@ -330,9 +332,9 @@ describe('ClassCollectorVisitor', () => {
       `;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         attributes: expect.arrayContaining([
           expect.objectContaining({ name: 'id', value: '1' }),
@@ -358,9 +360,9 @@ describe('ClassCollectorVisitor', () => {
       `;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         attributes: expect.arrayContaining([
           expect.objectContaining({ name: 'id', value: '1' }),
@@ -389,9 +391,9 @@ describe('ClassCollectorVisitor', () => {
         `;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         attributes: expect.arrayContaining([
           expect.objectContaining({ name: 'id', value: '1' }),
@@ -409,9 +411,9 @@ describe('ClassCollectorVisitor', () => {
         `;
 
     const ast = parseTemplate(template, 'template.html');
-    visitor.visitAll(ast.nodes);
+    ast.nodes.forEach((node) => node.visit(visitor));
 
-    expect(visitor.getMatchingElements()).toStrictEqual([
+    expect(visitor.getIssues()).toStrictEqual([
       expect.objectContaining({
         attributes: expect.arrayContaining([
           expect.objectContaining({ name: 'id', value: '1' }),

@@ -1,5 +1,7 @@
 import { Issue } from '@code-pushup/models';
 
 export interface DiagnosticsAware {
-  getIssue(): Issue[];
+  // @TODO use Set<Issue>
+  getIssues(): Issue[];
+  reset(): void;
 }

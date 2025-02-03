@@ -40,7 +40,7 @@ import { Component } from '@angular/core';
     </select>
 
     <!-- ✅ Good: Using DSAlert -->
-    <ds-alert type="error">Good Alert</ds-alert>
+    <ds-alert type="error"> Good Alert </ds-alert>
 
     <!-- ❌ Bad: Manually styled alert -->
     <div class="alert alert-danger">Bad Alert</div>

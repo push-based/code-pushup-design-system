@@ -15,13 +15,28 @@ export function getClassUsageIssues(
   compReplacement: ComponentReplacement
 ) {
   return components.flatMap((component) => {
-    const { template, templateUrl } = component;
+    const { template, templateUrl, filePath } = component;
     const visitor = new ClassUsageTemplateVisitor(compReplacement);
     const nodes = template?.ast.nodes ?? templateUrl?.ast.nodes ?? [];
     visitEachTmplChild(nodes, visitor);
 
-    return visitor.getIssue().map((issue) => {
-      return adjustIssueSource(component, issue);
+    return visitor.getIssues().map((issue) => {
+      return {
+        ...issue,
+        message: `${templateUrl ? '🔗' : '✏️'}${issue.message}`,
+        source: {
+          ...issue.source,
+          file: templateUrl
+            ? path.join(path.dirname(filePath), templateUrl.value)
+            : filePath,
+          position:
+            template?.startLine != null
+              ? startFromPosition(issue, {
+                  startLine: template.startLine,
+                })
+              : issue?.source?.position,
+        },
+      };
     });
   });
 }
@@ -31,14 +46,49 @@ export function getClassDefinitionIssues(
   componentReplacement: ComponentReplacement
 ) {
   return components.flatMap((component) => {
-    const { styles = [], styleUrls = [] } = component;
-    const visitor = createClassUsageStylesheetVisitor(componentReplacement);
-    return [...styles, ...styleUrls].flatMap((style) => {
-      visitEachStyleNode(style.ast, visitor);
-      return visitor.getIssue().map((issue) => {
-        return adjustIssueSource(component, issue);
-      });
-    });
+    const {
+      styles = [],
+      styleUrls = [],
+      filePath: componentFilePath,
+    } = component;
+
+    const stylesVisitor =
+      createClassUsageStylesheetVisitor(componentReplacement);
+
+    return [
+      ...styles.flatMap((style) => {
+        stylesVisitor.reset();
+        visitEachStyleNode(style.ast, stylesVisitor);
+
+        return stylesVisitor.getIssues().map((issue) => {
+          return {
+            ...issue,
+            message: `✏️${issue.message}`,
+            source: {
+              ...issue.source,
+              file: componentFilePath,
+              position: startFromPosition(issue, {
+                startLine: style.startLine,
+              }),
+            },
+          };
+        });
+      }),
+      ...styleUrls.flatMap((styleUrl) => {
+        stylesVisitor.reset();
+        visitEachStyleNode(styleUrl.ast, stylesVisitor);
+        return stylesVisitor.getIssues().map((issue) => {
+          return {
+            ...issue,
+            message: `🔗${issue.message}`,
+            source: {
+              ...issue.source,
+              file: path.join(path.dirname(componentFilePath), styleUrl.value),
+            },
+          };
+        });
+      }),
+    ];
   });
 }
 
@@ -60,29 +110,18 @@ export function getAuditOutput(slug: string, issues: Issue[]): AuditOutput {
   };
 }
 
-/**
- * Converts matching `TmplAstElement's` from a visitor into Issues.
- * @param component Component that contains the matching elements. Used to get the template start line in order to calculate the real line of the issue.
- * @param issue
- * @returns Array of Issues.
- */
-export function adjustIssueSource(
-  component: ResolvedComponent,
-  issue: Issue
-): Issue {
-  const { template, templateUrl, filePath } = component;
+type Source = Exclude<Issue['source'], undefined>;
+type Position = Exclude<Source['position'], undefined>;
+
+export function startFromPosition(
+  issue: Partial<Issue>,
+  position: Position
+): Position {
   return {
-    ...issue,
-    source: {
-      file: templateUrl
-        ? path.join(path.dirname(filePath), templateUrl.value)
-        : filePath,
-      position: {
-        startLine:
-          (issue?.source?.position?.startLine ?? 0) +
-          (template?.startLine ?? 0) +
-          1, // +1 because the line number in the report is 1-indexed
-      },
-    },
+    ...issue.source?.position,
+    startLine: (issue.source?.position?.startLine ?? 0) + position.startLine,
+    ...(issue.source?.position?.endLine !== undefined
+      ? { endLine: (issue.source?.position?.endLine ?? 0) + position.startLine }
+      : {}),
   };
 }

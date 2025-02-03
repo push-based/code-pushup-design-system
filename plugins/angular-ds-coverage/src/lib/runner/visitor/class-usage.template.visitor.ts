@@ -37,17 +37,20 @@ function generateClassUsageMessage({
   attribute,
   dsComponentName = 'a DS component',
   docsUrl,
+  icon = '🔲',
 }: {
+  icon?: string;
   elementName: string;
   className: string;
   attribute: string;
   dsComponentName?: string;
   docsUrl?: string;
 }): string {
+  const iconString = icon ? `${icon} ` : '';
   const docsLink = docsUrl
     ? ` <a href="${docsUrl}" target="_blank">Learn more</a>.`
     : '';
-  return `The <${elementName}> element uses the deprecated ${className} class in the ${attribute} attribute. Replace it with <${dsComponentName}> for consistency.${docsLink}`;
+  return `${iconString} The <code>${elementName}</code> element's <code>${className}</code> class deprecated. Use <code>${dsComponentName}</code>.${docsLink}`;
 }
 
 function parseClassNames(classString: string): string[] {
@@ -59,15 +62,17 @@ export function tmplAstElementToIssue(
   message: string
 ): Issue {
   return {
-    message: message ?? 'Wrong class usage in component template. Replace it with the appropriate DS component for consistency.',
-    severity: 'info',
+    message:
+      message ??
+      'Wrong class usage in component template. Replace it with the appropriate DS component for consistency.',
+    severity: 'error',
     source: {
       file: element.sourceSpan.start.file.url,
       position: {
-        startLine: element.startSourceSpan?.start.line,
-        endLine: element.endSourceSpan?.end.line,
-        startColumn: element.startSourceSpan?.start.col,
-        endColumn: element.endSourceSpan?.end.col,
+        startLine: element.startSourceSpan?.start.line + 1,
+        endLine: (element.endSourceSpan?.end.line ?? 0) + 1,
+        startColumn: element.startSourceSpan?.start.col + 1,
+        endColumn: (element.endSourceSpan?.end.col ?? 0) + 1,
       },
     },
   };
@@ -81,7 +86,7 @@ export class ClassUsageTemplateVisitor
 
   constructor(private readonly componentReplacement: ComponentReplacement) {}
 
-  getIssue(): Issue[] {
+  getIssues(): Issue[] {
     return this.issues;
   }
 

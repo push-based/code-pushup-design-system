@@ -35,7 +35,7 @@ describe('ClassUsageStylesheetVisitor', () => {
 
     visitEachChild(ast, cssAstVisitor);
 
-    expect(cssAstVisitor?.getIssue?.()).toStrictEqual([
+    expect(cssAstVisitor?.getIssues?.()).toStrictEqual([
       {
         filePath:
           '/Users/michael_hladky/WebstormProjects/code-pushup-design-system/plugins/angular-ds-coverage/styles.css',

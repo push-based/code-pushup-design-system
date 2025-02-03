@@ -149,31 +149,21 @@ function getComponentWithExtractedDecoratorArguments(
   }, component);
 }
 
-/**
- * Extracts values from an array initializer.
- * @param node Array initializer.
- * @param startLine Start line of the array initializer.
- * @param sourceFile TypeScript source file.
- * @returns Array of `ParsedAsset`.
- */
 function extractArrayValues(
   node: ts.Expression,
   startLine: number,
   sourceFile: ts.SourceFile
 ) {
-  if (ts.isArrayLiteralExpression(node) === false) return [];
-  return node.elements.map((element) => {
-    switch (element.kind) {
-      case ts.SyntaxKind.StringLiteral:
-        return {
-          value: element.getText(sourceFile).replace(/^['`"]|['"]$/g, ''), // Remove quotes
-          startLine,
-        };
-      case ts.SyntaxKind.FirstTemplateToken:
-        return {
-          value: element.getText(sourceFile).replace(/^['`"]|['"]$/g, ''),
-          startLine,
-        };
-    }
+  if (!ts.isArrayLiteralExpression(node)) return [];
+
+  return node.elements.map((element: ts.Node) => {
+    const { line: startLine } = sourceFile.getLineAndCharacterOfPosition(
+      element.getStart(sourceFile)
+    );
+
+    return {
+      value: element.getText(sourceFile).replace(/^['`"]|['`"]$/g, ''),
+      startLine,
+    };
   });
 }
