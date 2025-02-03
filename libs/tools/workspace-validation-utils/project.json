@@ -1,0 +1,51 @@
+{
+    "name": "workspace-validation-utils",
+    "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "libs/tools/src",
+    "projectType": "library",
+    "tags": ["type:utils", "scope:shared"],
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/build/libs/tools/workspace-validation-utils",
+                "main": "libs/tools/workspace-validation-utils/src/index.ts",
+                "tsConfig": "libs/tools/workspace-validation-utils/tsconfig.lib.json",
+                "assets": ["libs/tools/workspace-validation-utils/*.md"]
+            }
+        },
+        "lint": {
+            "executor": "@nx/eslint:lint",
+            "outputs": ["{workspaceRoot}/dist/lint/{projectRoot}"]
+        },
+        "test": {
+            "executor": "@nx/vite:test",
+            "outputs": ["{workspaceRoot}/dist/test/{projectRoot}"],
+            "options": {
+                "reportsDirectory": "../../coverage/libs/tools/workspace-validation-utils"
+            }
+        },
+        "generate-report": {
+            "command": "npx @code-pushup/cli --persist.format=md --tsconfig=tsconfig.base.json"
+        },
+        "code-pushup": {
+            "executor": "nx:run-commands",
+            "options": {
+                "commands": [
+                    "npx @code-pushup/cli --config=libs/tools/workspace-validation-utils/code-pushup.config.ts --tsconfig=tsconfig.base.json --progress=false"
+                ]
+            }
+        },
+        "publish": {
+            "executor": "@frontend/nx-plugin:publish",
+            "configurations": {
+                "artifactory": {},
+                "verdaccio": {
+                    "dest": "http://localhost:4873/"
+                }
+            },
+            "defaultConfiguration": "verdaccio"
+        }
+    }
+}
