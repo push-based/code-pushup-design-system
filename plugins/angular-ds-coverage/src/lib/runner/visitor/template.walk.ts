@@ -1,14 +1,12 @@
-import { TmplAstNode, TmplAstVisitor } from '@angular/compiler';
+import { TmplAstNode, TmplAstRecursiveVisitor, TmplAstVisitor } from '@angular/compiler';
 import { CssAstVisitor } from './stylesheet.visitor';
 import { Root } from 'postcss';
 
 export function visitEachTmplChild<T>(
   nodes: TmplAstNode[],
-  visitor: TmplAstVisitor<T>
+  visitor: TmplAstRecursiveVisitor
 ) {
-  for (const node of nodes) {
-    node.visit(visitor);
-  }
+  nodes.forEach(node => node.visit(visitor));
 }
 
 export function visitEachStyleNode<T>(root: Root, visitor: CssAstVisitor<T>) {

@@ -17,7 +17,6 @@ import {
   TmplAstIfBlock,
   TmplAstIfBlockBranch,
   TmplAstLetDeclaration,
-  TmplAstNode,
   TmplAstReference,
   TmplAstSwitchBlock,
   TmplAstSwitchBlockCase,
@@ -28,157 +27,194 @@ import {
   TmplAstVariable,
   TmplAstVisitor,
 } from '@angular/compiler';
-import { tmplAstElementToIssue } from './utils';
-import { visitEachTmplChild } from './template.walk';
 import { Issue } from '@code-pushup/models';
 import { DiagnosticsAware } from './diagnostics';
+import { ComponentReplacement } from '@code-pushup-design-system/angular-ds-coverage';
 
-/**
- * Traverses an Angular template to find nodes that have any one of several CSS classes.
- */
+function generateClassUsageMessage({
+  elementName,
+  className,
+  attribute,
+  dsComponentName = 'a DS component',
+  docsUrl,
+}: {
+  elementName: string;
+  className: string;
+  attribute: string;
+  dsComponentName?: string;
+  docsUrl?: string;
+}): string {
+  const docsLink = docsUrl
+    ? ` <a href="${docsUrl}" target="_blank">Learn more</a>.`
+    : '';
+  return `The <${elementName}> element uses the deprecated ${className} class in the ${attribute} attribute. Replace it with <${dsComponentName}> for consistency.${docsLink}`;
+}
+
+function parseClassNames(classString: string): string[] {
+  return classString.trim().split(/\s+/).filter(Boolean);
+}
+
+export function tmplAstElementToIssue(
+  element: TmplAstElement,
+  message: string
+): Issue {
+  return {
+    message: message ?? 'Wrong class usage in component template. Replace it with the appropriate DS component for consistency.',
+    severity: 'info',
+    source: {
+      file: element.sourceSpan.start.file.url,
+      position: {
+        startLine: element.startSourceSpan?.start.line,
+        endLine: element.endSourceSpan?.end.line,
+        startColumn: element.startSourceSpan?.start.col,
+        endColumn: element.endSourceSpan?.end.col,
+      },
+    },
+  };
+}
+
 export class ClassUsageTemplateVisitor
   implements TmplAstVisitor<void>, DiagnosticsAware
 {
   private issues: Issue[] = [];
+  private currentElement: TmplAstElement | null = null;
 
-  /**
-   * @param targetClasses An array of classes to check, e.g. ['btn', 'active', 'foo']
-   */
-  constructor(private readonly targetClasses: string[]) {}
+  constructor(private readonly componentReplacement: ComponentReplacement) {}
 
   getIssue(): Issue[] {
     return this.issues;
   }
 
-  private visitChildren(children?: TmplAstNode[] | null) {
-    if (children && children.length) {
-      visitEachTmplChild(children, this);
-    }
-  }
-
-  /**
-   * Checks if the element has any of the target classes via:
-   * 1) A static "class" attribute,
-   * 2) A "[class.someClass]" binding,
-   * 3) An "[ngClass]" binding containing that class name as a substring.
-   */
-  private elementHasAnyTargetClass(element: TmplAstElement): false | string {
-    // 1. Static class attribute
-    const classAttr = element.attributes.find((attr) => attr.name === 'class');
-    if (classAttr) {
-      const classNames = this.parseClassNames(classAttr.value);
-      const usedClass = this.targetClasses.find((cls) =>
-        classNames.includes(cls)
-      );
-      if (usedClass != null) {
-        return usedClass;
-      }
-    }
-
-    // 2. Check for `[class.someClass]` binding
-    for (const input of element.inputs) {
-      if (
-        input.type === BindingType.Class &&
-        this.targetClasses.includes(input.name)
-      ) {
-        return input.name;
-      }
-    }
-
-    // 3. Check [ngClass] if it references any target class substring
-    const ngClassBinding = element.inputs.find(
-      (input) => input.name === 'ngClass'
-    );
-    if (ngClassBinding) {
-      const value: ASTWithSource = ngClassBinding.value as ASTWithSource;
-      const sourceString = value.source ?? '';
-      const classNames = this.targetClasses.find((cls) =>
-        sourceString.includes(cls)
-      );
-      if (classNames != null) {
-        return classNames;
-      }
-    }
-
-    return false;
-  }
-
-  private parseClassNames(classString: string): string[] {
-    return classString.trim().split(/\s+/).filter(Boolean);
-  }
-
-  // -- TmplAstVisitor Implementations --
-
   visitElement(element: TmplAstElement): void {
-    const targetClass = this.elementHasAnyTargetClass(element);
-    if (targetClass) {
-      this.issues.push(tmplAstElementToIssue(element, targetClass));
+    this.currentElement = element;
+
+    element.attributes.forEach((attr) => attr.visit(this)); // Check `class="..."`
+    element.inputs.forEach((input) => input.visit(this)); // Check `[class.foo]`, `[ngClass]`
+
+    element.children.forEach((child) => child.visit(this));
+
+    this.currentElement = null;
+  }
+
+  visitTextAttribute(attribute: TmplAstTextAttribute): void {
+    if (attribute.name === 'class' && this.currentElement) {
+      const classNames = parseClassNames(attribute.value);
+      for (const className of classNames) {
+        if (this.componentReplacement.matchingCssClasses.includes(className)) {
+          const message = generateClassUsageMessage({
+            elementName: this.currentElement.name,
+            className,
+            attribute: 'class',
+            dsComponentName: this.componentReplacement.componentName,
+            docsUrl: this.componentReplacement.docsUrl,
+          });
+
+          this.issues.push(tmplAstElementToIssue(this.currentElement, message));
+        }
+      }
     }
-    this.visitChildren(element.children);
+  }
+
+  visitBoundAttribute(attribute: TmplAstBoundAttribute): void {
+    if (!this.currentElement) return;
+
+    if (
+      attribute.type === BindingType.Class &&
+      this.componentReplacement.matchingCssClasses.includes(attribute.name)
+    ) {
+      const message = generateClassUsageMessage({
+        elementName: this.currentElement.name,
+        className: attribute.name,
+        attribute: '[class]',
+        dsComponentName: this.componentReplacement.componentName,
+        docsUrl: this.componentReplacement.docsUrl,
+      });
+      this.issues.push(tmplAstElementToIssue(this.currentElement, message));
+    }
+
+    if (attribute.name === 'ngClass') {
+      const value: ASTWithSource = attribute.value as ASTWithSource;
+      const sourceString = value.source ?? '';
+      for (const className of this.componentReplacement.matchingCssClasses) {
+        if (sourceString.includes(className)) {
+          const message = generateClassUsageMessage({
+            elementName: this.currentElement.name,
+            className,
+            attribute: '[ngClass]',
+            dsComponentName: this.componentReplacement.componentName,
+            docsUrl: this.componentReplacement.docsUrl,
+          });
+          this.issues.push(tmplAstElementToIssue(this.currentElement, message));
+        }
+      }
+    }
   }
 
   visitTemplate(template: TmplAstTemplate): void {
-    this.visitChildren(template.children);
+    template.children.forEach((child) => child.visit(this));
   }
 
   visitContent(content: TmplAstContent): void {
-    this.visitChildren(content.children);
+    content.children.forEach((child) => child.visit(this));
   }
 
-  // -- Blocks --
-
   visitForLoopBlock(block: TmplAstForLoopBlock): void {
-    this.visitChildren(block.children);
+    block.children.forEach((child) => child.visit(this));
     block.empty?.visit(this);
   }
 
   visitForLoopBlockEmpty(block: TmplAstForLoopBlockEmpty): void {
-    this.visitChildren(block.children);
+    block.children.forEach((child) => child.visit(this));
   }
 
   visitIfBlock(block: TmplAstIfBlock): void {
-    // Instead of `this.visitAll(block.branches)`, we call our utility:
-    visitEachTmplChild(block.branches, this);
+    block.branches.forEach((branch) => branch.visit(this));
   }
 
   visitIfBlockBranch(block: TmplAstIfBlockBranch): void {
-    this.visitChildren(block.children);
+    block.children.forEach((child) => child.visit(this));
   }
 
   visitSwitchBlock(block: TmplAstSwitchBlock): void {
-    visitEachTmplChild(block.cases, this);
+    block.cases.forEach((caseBlock) => caseBlock.visit(this));
   }
 
   visitSwitchBlockCase(block: TmplAstSwitchBlockCase): void {
-    this.visitChildren(block.children);
+    block.children.forEach((child) => child.visit(this));
   }
 
   visitDeferredBlock(deferred: TmplAstDeferredBlock): void {
-    // This TmplAstDeferredBlock offers its own "visitAll" method,
-    // which is akin to our visitEachChild utility for its child nodes.
     deferred.visitAll(this);
   }
 
   visitDeferredBlockError(block: TmplAstDeferredBlockError): void {
-    this.visitChildren(block.children);
-  }
-  visitDeferredBlockLoading(block: TmplAstDeferredBlockLoading): void {
-    this.visitChildren(block.children);
-  }
-  visitDeferredBlockPlaceholder(block: TmplAstDeferredBlockPlaceholder): void {
-    this.visitChildren(block.children);
+    block.children.forEach((child) => child.visit(this));
   }
 
-  // -- No-op methods --
+  visitDeferredBlockLoading(block: TmplAstDeferredBlockLoading): void {
+    block.children.forEach((child) => child.visit(this));
+  }
+
+  visitDeferredBlockPlaceholder(block: TmplAstDeferredBlockPlaceholder): void {
+    block.children.forEach((child) => child.visit(this));
+  }
+
+  // -- No-op Methods --
   visitVariable(_variable: TmplAstVariable): void {}
+
   visitReference(_reference: TmplAstReference): void {}
+
   visitText(_text: TmplAstText): void {}
+
   visitBoundText(_text: TmplAstBoundText): void {}
+
   visitIcu(_icu: TmplAstIcu): void {}
-  visitBoundAttribute(_attribute: TmplAstBoundAttribute): void {}
+
   visitBoundEvent(_event: TmplAstBoundEvent): void {}
-  visitTextAttribute(_attribute: TmplAstTextAttribute): void {}
+
   visitUnknownBlock(_block: TmplAstUnknownBlock): void {}
+
   visitDeferredTrigger(_trigger: TmplAstDeferredTrigger): void {}
+
   visitLetDeclaration(_decl: TmplAstLetDeclaration): void {}
 }

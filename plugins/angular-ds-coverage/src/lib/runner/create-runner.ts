@@ -33,11 +33,9 @@ export async function runnerFunction({
 
   // Once the components are resolved, we can get the audit output for each component.
   return dsComponents.flatMap((dsComponent) => {
-    const { matchingCssClasses } = dsComponent;
-
     const allIssues = [
-      ...getClassUsageIssues(resolvedComponents, matchingCssClasses),
-      ...getClassDefinitionIssues(resolvedComponents, matchingCssClasses),
+      ...getClassUsageIssues(resolvedComponents, dsComponent),
+      ...getClassDefinitionIssues(resolvedComponents, dsComponent),
     ];
 
     return getAuditOutput(

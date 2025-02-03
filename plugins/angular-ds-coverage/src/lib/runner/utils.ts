@@ -8,14 +8,15 @@ import {
   visitEachStyleNode,
   visitEachTmplChild,
 } from './visitor/template.walk';
+import { ComponentReplacement } from '@code-pushup-design-system/angular-ds-coverage';
 
 export function getClassUsageIssues(
   components: ResolvedComponent[],
-  matchingCssClasses: string[]
+  compReplacement: ComponentReplacement
 ) {
   return components.flatMap((component) => {
     const { template, templateUrl } = component;
-    const visitor = new ClassUsageTemplateVisitor(matchingCssClasses);
+    const visitor = new ClassUsageTemplateVisitor(compReplacement);
     const nodes = template?.ast.nodes ?? templateUrl?.ast.nodes ?? [];
     visitEachTmplChild(nodes, visitor);
 
@@ -27,13 +28,11 @@ export function getClassUsageIssues(
 
 export function getClassDefinitionIssues(
   components: ResolvedComponent[],
-  matchingCssClasses: string[]
+  componentReplacement: ComponentReplacement
 ) {
   return components.flatMap((component) => {
     const { styles = [], styleUrls = [] } = component;
-    const visitor = createClassUsageStylesheetVisitor({
-      classNames: matchingCssClasses,
-    });
+    const visitor = createClassUsageStylesheetVisitor(componentReplacement);
     return [...styles, ...styleUrls].flatMap((style) => {
       visitEachStyleNode(style.ast, visitor);
       return visitor.getIssue().map((issue) => {
