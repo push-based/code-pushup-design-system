@@ -4,7 +4,7 @@ import { Rule } from 'postcss';
 import { Issue } from '@code-pushup/models';
 import { ComponentReplacement } from '@code-pushup-design-system/angular-ds-coverage';
 
-export type ClassUsageStylesheetVisitor = CssAstVisitor & DiagnosticsAware;
+export type ClassDefinitionVisitor = CssAstVisitor & DiagnosticsAware;
 
 export function stylesAstRuleToIssue({ source }: Rule, message: string): Issue {
   return {
@@ -26,7 +26,7 @@ export function stylesAstRuleToIssue({ source }: Rule, message: string): Issue {
 
 export const createClassUsageStylesheetVisitor = (
   componentReplacement: ComponentReplacement
-): ClassUsageStylesheetVisitor => {
+): ClassDefinitionVisitor => {
   const { matchingCssClasses = [] } = componentReplacement;
   let diagnostics: Issue[] = [];
 

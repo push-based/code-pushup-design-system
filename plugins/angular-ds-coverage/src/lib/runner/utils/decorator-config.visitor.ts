@@ -1,12 +1,15 @@
 // Implement a custom visitor
-import { TypeScriptAstVisitor } from './ts.visitor';
 import ts from 'typescript';
 import { ParsedComponent, Props } from '../types';
 import { styleAndTemplateProps } from '../constants';
 
-export class DecoratorAssetsVisitor extends ts.Visitor {
+export class ClassDecoratorVisitor extends ts.Visitor {
   private readonly components: ParsedComponent[] = [];
 
+
+  constructor() {
+    super();
+  }
   getComponents(): ParsedComponent[] {
     return this.components;
   }
@@ -18,6 +21,7 @@ export class DecoratorAssetsVisitor extends ts.Visitor {
     if (!ts.isIdentifier(expr)) return;
 
     if (expr.text === 'Component') {
+      console.log('Component decorator found!!!!!!!!!!!!');
       const args = decorator.expression.arguments;
       if (args.length === 0 || !ts.isObjectLiteralExpression(args[0])) {
         return;

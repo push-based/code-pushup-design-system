@@ -1,12 +1,8 @@
 import path from 'node:path';
 import postcss, { Root } from 'postcss';
 import safeParser from 'postcss-safe-parser';
-import { resolveFileCached } from './file.resolver';
-import {
-  ParsedAsset,
-  ParsedComponentWithResolvedStyles,
-  ParsedComponent,
-} from '../types';
+import { ParsedAsset, ParsedComponent, ParsedComponentWithResolvedStyles } from '../types';
+import { resolveFileCached } from '../utils/file.resolver';
 
 /**
  * Resolves the styles of a component, parsing them with PostCSS

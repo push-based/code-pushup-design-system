@@ -1,6 +1,6 @@
 import { ParsedComponent, ResolvedComponent } from '../types';
-import { resolveComponentStyles } from './styles.resolver';
-import { resolveComponentTemplate } from './template.resolver.';
+import { resolveComponentStyles } from '../styles/styles.resolver';
+import { resolveComponentTemplate } from '../template/template.resolver.';
 
 /**
  * Resolves the template and styles of a component.

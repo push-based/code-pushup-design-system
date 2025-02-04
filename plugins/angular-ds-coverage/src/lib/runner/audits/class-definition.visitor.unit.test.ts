@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createClassUsageStylesheetVisitor } from './class-usage.stylesheet.visitor';
+import { createClassUsageStylesheetVisitor } from './class-definition.visitor';
 import postcss from 'postcss';
 import { beforeEach } from 'node:test';
 import { visitEachChild } from './stylesheet.walk';

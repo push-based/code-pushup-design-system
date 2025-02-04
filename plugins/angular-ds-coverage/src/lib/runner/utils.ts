@@ -1,13 +1,11 @@
 import { ResolvedComponent } from './types';
 import { AuditOutput, Issue } from '@code-pushup/models';
 import path from 'node:path';
-import { ClassUsageTemplateVisitor } from './visitor/class-usage.template.visitor';
-import { createClassUsageStylesheetVisitor } from './visitor/class-usage.stylesheet.visitor';
+import { ClassUsageVisitor } from './audits/class-usage.visitor';
+import { createClassUsageStylesheetVisitor,  } from './audits/class-definition.visitor';
 import { pluralize } from '@code-pushup/utils';
-import {
-  visitEachStyleNode,
-  visitEachTmplChild,
-} from './visitor/template.walk';
+import { visitEachTmplChild} from './template/template.walk';
+import { visitEachStyleNode} from './styles/stylesheet.walk';
 import { ComponentReplacement } from '@code-pushup-design-system/angular-ds-coverage';
 
 export function getClassUsageIssues(
@@ -16,7 +14,7 @@ export function getClassUsageIssues(
 ) {
   return components.flatMap((component) => {
     const { template, templateUrl, filePath } = component;
-    const visitor = new ClassUsageTemplateVisitor(compReplacement);
+    const visitor = new ClassUsageVisitor(compReplacement);
     const nodes = template?.ast.nodes ?? templateUrl?.ast.nodes ?? [];
     visitEachTmplChild(nodes, visitor);
 

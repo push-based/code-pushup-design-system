@@ -3,6 +3,10 @@ import ts from 'typescript';
 /**
  * A custom visitor interface defining how to handle each node kind
  * you care about. Extend with more node kinds as needed.
+ *
+ * @example
+ *
+ * ts.visitNode(sourceFile, visitor);
  */
 export interface TypeScriptAstVisitor<T = void> extends ts.Visitor{
   visitSourceFile?(node: ts.SourceFile): T;

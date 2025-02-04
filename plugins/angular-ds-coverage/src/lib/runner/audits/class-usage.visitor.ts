@@ -78,7 +78,7 @@ export function tmplAstElementToIssue(
   };
 }
 
-export class ClassUsageTemplateVisitor
+export class ClassUsageVisitor
   implements TmplAstVisitor<void>, DiagnosticsAware
 {
   private issues: Issue[] = [];

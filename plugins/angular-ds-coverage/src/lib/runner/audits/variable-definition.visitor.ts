@@ -1,4 +1,4 @@
-import { ClassUsageStylesheetVisitor, stylesAstRuleToIssue } from './class-usage.stylesheet.visitor';
+import { ClassDefinitionVisitor, stylesAstRuleToIssue } from './class-definition.visitor';
 import { Issue } from '@code-pushup/models';
 
 export const deprecatedCssVars = [
@@ -9,7 +9,7 @@ export const deprecatedCssVars = [
   '--ds-carousel-arrow-color-icon',
 ];
 
-export const createCssVarUsageVisitor = (): ClassUsageStylesheetVisitor => {
+export const createCssVarUsageVisitor = (): ClassDefinitionVisitor => {
   let diagnostics: Issue[] = [];
 
   return {

@@ -1,6 +1,6 @@
 import { parseTemplate } from '@angular/compiler';
 import path from 'node:path';
-import { resolveFileCached } from './file.resolver';
+import { resolveFileCached } from '../utils/file.resolver';
 import {
   ParsedDecoratorConfigWithResolvedTemplate,
   ParsedComponent,

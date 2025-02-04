@@ -48,6 +48,8 @@ export function parseComponents(
       visitEachChild<ParsedDecoratorConfig>(sourceFile, visitor);
       return visitor.getComponents();
       */
+  //    const visitor = new ClassDecoratorVisitor();
+  //    ts.visitNode(sourceFile, visitor);
       return parseSourceFile(sourceFile);
     });
 }

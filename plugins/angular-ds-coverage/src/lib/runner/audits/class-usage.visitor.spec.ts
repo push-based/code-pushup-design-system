@@ -1,12 +1,12 @@
 import { parseTemplate } from '@angular/compiler';
 
-import { ClassUsageTemplateVisitor } from './class-usage.template.visitor';
+import { ClassUsageVisitor } from './class-usage.visitor';
 
 describe('ClassCollectorVisitor', () => {
-  let visitor: ClassUsageTemplateVisitor;
+  let visitor: ClassUsageVisitor;
 
   beforeEach(() => {
-    visitor = new ClassUsageTemplateVisitor({
+    visitor = new ClassUsageVisitor({
       componentName: 'CounterComponent',
       matchingCssClasses: ['count'],
       docsUrl: 'my.doc#CounterComponent',

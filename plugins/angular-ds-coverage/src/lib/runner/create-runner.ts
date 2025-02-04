@@ -2,12 +2,13 @@ import { AuditOutputs } from '@code-pushup/models';
 import { slugify } from '@code-pushup/utils';
 import { ComponentReplacement } from '../types';
 import { findAndParseComponents } from './parse-component';
-import { resolveComponentFiles } from './resolver/utils';
+
 import {
   getAuditOutput,
   getClassDefinitionIssues,
   getClassUsageIssues,
 } from './utils';
+import { resolveComponentFiles } from './utils/utils';
 
 export type CreateRunnerConfig = {
   directory: string;

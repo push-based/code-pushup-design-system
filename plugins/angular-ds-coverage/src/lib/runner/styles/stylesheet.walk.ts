@@ -17,3 +17,25 @@ export function visitEachChild<T>(root: Root, visitor: CssAstVisitor<T>) {
     visitor[visitMethodName as keyof CssAstVisitor]?.(node);
   });
 }
+
+
+export function visitEachStyleNode<T>(root: Root, visitor: CssAstVisitor<T>) {
+  for (const node of root.nodes) {
+    switch (node.type) {
+      case 'rule':
+        visitor?.visitRule?.(node);
+        break;
+      case 'atrule':
+        visitor?.visitAtRule?.(node);
+        break;
+      case 'decl':
+        visitor?.visitDeclaration?.(node);
+        break;
+      case 'comment':
+        visitor?.visitComment?.(node);
+        break;
+      default:
+        throw new Error(`Unknown node type: ${node.type}`);
+    }
+  }
+}
