@@ -87,7 +87,7 @@ export default {
     format: ['json', 'md'],
   },
   ...(await angularDsCoveragePluginCoreConfig({
-    directory: 'plugins/angular-ds-coverage/mocks/fixtures/ds-coverage-demo',
+    directory: 'plugins/angular-ds-coverage/mocks/fixtures',
     dsComponents,
   })),
 };

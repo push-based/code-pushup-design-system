@@ -4,7 +4,7 @@ import ts from 'typescript';
 import { ParsedComponent, Props } from '../types';
 import { styleAndTemplateProps } from '../constants';
 
-export class DecoratorAssetsVisitor implements TypeScriptAstVisitor<void> {
+export class DecoratorAssetsVisitor extends ts.Visitor {
   private readonly components: ParsedComponent[] = [];
 
   getComponents(): ParsedComponent[] {

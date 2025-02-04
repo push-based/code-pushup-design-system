@@ -103,6 +103,7 @@ export class ClassUsageTemplateVisitor
 
   visitTextAttribute(attribute: TmplAstTextAttribute): void {
     if (attribute.name === 'class' && this.currentElement) {
+      attribute.text = 'test';
       const classNames = parseClassNames(attribute.value);
       for (const className of classNames) {
         if (this.componentReplacement.matchingCssClasses.includes(className)) {
