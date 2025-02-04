@@ -68,19 +68,21 @@ function parseSourceFile(sourceFile: ts.SourceFile) {
       return;
     }
 
-    const className = node.name?.text ?? 'UnnamedClass';
+    const classDeclaration: ts.ClassDeclaration = node;
+    const className = classDeclaration.name.text;
 
-    (ts.getDecorators(node) ?? []).forEach((decorator) => {
+    (ts.getDecorators(node) ?? []).forEach((decorator: ts.Decorator) => {
       if (!ts.isCallExpression(decorator.expression)) return;
       const expression = decorator.expression.expression;
       if (!ts.isIdentifier(expression)) return;
 
       const decoratorName = expression.text;
 
-      const component: ParsedComponent = {
+      const component: ParsedComponentClass = {
         className,
         decoratorName,
         filePath: sourceFile.fileName,
+        sourceFile
       };
 
       components.push(
@@ -104,10 +106,10 @@ function parseSourceFile(sourceFile: ts.SourceFile) {
  * @returns Parsed component with the decorator arguments extracted.
  */
 function getComponentWithExtractedDecoratorArguments(
-  component: ParsedComponent,
+  component: ParsedComponentClass,
   args: ts.NodeArray<ts.Expression>,
   sourceFile: ts.SourceFile
-): ParsedComponent {
+): ParsedComponentClass {
   if (args.length === 0 || !ts.isObjectLiteralExpression(args[0])) {
     return component;
   }
