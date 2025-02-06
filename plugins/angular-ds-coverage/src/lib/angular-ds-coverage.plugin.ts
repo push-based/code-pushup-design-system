@@ -20,7 +20,7 @@ export function angularDsCoverage(
     title: 'Angular Design System Coverage',
     icon: 'angular',
     description:
-      'A plugin to measure and assert usage of styles in a Angular project.',
+      'A plugin to measure and assert usage of styles in an Angular project.',
     audits: getAudits(options.dsComponents),
     runner: () => runnerFunction(options),
   } as const;

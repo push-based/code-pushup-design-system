@@ -1,4 +1,3 @@
-import { ClassDefinitionVisitor, stylesAstRuleToIssue } from './class-definition.visitor';
 import { Issue } from '@code-pushup/models';
 
 export const deprecatedCssVars = [
@@ -9,7 +8,7 @@ export const deprecatedCssVars = [
   '--ds-carousel-arrow-color-icon',
 ];
 
-export const createCssVarUsageVisitor = (): ClassDefinitionVisitor => {
+export const createCssVarUsageVisitor = (): {} => {
   let diagnostics: Issue[] = [];
 
   return {
@@ -17,7 +16,7 @@ export const createCssVarUsageVisitor = (): ClassDefinitionVisitor => {
       return diagnostics;
     },
 
-    reset(): void {
+    clear(): void {
       diagnostics = [];
     },
 
@@ -32,7 +31,13 @@ export const createCssVarUsageVisitor = (): ClassDefinitionVisitor => {
             property: decl.prop,
             docsUrl: 'https://your-docs-link.com',
           });
-          diagnostics.push(stylesAstRuleToIssue(decl as any, message));
+          diagnostics.push({
+            message,
+            severity: 'error',
+            source: {
+              file: decl.source.input.file,
+            },
+          });
         }
       });
     },
@@ -40,17 +45,19 @@ export const createCssVarUsageVisitor = (): ClassDefinitionVisitor => {
 };
 
 function generateCssVarUsageMessage({
-                                      cssVar,
-                                      property,
-                                      docsUrl,
-                                      icon = '🎨',
-                                    }: {
+  cssVar,
+  property,
+  docsUrl,
+  icon = '🎨',
+}: {
   icon?: string;
   cssVar: string;
   property: string;
   docsUrl?: string;
 }): string {
   const iconString = icon ? `${icon} ` : '';
-  const docsLink = docsUrl ? ` <a href="${docsUrl}" target="_blank">Learn more</a>.` : '';
+  const docsLink = docsUrl
+    ? ` <a href="${docsUrl}" target="_blank">Learn more</a>.`
+    : '';
   return `${iconString} The CSS variable <code>${cssVar}</code> in <code>${property}</code> is deprecated. Replace it with the recommended alternative.${docsLink}`;
 }

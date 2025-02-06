@@ -1,15 +1,20 @@
 import { Audit, CategoryRef } from '@code-pushup/models';
 import { slugify } from '@code-pushup/utils';
-import { ComponentReplacement } from './types';
 import { ANGULAR_DS_COVERAGE_PLUGIN_SLUG } from './constants';
+import {
+  getCompCoverageAuditDescription,
+  getCompCoverageAuditSlug,
+  getCompCoverageAuditTitle,
+} from './runner/audits/ds-coverage/utils';
+import { ComponentReplacement } from './runner/audits/ds-coverage/types';
 
 export function getAudits(
   componentReplacements: ComponentReplacement[]
 ): Audit[] {
-  return componentReplacements.map(({ componentName }) => ({
-    slug: `coverage-${slugify(componentName)}`,
-    title: componentName,
-    description: `Check usage of ${componentName} in the project`,
+  return componentReplacements.map((comp) => ({
+    slug: getCompCoverageAuditSlug(comp),
+    title: getCompCoverageAuditTitle(comp),
+    description: getCompCoverageAuditDescription(comp),
   }));
 }
 

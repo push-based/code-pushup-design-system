@@ -1,14 +1,8 @@
 import { AuditOutputs } from '@code-pushup/models';
-import { slugify } from '@code-pushup/utils';
-import { ComponentReplacement } from '../types';
-import { findAndParseComponents } from './parse-component';
-
-import {
-  getAuditOutput,
-  getClassDefinitionIssues,
-  getClassUsageIssues,
-} from './utils';
-import { resolveComponentFiles } from './utils/utils';
+import { findComponents } from './utils/find-component';
+import { parseComponents } from './utils/parse-component';
+import { ComponentReplacement } from '@code-pushup-design-system/angular-ds-coverage';
+import { dsCompCoverageAudits } from './audits/ds-coverage/ds-coverage.audit';
 
 export type CreateRunnerConfig = {
   directory: string;
@@ -23,25 +17,7 @@ export async function runnerFunction({
   directory,
   dsComponents,
 }: CreateRunnerConfig): Promise<AuditOutputs> {
-  // Once the components are parsed, we can resolve the styles and templates.
-  const parsedComponents = findAndParseComponents({ directory });
-  // The parsed components contains general information about the component and the styles and templates, if inline they contain the template and styles already, if not, the path to the template and styles.
+  const parsedComponents = parseComponents(findComponents({ directory }));
 
-  // For the components that have the styles and template in a different file, we need to resolve the styles and templates.
-  const resolvedComponents = await Promise.all(
-    parsedComponents.map(async (comp) => await resolveComponentFiles(comp))
-  );
-
-  // Once the components are resolved, we can get the audit output for each component.
-  return dsComponents.map((dsComponent) => {
-    const allIssues = [
-      ...getClassUsageIssues(resolvedComponents, dsComponent),
-      ...getClassDefinitionIssues(resolvedComponents, dsComponent),
-    ];
-
-    return getAuditOutput(
-      `coverage-${slugify(dsComponent.componentName)}`,
-      allIssues
-    );
-  });
+  return [...(await dsCompCoverageAudits(dsComponents, parsedComponents))];
 }

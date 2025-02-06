@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createClassUsageStylesheetVisitor } from './class-definition.visitor';
 import postcss from 'postcss';
 import { beforeEach } from 'node:test';
-import { visitEachChild } from './stylesheet.walk';
+import { visitEachChild } from '../../styles/stylesheet.walk';
 
 describe('ClassUsageStylesheetVisitor', () => {
   let cssAstVisitor: ReturnType<typeof createClassUsageStylesheetVisitor>;
@@ -29,7 +29,9 @@ describe('ClassUsageStylesheetVisitor', () => {
                 }
              `;
 
-    cssAstVisitor = createClassUsageStylesheetVisitor({ classNames: ['btn'] });
+    cssAstVisitor = createClassUsageStylesheetVisitor({
+      matchingCssClasses: ['btn'],
+    });
 
     const ast = postcss.parse(styles, { from: 'styles.css' });
 

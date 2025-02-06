@@ -3,16 +3,16 @@ import { angularDsCoveragePluginCoreConfig } from '../../../src/core.config';
 
 const dsComponents: ComponentReplacement[] = [
   {
-    componentName: 'DSTabsModule',
-    matchingCssClasses: ['ms-tab-bar', 'legacy-tabs', 'custom-tabs'],
-    docsUrl:
-      'https://storybook.entaingroup.corp/latest/?path=/docs/components-tabsgroup--overview',
-  },
-  {
     componentName: 'DSButton',
     matchingCssClasses: ['btn', 'btn-primary', 'legacy-button'],
     docsUrl:
       'https://storybook.entaingroup.corp/latest/?path=/docs/components-button--overview',
+  },
+  {
+    componentName: 'DSTabsModule',
+    matchingCssClasses: ['ms-tab-bar', 'legacy-tabs', 'custom-tabs'],
+    docsUrl:
+      'https://storybook.entaingroup.corp/latest/?path=/docs/components-tabsgroup--overview',
   },
   {
     componentName: 'DSCard',
@@ -87,7 +87,7 @@ export default {
     format: ['json', 'md'],
   },
   ...(await angularDsCoveragePluginCoreConfig({
-    directory: 'plugins/angular-ds-coverage/mocks/fixtures',
+    directory: 'plugins/angular-ds-coverage/mocks/fixtures/ds-coverage-demo',
     dsComponents,
   })),
 };

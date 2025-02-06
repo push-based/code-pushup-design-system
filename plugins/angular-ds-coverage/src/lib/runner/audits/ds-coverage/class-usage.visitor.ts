@@ -28,54 +28,39 @@ import {
   TmplAstVisitor,
 } from '@angular/compiler';
 import { Issue } from '@code-pushup/models';
-import { DiagnosticsAware } from './diagnostics';
+import { DiagnosticsAware } from '../../utils/diagnostics';
+import { ParsedComponent } from '../../types';
+import {
+  EXTERNAL_ASSET_ICON,
+  INLINE_ASSET_ICON,
+  TEMPLATE_ASSET_ICON,
+} from './constants';
+import { parseClassNames, tmplAstElementToSource } from '../../template/utils';
+import { visitEachTmplChild } from '../../template/template.walk';
+
 import { ComponentReplacement } from '@code-pushup-design-system/angular-ds-coverage';
 
 function generateClassUsageMessage({
-  elementName,
+  element,
   className,
   attribute,
-  dsComponentName = 'a DS component',
+  componentName = 'a DS component',
   docsUrl,
-  icon = '🔲',
 }: {
-  icon?: string;
-  elementName: string;
+  element: TmplAstElement;
   className: string;
   attribute: string;
-  dsComponentName?: string;
-  docsUrl?: string;
-}): string {
-  const iconString = icon ? `${icon} ` : '';
+} & Pick<ComponentReplacement, 'docsUrl' | 'componentName'>): string {
+  const elementName = element.name;
+  const assetTypeIcon = TEMPLATE_ASSET_ICON;
+  const isInline = element.sourceSpan.start.file.url.match(/\.ts$/) == null;
+  const iconString = `${
+    isInline ? INLINE_ASSET_ICON : EXTERNAL_ASSET_ICON
+  }${assetTypeIcon} `;
   const docsLink = docsUrl
     ? ` <a href="${docsUrl}" target="_blank">Learn more</a>.`
     : '';
-  return `${iconString} The <code>${elementName}</code> element's <code>${className}</code> class deprecated. Use <code>${dsComponentName}</code>.${docsLink}`;
-}
-
-function parseClassNames(classString: string): string[] {
-  return classString.trim().split(/\s+/).filter(Boolean);
-}
-
-export function tmplAstElementToIssue(
-  element: TmplAstElement,
-  message: string
-): Issue {
-  return {
-    message:
-      message ??
-      'Wrong class usage in component template. Replace it with the appropriate DS component for consistency.',
-    severity: 'error',
-    source: {
-      file: element.sourceSpan.start.file.url,
-      position: {
-        startLine: element.startSourceSpan?.start.line + 1,
-        endLine: (element.endSourceSpan?.end.line ?? 0) + 1,
-        startColumn: element.startSourceSpan?.start.col + 1,
-        endColumn: (element.endSourceSpan?.end.col ?? 0) + 1,
-      },
-    },
-  };
+  return `${iconString} Element <code>${elementName}</code> in attribute <code>${attribute}</code> uses deprecated class <code>${className}</code>. Use <code>${componentName}</code> instead.${docsLink}`;
 }
 
 export class ClassUsageVisitor
@@ -84,10 +69,17 @@ export class ClassUsageVisitor
   private issues: Issue[] = [];
   private currentElement: TmplAstElement | null = null;
 
-  constructor(private readonly componentReplacement: ComponentReplacement) {}
+  constructor(
+    private readonly componentReplacement: ComponentReplacement,
+    private readonly startLine = 0
+  ) {}
 
   getIssues(): Issue[] {
     return this.issues;
+  }
+
+  clear(): void {
+    this.issues = [];
   }
 
   visitElement(element: TmplAstElement): void {
@@ -102,20 +94,21 @@ export class ClassUsageVisitor
   }
 
   visitTextAttribute(attribute: TmplAstTextAttribute): void {
+    const { matchingCssClasses, ...compRepl } = this.componentReplacement;
     if (attribute.name === 'class' && this.currentElement) {
-      attribute.text = 'test';
       const classNames = parseClassNames(attribute.value);
       for (const className of classNames) {
-        if (this.componentReplacement.matchingCssClasses.includes(className)) {
-          const message = generateClassUsageMessage({
-            elementName: this.currentElement.name,
-            className,
-            attribute: 'class',
-            dsComponentName: this.componentReplacement.componentName,
-            docsUrl: this.componentReplacement.docsUrl,
+        if (matchingCssClasses.includes(className)) {
+          this.issues.push({
+            severity: 'error', // @TODO if we consider transformations this needs to be dynamic
+            message: generateClassUsageMessage({
+              ...compRepl,
+              element: this.currentElement,
+              className,
+              attribute: `${attribute.name}`,
+            }),
+            source: tmplAstElementToSource(this.currentElement, this.startLine),
           });
-
-          this.issues.push(tmplAstElementToIssue(this.currentElement, message));
         }
       }
     }
@@ -124,33 +117,41 @@ export class ClassUsageVisitor
   visitBoundAttribute(attribute: TmplAstBoundAttribute): void {
     if (!this.currentElement) return;
 
+    const { matchingCssClasses, ...compRepl } = this.componentReplacement;
+
+    // Check `[class.foo]`
     if (
       attribute.type === BindingType.Class &&
-      this.componentReplacement.matchingCssClasses.includes(attribute.name)
+      matchingCssClasses.includes(attribute.name)
     ) {
-      const message = generateClassUsageMessage({
-        elementName: this.currentElement.name,
-        className: attribute.name,
-        attribute: '[class]',
-        dsComponentName: this.componentReplacement.componentName,
-        docsUrl: this.componentReplacement.docsUrl,
+      this.issues.push({
+        severity: 'error', // @TODO if we consider transformations this needs to be dynamic
+        message: generateClassUsageMessage({
+          element: this.currentElement,
+          className: attribute.name,
+          attribute: '[class.*]',
+          componentName: this.componentReplacement.componentName,
+          docsUrl: this.componentReplacement.docsUrl,
+        }),
+        source: tmplAstElementToSource(this.currentElement, this.startLine),
       });
-      this.issues.push(tmplAstElementToIssue(this.currentElement, message));
     }
 
     if (attribute.name === 'ngClass') {
       const value: ASTWithSource = attribute.value as ASTWithSource;
       const sourceString = value.source ?? '';
-      for (const className of this.componentReplacement.matchingCssClasses) {
+      for (const className of matchingCssClasses) {
         if (sourceString.includes(className)) {
-          const message = generateClassUsageMessage({
-            elementName: this.currentElement.name,
-            className,
-            attribute: '[ngClass]',
-            dsComponentName: this.componentReplacement.componentName,
-            docsUrl: this.componentReplacement.docsUrl,
+          this.issues.push({
+            severity: 'error', // @TODO if we consider transformations this needs to be dynamic
+            message: generateClassUsageMessage({
+              ...compRepl,
+              element: this.currentElement,
+              className,
+              attribute: `[${attribute.name}]`,
+            }),
+            source: tmplAstElementToSource(this.currentElement, this.startLine),
           });
-          this.issues.push(tmplAstElementToIssue(this.currentElement, message));
         }
       }
     }
@@ -223,4 +224,24 @@ export class ClassUsageVisitor
   visitDeferredTrigger(_trigger: TmplAstDeferredTrigger): void {}
 
   visitLetDeclaration(_decl: TmplAstLetDeclaration): void {}
+}
+
+export async function getClassUsageIssues(
+  component: ParsedComponent,
+  compReplacement: ComponentReplacement
+) {
+  const { templateUrl, template } = component;
+
+  const visitor = new ClassUsageVisitor(
+    compReplacement,
+    (templateUrl ?? template).startLine
+  );
+  if (templateUrl == null && template == null) {
+    return [];
+  }
+  const tmplAstTemplate = await (templateUrl ?? template)?.parse();
+
+  visitEachTmplChild(tmplAstTemplate?.nodes, visitor);
+
+  return visitor.getIssues();
 }

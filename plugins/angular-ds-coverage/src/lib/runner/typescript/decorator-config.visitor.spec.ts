@@ -1,12 +1,11 @@
-import { DecoratorAssetsVisitor } from './decorator-config.ts.visitor';
+import { ClassDecoratorVisitor } from './decorator-config.visitor';
 import ts from 'typescript';
-import { visitEachChild } from './ts.walk';
 
 describe('DecoratorConfigVisitor', () => {
-  let visitor: DecoratorAssetsVisitor;
+  let visitor: ClassDecoratorVisitor;
 
   beforeEach(() => {
-    visitor = new DecoratorAssetsVisitor();
+    visitor = new ClassDecoratorVisitor();
   });
 
   it.skip('should not find class when it is not a class-binding', () => {
@@ -29,7 +28,7 @@ describe('DecoratorConfigVisitor', () => {
       true
     );
 
-    visitEachChild(sourceFile, visitor);
+    ts.visitNode(sourceFile, visitor);
 
     expect(visitor.getComponents()).toEqual([]);
   });
@@ -57,7 +56,7 @@ export class AppComponent {
       true
     );
 
-    visitEachChild(sourceFile, visitor);
+    ts.visitNode(sourceFile, visitor);
 
     expect(visitor.getComponents()).toStrictEqual([
       {
