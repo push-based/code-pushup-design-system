@@ -1,11 +1,11 @@
-import { getAuditOutput } from './utils';
+import { getCompCoverageAuditOutput } from './utils';
 import { AuditOutputs } from '@code-pushup/models';
 import { ParsedComponent } from '../../utils/types';
 import { ComponentReplacement } from './types';
 import { getClassUsageIssues } from './class-usage.utils';
 import { getClassDefinitionIssues } from './class-definition.utils';
 
-export function dsCompCoverageAudits(
+export function dsCompCoverageAuditOutputs(
   dsComponents: ComponentReplacement[],
   parsedComponents: ParsedComponent[]
 ): Promise<AuditOutputs> {
@@ -24,7 +24,7 @@ export function dsCompCoverageAudits(
         )
       ).flat();
 
-      return getAuditOutput(dsComponent, allIssues);
+      return getCompCoverageAuditOutput(dsComponent, allIssues);
     })
   );
 }

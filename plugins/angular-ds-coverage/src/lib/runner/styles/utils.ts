@@ -10,7 +10,7 @@ import { Rule } from 'postcss';
  * @param startLine The positions of the asset contain the style rules.
  */
 export function styleAstRuleToSource(
-  { source }: Rule,
+  { source }: Pick<Rule, 'source'>,
   startLine = 0 // 0 indexed
 ): Issue['source'] {
   if (source?.input.file == null) {

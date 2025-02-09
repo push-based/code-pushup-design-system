@@ -13,7 +13,6 @@ export function tmplAstElementToSource(
   { startSourceSpan, sourceSpan, endSourceSpan }: TmplAstElement,
   startLine = 0
 ): Issue['source'] {
-  console.log({ startSourceSpan, sourceSpan, endSourceSpan });
   const offset = startLine; // TS Ast is 0 indexed so is work in 0 based index out of the box
   return {
     file: sourceSpan.start.file.url,

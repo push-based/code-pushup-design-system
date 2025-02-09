@@ -1,4 +1,4 @@
-import { AuditOutput, Issue } from '@code-pushup/models';
+import { Audit, AuditOutput, Issue } from '@code-pushup/models';
 import { pluralize, slugify } from '@code-pushup/utils';
 import { ComponentReplacement } from '@code-pushup-design-system/angular-ds-coverage';
 
@@ -8,7 +8,23 @@ import { ComponentReplacement } from '@code-pushup-design-system/angular-ds-cove
  * @param issues
  * @returns Audit output.
  */
-export function getAuditOutput(
+export function getCompCoverageAudits(
+  componentReplacements: ComponentReplacement[]
+): Audit[] {
+  return componentReplacements.map((comp) => ({
+    slug: getCompCoverageAuditSlug(comp),
+    title: getCompCoverageAuditTitle(comp),
+    description: getCompCoverageAuditDescription(comp),
+  }));
+}
+
+/**
+ * Creates a scored audit output.
+ * @param componentName
+ * @param issues
+ * @returns Audit output.
+ */
+export function getCompCoverageAuditOutput(
   componentName: ComponentReplacement,
   issues: Issue[]
 ): AuditOutput {

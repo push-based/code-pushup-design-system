@@ -2,7 +2,7 @@ import { AuditOutputs } from '@code-pushup/models';
 import { findComponents } from './utils/find-component';
 import { parseComponents } from './utils/parse-component';
 import { ComponentReplacement } from '@code-pushup-design-system/angular-ds-coverage';
-import { dsCompCoverageAudits } from './audits/ds-coverage/ds-coverage.audit';
+import { dsCompCoverageAuditOutputs } from './audits/ds-coverage/ds-coverage.audit';
 
 export type CreateRunnerConfig = {
   directory: string;
@@ -19,5 +19,7 @@ export async function runnerFunction({
 }: CreateRunnerConfig): Promise<AuditOutputs> {
   const parsedComponents = parseComponents(findComponents({ directory }));
 
-  return [...(await dsCompCoverageAudits(dsComponents, parsedComponents))];
+  return [
+    ...(await dsCompCoverageAuditOutputs(dsComponents, parsedComponents)),
+  ];
 }
