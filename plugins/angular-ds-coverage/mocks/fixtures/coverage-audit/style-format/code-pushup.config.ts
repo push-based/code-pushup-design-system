@@ -1,5 +1,5 @@
-import { ComponentReplacement } from '../../../src/index';
-import { angularDsCoveragePluginCoreConfig } from '../../../src/core.config';
+import { ComponentReplacement } from '../../../../src/index';
+import { angularDsCoveragePluginCoreConfig } from '../../../../src/core.config';
 
 const dsComponents: ComponentReplacement[] = [
   {
@@ -9,14 +9,13 @@ const dsComponents: ComponentReplacement[] = [
       'https://storybook.entaingroup.corp/latest/?path=/docs/components-button--overview',
   },
 ];
-
 export default {
   persist: {
-    outputDir: '.code-pushup/component-assets',
+    outputDir: '.code-pushup/angular-ds/coverage-audit/style-format',
     format: ['json', 'md'],
   },
   ...(await angularDsCoveragePluginCoreConfig({
-    directory: 'plugins/angular-ds-coverage/mocks/fixtures/component-assets',
+    directory: 'plugins/angular-ds-coverage/mocks/fixtures/coverage-audit/style-format',
     dsComponents,
   })),
 };

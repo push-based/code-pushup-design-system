@@ -1,5 +1,5 @@
-import { ComponentReplacement } from '../../../src/index';
-import { angularDsCoveragePluginCoreConfig } from '../../../src/core.config';
+import { ComponentReplacement } from '../../../../src/index';
+import { angularDsCoveragePluginCoreConfig } from '../../../../src/core.config';
 
 const dsComponents: ComponentReplacement[] = [
   {
@@ -83,11 +83,11 @@ const dsComponents: ComponentReplacement[] = [
 
 export default {
   persist: {
-    outputDir: '.code-pushup/angular-ds-coverage-demo',
+    outputDir: '.code-pushup/angular-ds/coverage-audit/demo',
     format: ['json', 'md'],
   },
   ...(await angularDsCoveragePluginCoreConfig({
-    directory: 'plugins/angular-ds-coverage/mocks/fixtures/ds-coverage-demo',
+    directory: 'plugins/angular-ds-coverage/mocks/fixtures/coverage-audit/demo',
     dsComponents,
   })),
 };

@@ -1,24 +1,47 @@
 import { ParsedComponent } from '../../types';
 import { ComponentReplacement } from '@code-pushup-design-system/angular-ds-coverage';
-import { visitEachTmplChild } from '../../template/template.walk';
-import { ClassUsageVisitor } from './class-usage.visitor';
+import { Issue } from '@code-pushup/models';
+import { createClassDefenitionVisitor } from './class-definition.visitor';
+import { visitEachStyleNode } from '../../styles/stylesheet.walk';
+import { Asset } from '../../utils/types';
+import { type Root } from 'postcss';
 
-export async function getClassUsageIssues(
+export async function getClassDefinitionIssues(
   component: ParsedComponent,
-  compReplacement: ComponentReplacement
-) {
-  const { templateUrl, template } = component;
+  componentReplacement: ComponentReplacement
+): Promise<Issue[]> {
+  const { styles, styleUrls } = component;
 
-  const visitor = new ClassUsageVisitor(
-    compReplacement,
-    templateUrl ?? template
-  );
-  if (templateUrl == null && template == null) {
-    return [];
-  }
-  const tmplAstTemplate = await (templateUrl ?? template)?.parse();
+  // Handle inline styles
+  const styleIssues: Issue[] = (
+    await Promise.all(
+      (styles ?? []).flatMap(async (style: Asset<Root>) => {
+        const stylesVisitor = createClassDefenitionVisitor(
+          componentReplacement,
+          style.startLine
+        );
+        const ast = (await style.parse()).root;
+        visitEachStyleNode(ast, stylesVisitor);
 
-  visitEachTmplChild(tmplAstTemplate?.nodes, visitor);
+        return stylesVisitor.getIssues();
+      })
+    )
+  ).flat();
 
-  return visitor.getIssues();
+  const styleUrlIssues: Issue[] = (
+    await Promise.all(
+      (styleUrls ?? []).flatMap(async (styleUrl) => {
+        const stylesVisitor = createClassDefenitionVisitor(
+          componentReplacement,
+          styleUrl.startLine
+        );
+        const ast = (await styleUrl.parse()).root;
+        visitEachStyleNode(ast, stylesVisitor);
+
+        return stylesVisitor.getIssues();
+      })
+    )
+  ).flat();
+
+  return [...styleIssues, ...styleUrlIssues];
 }

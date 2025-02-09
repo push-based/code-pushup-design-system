@@ -1,27 +1,32 @@
-import { TmplAstElement } from '@angular/compiler';
+import { TmplAstElement, TmplAstTextAttribute } from '@angular/compiler';
 import { Issue } from '@code-pushup/models';
 
 /**
  * Convert a TmplAstElement to an Issue source object and adjust its position based on startLine.
+ * It creates a "linkable" source object for the issue.
+ * By default, the source location is 0 indexed, so we add 1 to the startLine to make it work in file links.
+ *
  * @param element The element to convert.
  * @param startLine The base line number to adjust positions.
  */
 export function tmplAstElementToSource(
-  element: TmplAstElement,
+  { startSourceSpan, sourceSpan, endSourceSpan }: TmplAstElement,
   startLine = 0
 ): Issue['source'] {
+  console.log({ startSourceSpan, sourceSpan, endSourceSpan });
+  const offset = startLine; // TS Ast is 0 indexed so is work in 0 based index out of the box
   return {
-    file: element.sourceSpan.start.file.url,
+    file: sourceSpan.start.file.url,
     position: {
-      startLine: (element.startSourceSpan?.start.line ?? 0) + startLine,
-      ...(element.startSourceSpan?.start.col && {
-        startColumn: element.startSourceSpan?.start.col,
+      startLine: (startSourceSpan?.start.line ?? 0) + offset + 1,
+      ...(startSourceSpan?.start.col && {
+        startColumn: startSourceSpan?.start.col,
       }),
-      ...(element.endSourceSpan?.end.line !== undefined && {
-        endLine: (element.endSourceSpan?.end.line ?? 0) + startLine,
+      ...(endSourceSpan?.end.line !== undefined && {
+        endLine: endSourceSpan?.end.line + offset + 1,
       }),
-      ...(element.endSourceSpan?.end.col && {
-        endColumn: element.endSourceSpan?.end.col,
+      ...(endSourceSpan?.end.col && {
+        endColumn: endSourceSpan?.end.col,
       }),
     },
   };

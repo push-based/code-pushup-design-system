@@ -1,6 +1,6 @@
 import { CssAstVisitor } from '../../styles/stylesheet.visitor';
 import { DiagnosticsAware } from '../../utils/diagnostics.js';
-import { Root, Rule } from 'postcss';
+import { Rule } from 'postcss';
 import { Issue } from '@code-pushup/models';
 import { ComponentReplacement } from '@code-pushup-design-system/angular-ds-coverage';
 import {
@@ -15,7 +15,7 @@ import {
 
 export type ClassDefinitionVisitor = CssAstVisitor & DiagnosticsAware;
 
-export const createClassUsageStylesheetVisitor = (
+export const createClassDefenitionVisitor = (
   componentReplacement: ComponentReplacement,
   startLine = 0
 ): ClassDefinitionVisitor => {
@@ -56,21 +56,18 @@ export const createClassUsageStylesheetVisitor = (
 function generateStylesheetUsageMessage({
   className,
   rule,
-  dsComponentName = 'a DS component',
+  componentName,
   docsUrl,
-}: {
-  icon?: string;
+}: Pick<ComponentReplacement, 'componentName' | 'docsUrl'> & {
   className: string;
   rule: Rule;
-  dsComponentName?: string;
-  docsUrl?: string;
 }): string {
-  const isInline = rule.source?.input.file?.match(/\.ts$/) == null;
+  const isInline = rule.source?.input.file?.match(/\.ts$/) != null;
   const iconString = `${
     isInline ? INLINE_ASSET_ICON : EXTERNAL_ASSET_ICON
   }${STYLES_ASSET_ICON} `;
   const docsLink = docsUrl
     ? ` <a href="${docsUrl}" target="_blank">Learn more</a>.`
     : '';
-  return `${iconString}️ The selector's class <code>${className}</code> is deprecated. Use <code>${dsComponentName}</code> and delete the styles.${docsLink}`;
+  return `${iconString}️ The selector's class <code>${className}</code> is deprecated. Use <code>${componentName}</code> and delete the styles.${docsLink}`;
 }

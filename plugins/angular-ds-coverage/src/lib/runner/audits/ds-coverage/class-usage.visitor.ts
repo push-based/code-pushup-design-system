@@ -29,14 +29,13 @@ import {
 } from '@angular/compiler';
 import { Issue } from '@code-pushup/models';
 import { DiagnosticsAware } from '../../utils/diagnostics';
-import { ParsedComponent } from '../../types';
+
 import {
   EXTERNAL_ASSET_ICON,
   INLINE_ASSET_ICON,
   TEMPLATE_ASSET_ICON,
 } from './constants';
 import { parseClassNames, tmplAstElementToSource } from '../../template/utils';
-import { visitEachTmplChild } from '../../template/template.walk';
 
 import { ComponentReplacement } from '@code-pushup-design-system/angular-ds-coverage';
 
@@ -52,11 +51,10 @@ function generateClassUsageMessage({
   attribute: string;
 } & Pick<ComponentReplacement, 'docsUrl' | 'componentName'>): string {
   const elementName = element.name;
-  const assetTypeIcon = TEMPLATE_ASSET_ICON;
-  const isInline = element.sourceSpan.start.file.url.match(/\.ts$/) == null;
+  const isInline = element.sourceSpan.start.file.url.match(/\.ts$/) != null;
   const iconString = `${
     isInline ? INLINE_ASSET_ICON : EXTERNAL_ASSET_ICON
-  }${assetTypeIcon} `;
+  }${TEMPLATE_ASSET_ICON} `;
   const docsLink = docsUrl
     ? ` <a href="${docsUrl}" target="_blank">Learn more</a>.`
     : '';
@@ -224,24 +222,4 @@ export class ClassUsageVisitor
   visitDeferredTrigger(_trigger: TmplAstDeferredTrigger): void {}
 
   visitLetDeclaration(_decl: TmplAstLetDeclaration): void {}
-}
-
-export async function getClassUsageIssues(
-  component: ParsedComponent,
-  compReplacement: ComponentReplacement
-) {
-  const { templateUrl, template } = component;
-
-  const visitor = new ClassUsageVisitor(
-    compReplacement,
-    (templateUrl ?? template).startLine
-  );
-  if (templateUrl == null && template == null) {
-    return [];
-  }
-  const tmplAstTemplate = await (templateUrl ?? template)?.parse();
-
-  visitEachTmplChild(tmplAstTemplate?.nodes, visitor);
-
-  return visitor.getIssues();
 }

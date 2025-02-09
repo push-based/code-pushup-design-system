@@ -16,6 +16,7 @@ import postcss from 'postcss';
 import safeParser from 'postcss-safe-parser';
 import path from 'node:path';
 import { ParsedComponent } from '../utils/types';
+import { parseStylesheet } from '../styles/stylesheet.parse';
 
 const DEBUG = false;
 const debug = ({
@@ -54,11 +55,10 @@ export function classDecoratorVisitor({
       });
       activeComponent = {
         source: () => node,
-        startLine:
-          ts.getLineAndCharacterOfPosition(
-            sourceFile,
-            node.getStart(sourceFile)
-          ).line + 1,
+        startLine: ts.getLineAndCharacterOfPosition(
+          sourceFile,
+          node.getStart(sourceFile)
+        ).line, // 0 indexed (linkable index is set in the issue creation logic)
         className: currentClassName,
         fileName: sourceFile.fileName,
       } as ParsedComponent;
@@ -109,7 +109,11 @@ export function classDecoratorVisitor({
                           title: 'Template',
                           info: `${currentClassName}; file ${filePath}`,
                         });
-                      return parseTemplate(content, filePath);
+                      return parseTemplate(content, filePath, {
+                        preserveWhitespaces: true,
+                        preserveLineEndings: true,
+                        preserveSignificantWhitespace: true,
+                      });
                     },
                   });
                   break;
@@ -133,10 +137,7 @@ export function classDecoratorVisitor({
                           title: 'Styles',
                           info: `${currentClassName}; file ${filePath}`,
                         });
-                      return postcss().process(content, {
-                        parser: safeParser,
-                        from: filePath,
-                      });
+                      return parseStylesheet(content, filePath);
                     }
                   );
                   break;

@@ -1,5 +1,5 @@
-import { ComponentReplacement } from '../../../src/index';
-import { angularDsCoveragePluginCoreConfig } from '../../../src/core.config';
+import { ComponentReplacement } from '../../../../src/index';
+import { angularDsCoveragePluginCoreConfig } from '../../../../src/core.config';
 
 const dsComponents: ComponentReplacement[] = [
   {
@@ -12,11 +12,11 @@ const dsComponents: ComponentReplacement[] = [
 
 export default {
   persist: {
-    outputDir: '.code-pushup/angular-ds-coverage-style-formats-demo',
+    outputDir: '.code-pushup/angular-ds/coverage-audit/line-number',
     format: ['json', 'md'],
   },
   ...(await angularDsCoveragePluginCoreConfig({
-    directory: 'plugins/angular-ds-coverage/mocks/fixtures/style-formats',
+    directory: 'plugins/angular-ds-coverage/mocks/fixtures/coverage-audit/line-number',
     dsComponents,
   })),
 };

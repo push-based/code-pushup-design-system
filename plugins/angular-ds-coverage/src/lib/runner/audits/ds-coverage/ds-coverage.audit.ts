@@ -1,9 +1,9 @@
-import { getClassUsageIssues } from './class-usage.visitor';
-import { getClassDefinitionIssues } from './class-usage.utils';
 import { getAuditOutput } from './utils';
 import { AuditOutputs } from '@code-pushup/models';
 import { ParsedComponent } from '../../utils/types';
 import { ComponentReplacement } from './types';
+import { getClassUsageIssues } from './class-usage.utils';
+import { getClassDefinitionIssues } from './class-definition.utils';
 
 export function dsCompCoverageAudits(
   dsComponents: ComponentReplacement[],

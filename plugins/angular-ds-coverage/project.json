@@ -7,28 +7,52 @@
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/plugins/angular-ds-coverage",
         "main": "plugins/angular-ds-coverage/src/index.ts",
         "tsConfig": "plugins/angular-ds-coverage/tsconfig.lib.json",
-        "assets": ["plugins/angular-ds-coverage/*.md"]
+        "assets": [
+          "plugins/angular-ds-coverage/*.md"
+        ]
       }
     },
-    "angular-ds-coverage-demo": {
-      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/ds-coverage-demo/code-pushup.config.ts --onlyPlugins=angular-ds-coverage"
+    "ds-coverage:demo": {
+      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/coverage-audit/demo/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "angular-ds-coverage",
+        "progress": false
+      }
     },
-    "assets-demo": {
-      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/component-assets/code-pushup.config.ts --onlyPlugins=angular-ds-coverage"
+    "ds-coverage:asset-location": {
+      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/coverage-audit/asset-location/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "angular-ds-coverage",
+        "progress": false
+      }
     },
-    "tmpl-syntax-demo": {
-      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/template-syntax/code-pushup.config.ts --onlyPlugins=angular-ds-coverage"
+    "ds-coverage:style-format": {
+      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/coverage-audit/style-format/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "angular-ds-coverage",
+        "progress": false
+      }
     },
-    "deprecated-styles-usage-demo": {
-      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/deprecated-styles-usage/code-pushup.config.ts --onlyPlugins=angular-ds-coverage"
+    "ds-coverage:line-number": {
+      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/coverage-audit/line-number/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "angular-ds-coverage",
+        "progress": false
+      }
     },
-    "css-styles-usage-demo": {
-      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/css-styles-usage/code-pushup.config.ts --onlyPlugins=angular-ds-coverage"
+    "ds-coverage:template-syntax": {
+      "command": "npx @code-pushup/cli collect --config=plugins/angular-ds-coverage/mocks/fixtures/coverage-audit/template-syntax/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "angular-ds-coverage",
+        "progress": false
+      }
     }
   }
 }
