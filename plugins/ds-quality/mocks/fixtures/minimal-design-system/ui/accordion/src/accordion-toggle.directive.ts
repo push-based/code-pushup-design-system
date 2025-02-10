@@ -1,5 +1,4 @@
 import { Directive, inject } from '@angular/core';
-
 import { DsAccordion } from './accordion.component';
 
 @Directive({

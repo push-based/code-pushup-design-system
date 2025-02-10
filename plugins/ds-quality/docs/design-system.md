@@ -1,10 +1,10 @@
 # DS Theme check
 
-## Generated Code - Structure and purpose
+## Generated Code
 
 The generated styles target labels and components.
 
-### Label and Mode - Tokens
+### Styles - Label and Mode Tokens
 
 The exporter generated for each label e.g. `whitelabel`, `bwin`, `coral` all relevant modes e.g. `light` or `dark`
 
@@ -41,7 +41,7 @@ Instead of generating and reusing the reference tokens we autogenerate the raw v
 }
 ```
 
-### DS Components - Tokens and Mixins
+### Components - DS Components Tokens and Mixins
 
 ```bash
 root
@@ -158,10 +158,5 @@ root
 #### `packages/design-system/ui/generated/styles/components/accordion/accordion.scss`
 
 ```css
-/*👇 import of generated tokens */
-@use '../../generated/styles/components/accordion/accordion.scss' as ds-accordion;
-
-.ds-accordion-header {
-  min-height: var(--ds-accordion-size-min-height);
-}
+@TODO
 ```

@@ -1,7 +1,7 @@
 import { CategoryConfig, CoreConfig } from '@code-pushup/models';
 import angularDsCoveragePlugin, {
   AngularDsCoveragePluginConfig,
-} from './lib/ds-style-coverage.plugin';
+} from './lib/ds-quality.plugin';
 import { getAngularDsCoverageCategoryRefs } from './lib/utils';
 
 export async function angularDsCoveragePluginCoreConfig({

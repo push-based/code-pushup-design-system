@@ -1,8 +1,8 @@
-import { angularDsCoverage } from './lib/ds-style-coverage.plugin';
+import { angularDsCoverage } from './lib/ds-quality.plugin';
 export {
   angularDsCoverage,
   AngularDsCoveragePluginConfig,
-} from './lib/ds-style-coverage.plugin';
+} from './lib/ds-quality.plugin';
 export { getAngularDsCoverageCategoryRefs } from './lib/utils';
 export { ANGULAR_DS_COVERAGE_PLUGIN_SLUG } from './lib/constants';
 

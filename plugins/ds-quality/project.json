@@ -1,0 +1,58 @@
+{
+  "name": "ds-quality",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "plugins/ds-quality/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/plugins/ds-quality",
+        "main": "plugins/ds-quality/src/index.ts",
+        "tsConfig": "plugins/ds-quality/tsconfig.lib.json",
+        "assets": [
+          "plugins/ds-quality/*.md"
+        ]
+      }
+    },
+    "plugin:demo": {
+      "command": "npx @code-pushup/cli collect --config=plugins/ds-quality/mocks/fixtures/coverage-audit/demo/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-quality",
+        "progress": false
+      }
+    },
+    "plugin:asset-location": {
+      "command": "npx @code-pushup/cli collect --config=plugins/ds-quality/mocks/fixtures/coverage-audit/asset-location/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-quality",
+        "progress": false
+      }
+    },
+    "plugin:style-format": {
+      "command": "npx @code-pushup/cli collect --config=plugins/ds-quality/mocks/fixtures/coverage-audit/style-format/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-quality",
+        "progress": false
+      }
+    },
+    "plugin:line-number": {
+      "command": "npx @code-pushup/cli collect --config=plugins/ds-quality/mocks/fixtures/coverage-audit/line-number/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-quality",
+        "progress": false
+      }
+    },
+    "plugin:template-syntax": {
+      "command": "npx @code-pushup/cli collect --config=plugins/ds-quality/mocks/fixtures/coverage-audit/template-syntax/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-quality",
+        "progress": false
+      }
+    }
+  }
+}

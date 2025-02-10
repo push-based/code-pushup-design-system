@@ -1,7 +1,7 @@
 import { AuditOutputs } from '@code-pushup/models';
 import { findComponents } from './utils/find-component';
 import { parseComponents } from './utils/parse-component';
-import { ComponentReplacement } from '@code-pushup-design-system/ds-style-coverage';
+import { ComponentReplacement } from '@code-pushup-design-system/ds-quality';
 import { dsCompCoverageAuditOutputs } from './audits/ds-coverage/ds-coverage.audit';
 import { dsStyleTokenAuditOutputs } from './audits/style-tokens/style-token.audit';
 import { TokenReplacement } from './audits/style-tokens/types';

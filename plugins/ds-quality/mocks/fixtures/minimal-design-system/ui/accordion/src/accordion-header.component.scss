@@ -1,6 +1,4 @@
-@use './../../accordion' as ds-accordion;
-
-/* stylelint-disable selector-max-attribute */
+@use './../../generated/styles/components/accordion/accordion' as ds-accordion;
 
 .ds-accordion-header {
     --ds-accordion-header-height: 100%;

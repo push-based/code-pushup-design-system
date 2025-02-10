@@ -1,7 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ContentChild, TemplateRef, ViewEncapsulation, booleanAttribute, inject, input } from '@angular/core';
-
-
 import { DsAccordionToggle } from './accordion-toggle.directive';
 import { DsAccordionTrigger, DsAccordionTriggerContext } from './accordion-trigger.directive';
 import { DsAccordion } from './accordion.component';

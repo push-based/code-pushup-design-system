@@ -25,7 +25,7 @@ describe('createCssVarUsageVisitor', () => {
           "message": `🎨 The CSS variable <code>primary-color-btn</code> in <code>color</code> is deprecated. Replace it with the recommended alternative. <a href="https://your-docs-link.com" target="_blank">Learn more</a>.`,
           "severity": "error",
           "source": {
-            "file": expect.stringMatching(/ds-style-coverage\/styles\.css$/),
+            "file": expect.stringMatching(/ds-quality\/styles\.css$/),
             "position": {
               "endColumn": 39,
               "endLine": 1,
