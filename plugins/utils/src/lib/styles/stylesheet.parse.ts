@@ -1,5 +1,5 @@
 import postcss from 'postcss';
-import safeParser from 'postcss-safe-parser';
+import * as safeParser from 'postcss-safe-parser';
 
 /**
  * Parse a stylesheet content and return the AST.

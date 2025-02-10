@@ -14,7 +14,7 @@ export function visitEachChild<T>(root: Root, visitor: CssAstVisitor<T>) {
     const visitMethodName = `visit${
       node.type[0].toUpperCase() + node.type.slice(1)
     }`;
-    visitor[visitMethodName as keyof CssAstVisitor]?.(node);
+    visitor[visitMethodName as keyof CssAstVisitor]?.(node as any);
   });
 }
 
@@ -29,13 +29,13 @@ export function visitEachStyleNode<T>(root: Root, visitor: CssAstVisitor<T>) {
         visitor?.visitAtRule?.(node);
         break;
       case 'decl':
-        visitor?.visitDeclaration?.(node);
-        break;
+        throw new Error('visit declaration not implemented')
+       // visitor?.visitDeclaration?.(node);
       case 'comment':
         visitor?.visitComment?.(node);
         break;
       default:
-        throw new Error(`Unknown node type: ${node.type}`);
+        throw new Error(`Unknown node type: ${(node as Root).type}`);
     }
   }
 }
