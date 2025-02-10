@@ -9,7 +9,7 @@ This audit checks all design system component's style's for the usage of depreca
 
 ### Usage of Deprecated Token in DS Component
 
-Checked components:
+**Checked components:**
 
 ```bash
 root
@@ -22,6 +22,8 @@ root
     ┇
 ```
 
+**Issue Exampel**
+
 This example showcases the usage of a deprecated token in `button/src/button.component.scss`.
 
 ```scss
@@ -30,6 +32,10 @@ This example showcases the usage of a deprecated token in `button/src/button.com
   --ds-button-color-content: #010f18;
 }
 ```
+
+**Report Example**
+
+
 
 ## Deprecated Mixin Usage Audit - `deprecated-token-<token-name>`
 

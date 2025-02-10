@@ -1,3 +1,4 @@
+--semantic-color-ds-accordion-background-active
 --ds-alert-caution-color-bg
 --ds-alert-caution-color-border
 --ds-carousel-arrow-color-bg

@@ -2,6 +2,10 @@
 
 .ds-accordion {
     @include ds-accordion.shared;
+    /**
+     * ❌ Bad: Deprecated token usage [`semantic-color-ds-accordion-background-active`](./../../generated/deprecated.txt#L1)
+     **/
+    color: var(--semantic-color-ds-accordion-background-active);
 
     box-sizing: border-box;
     display: grid;
