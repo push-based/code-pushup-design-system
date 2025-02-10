@@ -1,0 +1,58 @@
+{
+  "name": "ds-style-coverage",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "plugins/ds-style-coverage/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/plugins/ds-style-coverage",
+        "main": "plugins/ds-style-coverage/src/index.ts",
+        "tsConfig": "plugins/ds-style-coverage/tsconfig.lib.json",
+        "assets": [
+          "plugins/ds-style-coverage/*.md"
+        ]
+      }
+    },
+    "plugin:demo": {
+      "command": "npx @code-pushup/cli collect --config=plugins/ds-style-coverage/mocks/fixtures/coverage-audit/demo/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-style-coverage",
+        "progress": false
+      }
+    },
+    "plugin:asset-location": {
+      "command": "npx @code-pushup/cli collect --config=plugins/ds-style-coverage/mocks/fixtures/coverage-audit/asset-location/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-style-coverage",
+        "progress": false
+      }
+    },
+    "plugin:style-format": {
+      "command": "npx @code-pushup/cli collect --config=plugins/ds-style-coverage/mocks/fixtures/coverage-audit/style-format/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-style-coverage",
+        "progress": false
+      }
+    },
+    "plugin:line-number": {
+      "command": "npx @code-pushup/cli collect --config=plugins/ds-style-coverage/mocks/fixtures/coverage-audit/line-number/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-style-coverage",
+        "progress": false
+      }
+    },
+    "plugin:template-syntax": {
+      "command": "npx @code-pushup/cli collect --config=plugins/ds-style-coverage/mocks/fixtures/coverage-audit/template-syntax/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-style-coverage",
+        "progress": false
+      }
+    }
+  }
+}
