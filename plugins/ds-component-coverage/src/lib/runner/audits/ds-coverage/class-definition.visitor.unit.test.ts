@@ -1,13 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { createClassDefenitionVisitor } from './class-definition.visitor';
 import postcss from 'postcss';
-import { beforeEach } from 'node:test';
 import { visitEachChild } from '../../styles/stylesheet.walk';
 
 describe('ClassUsageStylesheetVisitor', () => {
   let cssAstVisitor: ReturnType<typeof createClassDefenitionVisitor>;
-
-  beforeEach(() => {});
 
   it('should not find class when it is not a class-binding', () => {
     const styles = `
@@ -31,6 +28,7 @@ describe('ClassUsageStylesheetVisitor', () => {
 
     cssAstVisitor = createClassDefenitionVisitor({
       matchingCssClasses: ['btn'],
+      componentName: 'DsButton',
     });
 
     const ast = postcss.parse(styles, { from: 'styles.css' });

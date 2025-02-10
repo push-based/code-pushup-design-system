@@ -1,5 +1,6 @@
 import { Issue } from '@code-pushup/models';
-import { Rule } from 'postcss';
+import { type Root, Rule } from 'postcss';
+import { Asset, ParsedComponent } from '../utils/types';
 
 /**
  * Convert a Root to an Issue source object and adjust its position based on startLine.
@@ -39,4 +40,20 @@ export function getMatchingClassNames(
   return classNames
     .map((className) => className.slice(1)) // Strip the leading "."
     .filter((className) => targetClassNames.includes(className));
+}
+
+export async function visitComponentStyles<T>(
+  component: ParsedComponent,
+  getIssues: (asset: Asset<Root>, comp: ParsedComponent) => Promise<Issue[]>
+): Promise<Issue[]> {
+  const { styles, styleUrls } = component;
+
+  // Handle inline styles
+  return (
+    await Promise.all(
+      [...styles, ...styleUrls].flatMap(async (style: Asset<Root>) => {
+        return getIssues(style, component);
+      })
+    )
+  ).flat();
 }

@@ -37,7 +37,7 @@ import {
 } from './constants';
 import { parseClassNames, tmplAstElementToSource } from '../../template/utils';
 
-import { ComponentReplacement } from '@code-pushup-design-system/ds-component-coverage';
+import { ComponentReplacement } from './types';
 
 function generateClassUsageMessage({
   element,

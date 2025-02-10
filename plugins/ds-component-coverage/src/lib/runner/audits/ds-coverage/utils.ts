@@ -1,6 +1,6 @@
 import { Audit, AuditOutput, Issue } from '@code-pushup/models';
 import { pluralize, slugify } from '@code-pushup/utils';
-import { ComponentReplacement } from '@code-pushup-design-system/ds-component-coverage';
+import { ComponentReplacement } from './types';
 
 /**
  * Creates a scored audit output.

@@ -1,4 +1,4 @@
-import ts from 'typescript';
+import * as ts from 'typescript';
 import { getDecorators, isDecorator } from './utils';
 
 /**
@@ -25,9 +25,9 @@ export function visitAngularDecorators(
  */
 export function visitAngularDecoratorProperties(
   decorator: ts.Decorator,
-  visitor: (node: ts.PropertyAssignment & ts.Identifier) => void
+  visitor: (node: ts.PropertyAssignment) => void
 ) {
-  const args = decorator.expression.arguments;
+  const args = (decorator.expression as any).arguments;
   if (!args?.length || !ts.isObjectLiteralExpression(args[0])) {
     return;
   }
@@ -35,6 +35,6 @@ export function visitAngularDecoratorProperties(
   args[0].properties.forEach((prop: ts.ObjectLiteralElementLike) => {
     if (!ts.isPropertyAssignment(prop) || !ts.isIdentifier(prop.name)) return;
 
-    visitor(prop);
+    visitor(prop as ts.PropertyAssignment);
   });
 }

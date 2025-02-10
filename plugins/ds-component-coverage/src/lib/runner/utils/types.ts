@@ -1,10 +1,9 @@
 import { ParsedTemplate } from '@angular/compiler';
 import { Root } from 'postcss';
-import ts from 'typescript';
+import * as ts from 'typescript';
 
 export type SourceLink = { filePath: string; startLine: number };
 export type Asset<T> = SourceLink & {
-  source: () => ts.Node;
   parse: () => Promise<T>;
 };
 

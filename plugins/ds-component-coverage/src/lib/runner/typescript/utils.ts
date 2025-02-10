@@ -1,4 +1,4 @@
-import ts from 'typescript';
+import * as ts from 'typescript';
 import { Asset } from '../utils/types';
 
 export function isComponentDecorator(decorator: ts.Decorator): boolean {
@@ -6,15 +6,15 @@ export function isComponentDecorator(decorator: ts.Decorator): boolean {
 }
 
 export function getDecorators(node: ts.Node) {
-  return (ts.getDecorators ? ts.getDecorators(node) : node.decorators) ?? []; // TS 5+ compatibility
+  return (ts.getDecorators ? ts.getDecorators(node as any) : (node as any).decorators) ?? []; // TS 5+ compatibility
 }
 
 export function isDecorator(
   decorator: ts.Decorator,
   decoratorName?: string
 ): boolean {
-  const nodeObject: ts.NodeObject = decorator?.expression;
-  const identifierObject: ts.IdentifierObject = nodeObject?.expression;
+  const nodeObject = decorator?.expression as unknown as {expression: ts.Expression};
+  const identifierObject = nodeObject?.expression;
 
   if (identifierObject == null || !ts.isIdentifier(identifierObject))
     return false;
@@ -41,7 +41,6 @@ export function assetFromPropertyValueInitializer<T>({
   return {
     filePath: sourceFile.fileName,
     startLine,
-    source: () => prop,
     parse: () => textParser(value),
   } satisfies Asset<T>;
 }
@@ -51,7 +50,8 @@ export function assetFromPropertyArrayInitializer<T>(
   sourceFile: ts.SourceFile,
   textParser: (text: string) => Promise<T>
 ): Asset<T>[] {
-  return (prop.initializer.elements ?? []).map((element: ts.Node) => {
+  const elements = ((prop.initializer as any).elements ?? [])
+  return elements.map((element: ts.Node) => {
     const { line: startLine } = sourceFile.getLineAndCharacterOfPosition(
       element.getStart(sourceFile)
     );
@@ -59,7 +59,6 @@ export function assetFromPropertyArrayInitializer<T>(
     return {
       filePath: sourceFile.fileName,
       startLine,
-      source: () => element as unknown as T,
       parse: () => textParser(value),
     } satisfies Asset<T>;
   });

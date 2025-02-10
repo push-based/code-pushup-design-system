@@ -1,5 +1,5 @@
 import { ParsedComponent } from '../../utils/types';
-import { ComponentReplacement } from '@code-pushup-design-system/ds-component-coverage';
+import { ComponentReplacement } from './types';
 import { ClassUsageVisitor } from './class-usage.visitor';
 import { visitEachTmplChild } from '../../template/template.walk';
 

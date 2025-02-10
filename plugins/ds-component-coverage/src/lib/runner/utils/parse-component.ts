@@ -1,5 +1,5 @@
 import { FastFindInFiles } from 'fast-find-in-files';
-import ts from 'typescript';
+import * as ts from 'typescript';
 import { ParsedComponent } from './types';
 import { classDecoratorVisitor } from '../typescript/decorator-config.visitor';
 
@@ -28,7 +28,7 @@ export function parseComponents(
     .flatMap((sourceFile: ts.SourceFile) => {
       const visitor = classDecoratorVisitor({ sourceFile });
 
-      ts.visitEachChild(sourceFile, visitor);
+      ts.visitEachChild(sourceFile, visitor, undefined);
       return [...visitor.components];
     });
 }
