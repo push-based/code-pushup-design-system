@@ -1,0 +1,65 @@
+{
+  "name": "ds-cp-plugin",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "plugins/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/ds-cp-plugin",
+        "main": "plugins/src/index.ts",
+        "tsConfig": "plugins/tsconfig.lib.json",
+        "assets": [
+          "plugins/**/*.md"
+        ]
+      }
+    },
+    "ds-component-coverage:demo": {
+      "command": "npx @code-pushup/cli collect --config=plugins/src/ds-component-coverage/mocks/fixtures/e2e/demo/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-component-coverage",
+        "progress": false
+      }
+    },
+    "ds-component-coverage:asset-location": {
+      "command": "npx @code-pushup/cli collect --config=plugins/src/ds-component-coverage/mocks/fixtures/e2e/asset-location/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-component-coverage",
+        "progress": false
+      }
+    },
+    "ds-component-coverage:style-format": {
+      "command": "npx @code-pushup/cli collect --config=plugins/src/ds-component-coverage/mocks/fixtures/e2e/style-format/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-component-coverage",
+        "progress": false
+      }
+    },
+    "ds-component-coverage:line-number": {
+      "command": "npx @code-pushup/cli collect --config=plugins/src/ds-component-coverage/mocks/fixtures/e2e/line-number/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-component-coverage",
+        "progress": false
+      }
+    },
+    "ds-component-coverage:template-syntax": {
+      "command": "npx @code-pushup/cli collect --config=plugins/src/ds-component-coverage/mocks/fixtures/e2e/template-syntax/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-component-coverage",
+        "progress": false
+      }
+    },
+    "ds-quality:demo": {
+      "command": "npx @code-pushup/cli collect --config=plugins/src/ds-quality/mocks/fixtures/minimal-design-system/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-quality",
+        "progress": false
+      }
+    }
+  }
+}
