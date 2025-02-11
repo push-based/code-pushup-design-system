@@ -1,10 +1,10 @@
 import { readFile } from 'fs/promises';
+import { TokenReplacement } from '../src/lib/runner/audits/style-tokens/types';
 
-export function loadDeprecatedTokens(): string[] {
-  const file = await readFile(
-    'plugins/ds-component-coverage/mocks/fixtures/deprecated-styles-usage/deprecated.txt',
-    'utf-8'
-  );
+export async function loadDeprecatedTokens(
+  filePath: string
+): Promise<TokenReplacement[]> {
+  const file = await readFile(filePath, 'utf-8');
 
   return file
     .split('\n')
