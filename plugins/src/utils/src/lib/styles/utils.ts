@@ -38,8 +38,8 @@ export function styleAstRuleToSource(
 export async function visitComponentStyles(
   component: ParsedComponent,
   tokenReplacement: TokenReplacement,
-  getIssues: (tokenReplacement: TokenReplacement, asset: Asset<Root>) => Issue[]
-) {
+  getIssues: (tokenReplacement: TokenReplacement, asset: Asset<Root>) => Promise<Issue[]>
+): Promise<Issue[]> {
   const { styles, styleUrls, styleUrl } = component;
 
   if (styleUrls == null && styles == null && styleUrl == null) {
