@@ -1,6 +1,7 @@
 import { Issue } from '@code-pushup/models';
 import { type Root, Rule } from 'postcss';
 import { Asset, ParsedComponent } from '../utils/types';
+import { TokenReplacement } from '../audits/style-tokens/types';
 
 /**
  * Convert a Root to an Issue source object and adjust its position based on startLine.

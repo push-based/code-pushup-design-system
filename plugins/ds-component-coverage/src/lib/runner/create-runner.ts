@@ -4,7 +4,9 @@ import { parseComponents } from './utils/parse-component';
 import { dsCompCoverageAuditOutputs } from './audits/ds-coverage/ds-coverage.audit';
 import { ComponentReplacement } from './audits/ds-coverage/types';
 
-export type CreateRunnerConfig = {
+export type CreateRunnerConfig = ComponentCoverageRunnerOptions;
+
+export type ComponentCoverageRunnerOptions = {
   directory: string;
   dsComponents: ComponentReplacement[];
 };

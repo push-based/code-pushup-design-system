@@ -53,6 +53,13 @@
         "onlyPlugins": "ds-component-coverage",
         "progress": false
       }
+    },
+    "plugin-ds-quality:demo": {
+      "command": "npx @code-pushup/cli collect --config=plugins/ds-component-coverage/mocks/fixtures/minimal-design-system/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-quality",
+        "progress": false
+      }
     }
   }
 }

@@ -11,7 +11,7 @@ export type ParsedComponent = {
   className: string;
   fileName: string;
   startLine: number;
-} & Asset<Node> & {
+} & {
     templateUrl: Asset<ParsedTemplate>;
     template: Asset<ParsedTemplate>;
     styles: Asset<Root>[];
