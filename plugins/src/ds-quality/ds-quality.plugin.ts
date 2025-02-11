@@ -1,21 +1,17 @@
-import {
-  AuditOutputs,
-  CategoryConfig,
-  CoreConfig,
-  PluginConfig,
-} from '@code-pushup/models';
-import { findComponents, parseComponents } from '../utils/src';
-import { dsStyleTokenAuditOutputs } from './src/lib/runner/audits/style-tokens/style-token.audit';
+import { CategoryConfig, CoreConfig, PluginConfig } from '@code-pushup/models';
 import { TokenReplacement } from './src/lib/runner/audits/style-tokens/types';
 import {
   getStyleTokenAudits,
   getStyleTokenCategoryRefs,
 } from './src/lib/runner/audits/style-tokens/utils';
+import { runnerFunction } from './src/lib/runner/create-runner';
+import { loadDeprecatedTokens } from './tools/utils';
 
 export type DsQualityPluginConfig = QualityRunnerOptions;
 
 export type QualityRunnerOptions = {
   directory: string;
+  tokenPath?: string;
   deprecatedTokens: TokenReplacement[];
 };
 
@@ -40,44 +36,25 @@ export function dsQualityPlugin(options: DsQualityPluginConfig): PluginConfig {
   } as const;
 }
 
-/**
- * Runner function for the Angular Design System Coverage plugin. It will parse all the components in the directory and resolve the styles and templates.
- * @param options Plugin configuration. Directory and DesignSystem components.
- */
-export async function runnerFunction({
-  directory,
-  deprecatedTokens,
-}: QualityRunnerOptions): Promise<AuditOutputs> {
-  const parsedComponents = parseComponents(findComponents({ directory }));
-  return [
-    ...(await dsStyleTokenAuditOutputs(deprecatedTokens, parsedComponents)),
-  ];
-}
-
-export async function dsQualityPluginCoreConfig({
-  directory,
-  deprecatedTokens,
-}: DsQualityPluginConfig) {
+export async function dsQualityPluginCoreConfig(opt: DsQualityPluginConfig) {
   return {
     plugins: [
-      dsQualityPlugin({
-        directory,
-        deprecatedTokens,
-      }),
+      dsQualityPlugin(opt),
     ],
-    categories: await dsQualityPluginCategories({ deprecatedTokens }),
+    categories: await dsQualityPluginCategories(opt),
   } as const satisfies CoreConfig;
 }
 
 export async function dsQualityPluginCategories({
-  deprecatedTokens,
-}: Pick<DsQualityPluginConfig, 'deprecatedTokens'>): Promise<CategoryConfig[]> {
+  deprecatedTokens, tokenPath
+}: Pick<DsQualityPluginConfig, 'deprecatedTokens' | 'tokenPath'>): Promise<CategoryConfig[]> {
+  const tokens = tokenPath ? await loadDeprecatedTokens(tokenPath) : [];
   return [
     {
       slug: 'design-system-quality',
       title: 'Design System Quality',
       description: 'Usage of design system components',
-      refs: getStyleTokenCategoryRefs(deprecatedTokens),
+      refs: getStyleTokenCategoryRefs([...deprecatedTokens, ...tokens]),
     },
   ];
 }

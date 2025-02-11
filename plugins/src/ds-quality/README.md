@@ -22,7 +22,7 @@ root
     ┇
 ```
 
-**Issue Exampel**
+**Issue Example**
 
 This example showcases the usage of a deprecated token in `button/src/button.component.scss`.
 
