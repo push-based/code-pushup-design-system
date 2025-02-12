@@ -26,7 +26,6 @@ export const createCssVarUsageVisitor = (
         return;
       }
       const cssVarName = match.replace(/var\(|\)/g, '').replace('--', ''); // Extract only variable name
-      console.log(`cssVarName: ${tokenReplacement.deprecatedTokens} ${cssVarName}`);
 
       if (tokenReplacement.deprecatedTokens.includes(cssVarName)) {
         const message = generateCssVarUsageMessage({
