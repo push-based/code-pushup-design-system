@@ -1,9 +1,6 @@
 import { Issue } from '@code-pushup/models';
 import { type Root, Rule } from 'postcss';
 import { Asset, ParsedComponent } from '../utils/types';
-import { TokenReplacement } from '../../../../ds-quality/src/lib/runner/audits/style-tokens/types';
-import { createCssVarUsageVisitor } from '../../../../ds-quality/src/lib/runner/audits/style-tokens/variable-definition.visitor';
-import { visitEachChild, visitEachStyleNode } from '../../index';
 
 /**
  * Convert a Root to an Issue source object and adjust its position based on startLine.
@@ -35,10 +32,10 @@ export function styleAstRuleToSource(
   };
 }
 
-export async function visitComponentStyles(
+export async function visitComponentStyles<T>(
   component: ParsedComponent,
-  tokenReplacement: TokenReplacement,
-  getIssues: (tokenReplacement: TokenReplacement, asset: Asset<Root>) => Promise<Issue[]>
+  visitorArgument: T,
+  getIssues: (tokenReplacement: T, asset: Asset<Root>) => Promise<Issue[]>
 ): Promise<Issue[]> {
   const { styles, styleUrls, styleUrl } = component;
 
@@ -50,7 +47,7 @@ export async function visitComponentStyles(
   const styleIssues: Issue[] = (
     await Promise.all(
       (styles ?? []).flatMap(async (style: Asset<Root>) => {
-        return getIssues(tokenReplacement, style);
+        return getIssues(visitorArgument, style);
       })
     )
   ).flat();
@@ -58,14 +55,14 @@ export async function visitComponentStyles(
   const styleUrlsIssues: Issue[] = (
     await Promise.all(
       (styleUrls ?? []).flatMap(async (styleUrl: Asset<Root>) => {
-        return getIssues(tokenReplacement, styleUrl);
+        return getIssues(visitorArgument, styleUrl);
       })
     )
   ).flat();
 
   const styleUrlIssues: Issue[] = styleUrl
     ? await (async () => {
-        return getIssues(tokenReplacement, styleUrl);
+        return getIssues(visitorArgument, styleUrl);
       })()
     : [];
 

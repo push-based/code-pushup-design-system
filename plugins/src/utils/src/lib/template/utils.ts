@@ -1,5 +1,16 @@
-import { TmplAstElement, TmplAstTextAttribute } from '@angular/compiler';
+import {
+  ParsedTemplate,
+  TmplAstElement,
+  TmplAstTemplate,
+  TmplAstTextAttribute,
+} from '@angular/compiler';
 import { Issue } from '@code-pushup/models';
+import { Asset, ParsedComponent } from '../utils/types';
+import type { Root } from 'postcss';
+import { ComponentReplacement } from '../../../../ds-component-coverage/src';
+import { ClassUsageVisitor } from '../../../../ds-component-coverage/src/lib/runner/audits/ds-coverage/class-usage.visitor';
+import { visitEachTmplChild } from './template.walk';
+import { TokenReplacement } from '../../../../ds-quality/src/lib/runner/audits/style-tokens/types';
 
 /**
  * Convert a TmplAstElement to an Issue source object and adjust its position based on startLine.
@@ -33,4 +44,22 @@ export function tmplAstElementToSource(
 
 export function parseClassNames(classString: string): string[] {
   return classString.trim().split(/\s+/).filter(Boolean);
+}
+
+export async function visitComponentTemplate<T>(
+  component: ParsedComponent,
+  visitorArgument: T,
+  getIssues: (
+    tokenReplacement: T,
+    asset: Asset<ParsedTemplate>
+  ) => Promise<Issue[]>
+): Promise<Issue[]> {
+  const { templateUrl, template } = component;
+
+  if (templateUrl == null && template == null) {
+    return [];
+  }
+  const componentTemplate = templateUrl ?? template;
+
+  return getIssues(visitorArgument, componentTemplate);
 }

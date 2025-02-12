@@ -72,7 +72,6 @@ function generateStylesheetUsageMessage({
   return `${iconString}️ The selector's class <code>${className}</code> is deprecated. Use <code>${componentName}</code> and delete the styles.${docsLink}`;
 }
 
-
 export function getMatchingClassNames(
   { selector }: Pick<Rule, 'selector'>,
   targetClassNames: string[]

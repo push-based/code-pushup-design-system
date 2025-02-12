@@ -1,7 +1,11 @@
 import { getCompCoverageAuditOutput } from './utils';
 import { AuditOutputs } from '@code-pushup/models';
-import { ParsedComponent, visitComponentStyles } from '../../../../../../utils/src';
+import {
+  ParsedComponent,
+  visitComponentStyles,
+} from '../../../../../../utils/src';
 import { ComponentReplacement } from './types';
+import { visitComponentTemplate } from '../../../../../../utils/src/lib/template/utils';
 import { getClassUsageIssues } from './class-usage.utils';
 import { getClassDefinitionIssues } from './class-definition.utils';
 
@@ -11,16 +15,21 @@ export function dsCompCoverageAuditOutputs(
 ): Promise<AuditOutputs> {
   return Promise.all(
     dsComponents.map(async (dsComponent) => {
-
       const allIssues = (
         await Promise.all(
           parsedComponents.flatMap(async (component) => {
-
             return [
               // template checks
-              ...(await getClassUsageIssues(component, dsComponent)),
-              // style checks
-              ...(await getClassDefinitionIssues(component, dsComponent)),
+              ...(await visitComponentTemplate(
+                component,
+                dsComponent,
+                getClassUsageIssues
+              )),
+              ...(await visitComponentStyles(
+                component,
+                dsComponent,
+                getClassDefinitionIssues
+              )),
             ];
           })
         )

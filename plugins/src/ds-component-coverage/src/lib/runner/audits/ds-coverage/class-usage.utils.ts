@@ -1,24 +1,15 @@
-import { ParsedComponent } from '../../../../../../utils/src';
+import { Asset, visitEachTmplChild } from '../../../../../../utils/src';
 import { ComponentReplacement } from './types';
 import { ClassUsageVisitor } from './class-usage.visitor';
-import { visitEachTmplChild } from '../../../../../../utils/src';
+import { ParsedTemplate } from '@angular/compiler';
 
 export async function getClassUsageIssues(
-  component: ParsedComponent,
-  compReplacement: ComponentReplacement
+  componentReplacement: ComponentReplacement,
+  asset: Asset<ParsedTemplate>
 ) {
-  const { templateUrl, template } = component;
-
-  const visitor = new ClassUsageVisitor(
-    compReplacement,
-    (templateUrl ?? template).startLine
-  );
-  if (templateUrl == null && template == null) {
-    return [];
-  }
-  const tmplAstTemplate = await (templateUrl ?? template)?.parse();
-
-  visitEachTmplChild(tmplAstTemplate?.nodes, visitor);
+  const visitor = new ClassUsageVisitor(componentReplacement, asset.startLine);
+  const parsedTemplate = await asset.parse();
+  visitEachTmplChild(parsedTemplate.nodes, visitor);
 
   return visitor.getIssues();
 }
