@@ -1,12 +1,15 @@
 import { Issue } from '@code-pushup/models';
-import { Declaration } from 'postcss';
+import { Declaration, Rule } from 'postcss';
 import { styleAstRuleToSource } from '../../../../../../utils/src';
-import { TokenReplacement } from './types';
+import { TokenReplacementDefinition } from './types';
+import { extractCssVariableNameRegex } from './constants';
 
 export const createCssVarUsageVisitor = (
-  tokenReplacement: TokenReplacement,
+  tokenReplacementDefinition: TokenReplacementDefinition,
   startLine = 0
 ) => {
+  const { deprecatedToken, tokenReplacement, docsUrl } =
+    tokenReplacementDefinition;
   let diagnostics: Issue[] = [];
 
   return {
@@ -19,43 +22,61 @@ export const createCssVarUsageVisitor = (
     },
 
     visitDecl(decl: Declaration) {
+      const propVal = decl.value;
 
-      // Extract CSS variable names
-      const match = (decl.value.match(/var\((--[\w-]+)\)/g) || []).at(0);
-      if(match == null) {
+      const usedVariables = [
+        ...propVal.matchAll(extractCssVariableNameRegex),
+      ].map((match) => match[1]);
+      // if the property value does not contain a CSS variable, return
+      if (usedVariables.length === 0) {
         return;
       }
-      const cssVarName = match.replace(/var\(|\)/g, '').replace('--', ''); // Extract only variable name
 
-      if (tokenReplacement.deprecatedTokens.includes(cssVarName)) {
-        const message = generateCssVarUsageMessage({
-          cssVar: cssVarName,
-          property: decl.prop,
-          docsUrl: 'https://your-docs-link.com',
-        });
-        diagnostics.push({
-          message,
-          severity: 'error',
-          source: styleAstRuleToSource(decl, startLine),
-        });
-      }
+      usedVariables.forEach((cssVarName) => {
+        if (deprecatedToken === cssVarName) {
+          const message = generateCssVarUsageMessage({
+            cssVar: cssVarName,
+            replacement: tokenReplacement,
+            decl,
+            docsUrl,
+          });
+          diagnostics.push({
+            message,
+            severity: 'error',
+            source: styleAstRuleToSource(decl.parent as Rule, startLine),
+          });
+        }
+      });
     },
   };
 };
 
+/**
+ * Generate a message for a deprecated CSS variable usage.
+ *
+ * @param cssVar - The CSS variable name. e.g. `--color-primary`.
+ * @param property - The CSS property where the variable is used. e.g. `color`.
+ * @param docsUrl - The URL to the documentation page for the deprecated variable. e.g. `https://your-docs-link.com`.
+ */
 function generateCssVarUsageMessage({
+  replacement,
   cssVar,
-  property,
+  decl,
   docsUrl,
 }: {
-  icon?: string;
   cssVar: string;
-  property: string;
+  decl: Declaration;
+  replacement?: string;
   docsUrl?: string;
 }): string {
-  const iconString = '🎨';
+  const property = decl.prop;
+  const selector = (decl.parent as Rule)?.selector ?? '';
+  const replacementMsg = replacement
+    ? ` use <code>${replacement}</code> instead`
+    : '';
+
   const docsLink = docsUrl
     ? ` <a href="${docsUrl}" target="_blank">Learn more</a>.`
     : '';
-  return `${iconString} The CSS variable <code>${cssVar}</code> in <code>${property}</code> is deprecated. Replace it with the recommended alternative.${docsLink}`;
+  return `🎨 CSS variable <code>${cssVar}</code> on <code>${property}</code> of selector ${selector} is deprecated${replacementMsg}.${docsLink}`;
 }

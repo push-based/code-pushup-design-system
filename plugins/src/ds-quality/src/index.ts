@@ -1,10 +1,15 @@
-import { angularDsCoverage } from './lib/ds-quality.plugin';
-export {
-  angularDsCoverage,
-  AngularDsCoveragePluginConfig,
-} from './lib/ds-quality.plugin';
-export { getAngularDsCoverageCategoryRefs } from './lib/utils';
-export { ANGULAR_DS_COVERAGE_PLUGIN_SLUG } from './lib/constants';
+import { dsQualityPlugin } from './lib/ds-quality.plugin';
+export { readDeprecatedCssVarsFromTextFile } from './lib/utils';
 
-export default angularDsCoverage;
-export { ComponentReplacement } from './lib/runner/audits/ds-coverage/types';
+export {
+  DsQualityPluginConfig,
+  QualityRunnerOptions,
+  DS_QUALITY_PLUGIN_SLUG,
+} from './lib/ds-quality.plugin';
+export {
+  dsQualityPluginCategories,
+  dsQualityPluginCoreConfig,
+} from './lib/utils';
+
+
+export default dsQualityPlugin;

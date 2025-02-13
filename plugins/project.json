@@ -19,6 +19,13 @@
         ]
       }
     },
+    "ds-plugins:demo": {
+      "command": "npx @code-pushup/cli collect --config=plugins/src/ds-component-coverage/mocks/fixtures/e2e/demo/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-component-coverage",
+        "progress": false
+      }
+    },
     "ds-component-coverage:demo": {
       "command": "npx @code-pushup/cli collect --config=plugins/src/ds-component-coverage/mocks/fixtures/e2e/demo/code-pushup.config.ts",
       "options": {
@@ -56,6 +63,13 @@
     },
     "ds-quality:demo": {
       "command": "npx @code-pushup/cli collect --config=plugins/src/ds-quality/mocks/fixtures/minimal-design-system/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-quality",
+        "progress": false
+      }
+    },
+    "ds-quality:variable-usage": {
+      "command": "npx @code-pushup/cli collect --config=plugins/src/ds-quality/mocks/fixtures/variable-usage/code-pushup.config.ts",
       "options": {
         "onlyPlugins": "ds-quality",
         "progress": false

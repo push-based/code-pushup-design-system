@@ -7,13 +7,13 @@ import {
   visitEachChild,
 } from '../../../../utils/src';
 import { getStyleTokenAuditOutput } from './audits/style-tokens/style-token.audit';
-import { TokenReplacement } from './audits/style-tokens/types';
+import { TokenReplacementDefinition } from './audits/style-tokens/types';
 import type { Root } from 'postcss';
 import { createCssVarUsageVisitor } from './audits/style-tokens/variable-definition.visitor';
 
 export type CreateRunnerConfig = {
   directory: string;
-  deprecatedTokens?: TokenReplacement[];
+  deprecatedTokens?: TokenReplacementDefinition[];
 };
 
 /**
@@ -41,7 +41,7 @@ export async function runnerFunction({
 }
 
 async function getIssues(
-  tokenReplacement: TokenReplacement,
+  tokenReplacement: TokenReplacementDefinition,
   asset: Asset<Root>
 ): Promise<Issue[]> {
   const stylesVisitor = createCssVarUsageVisitor(

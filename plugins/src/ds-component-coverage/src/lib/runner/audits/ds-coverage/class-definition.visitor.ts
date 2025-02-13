@@ -65,7 +65,7 @@ function generateStylesheetUsageMessage({
   const isInline = rule.source?.input.file?.match(/\.ts$/) != null;
   const iconString = `${
     isInline ? INLINE_ASSET_ICON : EXTERNAL_ASSET_ICON
-  }${STYLES_ASSET_ICON} `;
+  }${STYLES_ASSET_ICON}`;
   const docsLink = docsUrl
     ? ` <a href="${docsUrl}" target="_blank">Learn more</a>.`
     : '';

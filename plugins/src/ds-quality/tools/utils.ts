@@ -1,16 +1,16 @@
 import { readFile } from 'fs/promises';
-import { TokenReplacement } from '../src/lib/runner/audits/style-tokens/types';
+import { TokenReplacementDefinition } from '../src/lib/runner/audits/style-tokens/types';
 
 export async function loadDeprecatedTokens(
   filePath: string
-): Promise<TokenReplacement[]> {
+): Promise<TokenReplacementDefinition[]> {
   const file = await readFile(filePath, 'utf-8');
 
   return file
     .split('\n')
     .map((line) => line.trim())
     .map((tokenName) => ({
-      tokenName,
+      tokenReplacement: tokenName,
       deprecatedTokens: [
         'semantic-color-ds-accordion-background-active',
         'accordion',

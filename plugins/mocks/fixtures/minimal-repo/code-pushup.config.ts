@@ -1,11 +1,15 @@
-import { angularDsCoveragePluginCoreConfig } from '../../../src/core.config';
+import { angularDsCoveragePluginCoreConfig } from '../../../src/ds-component-coverage/src/core.config';
+import { mergeConfigs } from '@code-pushup/utils';
 
-export default {
-  persist: {
-    outputDir: '.code-pushup/ds-component-coverage-style-formats-demo',
-    format: ['json', 'md'],
+export default mergeConfigs(
+  {
+    persist: {
+      outputDir: '.code-pushup/ds-plugins',
+      format: ['json', 'md'],
+    },
+    plugins: [],
   },
-  ...(await angularDsCoveragePluginCoreConfig({
+  await angularDsCoveragePluginCoreConfig({
     directory: 'plugins/src/ds-component-coverage/mocks/fixtures/minimal-app',
     dsComponents: [
       {
@@ -21,5 +25,5 @@ export default {
         matchingCssClasses: ['btn', 'btn-dark', 'btn-light'],
       },
     ],
-  })),
-};
+  })
+);
