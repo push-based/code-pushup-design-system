@@ -8,7 +8,8 @@
       "vite/client",
       "node",
       "vitest"
-    ]
+    ],
+    "downlevelIteration": true
   },
   "include": [
     "vite.config.ts",

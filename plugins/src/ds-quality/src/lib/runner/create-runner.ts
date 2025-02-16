@@ -3,17 +3,24 @@ import {
   Asset,
   findComponents,
   parseComponents,
+  ParsedComponent,
   visitComponentStyles,
   visitEachChild,
 } from '../../../../utils/src';
-import { getStyleTokenAuditOutput } from './audits/style-tokens/style-token.audit';
-import { TokenReplacementDefinition } from './audits/style-tokens/types';
+import {
+  getStyleMixinAuditOutput,
+  getStyleTokenAuditOutput,
+} from './audits/style-tokens/style-token.audit';
+import { DeprecationDefinition } from './audits/types';
 import type { Root } from 'postcss';
 import { createCssVarUsageVisitor } from './audits/style-tokens/variable-definition.visitor';
+import { createCssMixinUsageVisitor } from './audits/style-mixins/mixin-definition.visitor';
+import { getStyleMixinAudits } from './audits/style-mixins/utils';
 
 export type CreateRunnerConfig = {
   directory: string;
-  deprecatedTokens?: TokenReplacementDefinition[];
+  deprecatedTokens?: DeprecationDefinition[];
+  deprecatedMixins?: DeprecationDefinition[];
 };
 
 /**
@@ -21,35 +28,65 @@ export type CreateRunnerConfig = {
  * @param options Plugin configuration. Directory and DesignSystem components.
  */
 export async function runnerFunction({
-  directory,
-  deprecatedTokens,
-}: CreateRunnerConfig): Promise<AuditOutputs> {
-  const parsedComponents = parseComponents(findComponents({ directory }));
-  return Promise.all(
-    deprecatedTokens.map(async (deprecatedToken) => {
-      const allIssues = (
-        await Promise.all(
-          parsedComponents.map((parsedComponent) =>
-            visitComponentStyles(parsedComponent, deprecatedToken, getIssues)
-          )
-        )
-      ).flat();
+                                       directory,
+                                       deprecatedTokens = [],
+                                       deprecatedMixins = [],
+                                     }: CreateRunnerConfig): Promise<AuditOutputs> {
+  const parsedComponents: ParsedComponent[] = parseComponents(findComponents({ directory }));
 
-      return getStyleTokenAuditOutput(deprecatedToken, allIssues);
+  const auditResults: AuditOutputs[] = await Promise.all(
+    parsedComponents.map(async (parsedComponent) => {
+      const tokenAuditPromises = deprecatedTokens.map(async (deprecatedToken) => {
+        const issues = await visitComponentStyles(
+          parsedComponent,
+          deprecatedToken,
+          getTokenIssues
+        );
+        return getStyleTokenAuditOutput(deprecatedToken, issues);
+      });
+
+      const mixinAuditPromises = deprecatedMixins.map(async (deprecatedMixin) => {
+        const issues = await visitComponentStyles(
+          parsedComponent,
+          deprecatedMixin,
+          getMixinIssues
+        );
+        return getStyleMixinAuditOutput(deprecatedMixin, issues);
+      });
+
+      const [tokenAudits, mixinAudits] = await Promise.all([
+        Promise.all(tokenAuditPromises),
+        Promise.all(mixinAuditPromises),
+      ]);
+      console.log('mixinAudits:', mixinAudits.flat())
+
+      return [...tokenAudits.flat(), ...mixinAudits.flat()];
     })
   );
+
+  return auditResults.flat();
 }
 
-async function getIssues(
-  tokenReplacement: TokenReplacementDefinition,
+async function getTokenIssues(
+  replacement: DeprecationDefinition,
   asset: Asset<Root>
 ): Promise<Issue[]> {
-  const stylesVisitor = createCssVarUsageVisitor(
-    tokenReplacement,
-    asset.startLine
-  );
-  const ast = (await asset.parse()).root as unknown as Root;
-  visitEachChild(ast, stylesVisitor);
+  const tokenVisitor = createCssVarUsageVisitor(replacement, asset.startLine);
 
-  return stylesVisitor.getIssues();
+  const ast = (await asset.parse()).root as unknown as Root;
+  visitEachChild(ast, tokenVisitor);
+
+  return tokenVisitor.getIssues();
+}
+
+async function getMixinIssues(
+  replacement: DeprecationDefinition,
+  asset: Asset<Root>
+): Promise<Issue[]> {
+  const tokenVisitor = createCssMixinUsageVisitor(replacement, asset.startLine);
+
+  const ast = (await asset.parse()).root as unknown as Root;
+  visitEachChild(ast, tokenVisitor);
+
+  return tokenVisitor.getIssues();
 }

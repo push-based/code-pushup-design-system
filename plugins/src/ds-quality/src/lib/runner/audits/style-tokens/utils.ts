@@ -1,11 +1,9 @@
-import { Audit, CategoryRef } from '@code-pushup/models';
+import { Audit } from '@code-pushup/models';
 import { slugify } from '@code-pushup/utils';
-import { TokenReplacementDefinition } from './types';
-
-const DS_QUALITY_PLUGIN_SLUG = 'ds-quality';
+import { DeprecationDefinition } from '../types';
 
 export function getStyleTokenAuditSlug(deprecatedToken: string): string {
-  return slugify(`deprecated-token-${(deprecatedToken)}`);
+  return slugify(`deprecated-token-${deprecatedToken}`);
 }
 
 export function getStyleTokenAuditTitle(deprecatedToken: string): string {
@@ -17,22 +15,11 @@ export function getStyleTokenAuditDescription(deprecatedToken: string): string {
 }
 
 export function getStyleTokenAudits(
-  deprecatedCssVars: TokenReplacementDefinition[]
+  deprecatedCssVars: DeprecationDefinition[]
 ): Audit[] {
-  return deprecatedCssVars.map(({ deprecatedToken }) => ({
-    slug: getStyleTokenAuditSlug(deprecatedToken),
-    title: getStyleTokenAuditTitle(deprecatedToken),
-    description: getStyleTokenAuditDescription(deprecatedToken),
-  }));
-}
-
-export function getStyleTokenCategoryRefs(
-  tokenReplacements: TokenReplacementDefinition[]
-): CategoryRef[] {
-  return getStyleTokenAudits(tokenReplacements).map(({ slug }) => ({
-    slug,
-    plugin: DS_QUALITY_PLUGIN_SLUG,
-    type: 'audit',
-    weight: 1,
+  return deprecatedCssVars.map(({ deprecatedEntity }) => ({
+    slug: getStyleTokenAuditSlug(deprecatedEntity),
+    title: getStyleTokenAuditTitle(deprecatedEntity),
+    description: getStyleTokenAuditDescription(deprecatedEntity),
   }));
 }

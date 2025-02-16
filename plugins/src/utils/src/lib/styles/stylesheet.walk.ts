@@ -14,6 +14,7 @@ export function visitEachChild<T>(root: Root, visitor: CssAstVisitor<T>) {
     const visitMethodName = `visit${
       node.type[0].toUpperCase() + node.type.slice(1)
     }`;
+    console.log('visitMethodName:', visitMethodName)
     visitor[visitMethodName as keyof CssAstVisitor]?.(node as any);
   });
 }

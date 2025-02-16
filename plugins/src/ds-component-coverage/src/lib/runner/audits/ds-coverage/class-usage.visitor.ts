@@ -28,17 +28,19 @@ import {
   TmplAstVisitor,
 } from '@angular/compiler';
 import { Issue } from '@code-pushup/models';
-import { DiagnosticsAware } from '../../../../../../utils/src';
+import {
+  DiagnosticsAware,
+  tmplAstElementToSource,
+} from '../../../../../../utils/src';
 
 import {
   EXTERNAL_ASSET_ICON,
   INLINE_ASSET_ICON,
   TEMPLATE_ASSET_ICON,
 } from './constants';
-import { tmplAstElementToSource } from '../../../../../../utils/src';
 
 import { ComponentReplacement } from './types';
-import { parseClassNames } from '../../../../../../utils/src/lib/template/utils';
+import { parseClassNames } from '../../../../../../utils/src/index';
 
 function generateClassUsageMessage({
   element,

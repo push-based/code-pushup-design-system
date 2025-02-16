@@ -1,16 +1,19 @@
 import { Issue } from '@code-pushup/models';
 import { Declaration, Rule } from 'postcss';
-import { CssAstVisitor, DiagnosticsAware, styleAstRuleToSource } from '../../../../../../utils/src';
+import {
+  CssAstVisitor,
+  DiagnosticsAware,
+  styleAstRuleToSource,
+} from '../../../../../../utils/src';
+import { extractMixinNameRegex } from './constants';
 import { DeprecationDefinition } from '../types';
-import { extractCssVariableNameRegex } from './constants';
 
-export const createCssVarUsageVisitor = (
+export const createCssMixinUsageVisitor = (
   tokenReplacementDefinition: DeprecationDefinition,
   startLine = 0
 ): DiagnosticsAware & CssAstVisitor => {
-  const { deprecatedEntity, replacement, docsUrl } =
-    tokenReplacementDefinition;
-  let diagnostics: (Issue & {code?: number})[] = [];
+  const { deprecatedEntity, replacement, docsUrl } = tokenReplacementDefinition;
+  let diagnostics: (Issue & { code?: number })[] = [];
 
   return {
     getIssues() {
@@ -23,25 +26,24 @@ export const createCssVarUsageVisitor = (
 
     visitDecl(decl: Declaration) {
       const propVal = decl.value;
+      const usedMixins = Array.from(
+        propVal.matchAll(extractMixinNameRegex)
+      ).map((match) => match[1]);
 
-      const usedVariables = [
-        ...propVal.matchAll(extractCssVariableNameRegex),
-      ].map((match) => match[1]);
-      // if the property value does not contain a CSS variable, return
-      if (usedVariables.length === 0) {
+      if (usedMixins.length === 0) {
         return;
       }
 
-      usedVariables.forEach((cssVarName) => {
-        if (deprecatedEntity === cssVarName) {
-          const message = generateCssVarUsageMessage({
-            cssVar: cssVarName,
-            replacement: replacement,
+      usedMixins.forEach((cssMixinName) => {
+        if (deprecatedEntity === cssMixinName) {
+          const message = generateCssMixinUsageMessage({
+            cssMixin: cssMixinName,
+            replacement,
             decl,
             docsUrl,
           });
           diagnostics.push({
-            code: 2001,
+            code: 2002,
             message,
             severity: 'error',
             source: styleAstRuleToSource(decl.parent as Rule, startLine),
@@ -53,19 +55,18 @@ export const createCssVarUsageVisitor = (
 };
 
 /**
- * Generate a message for a deprecated CSS variable usage.
+ * Generate a message for a deprecated CSS mixin usage.
  *
- * @param cssVar - The CSS variable name. e.g. `--color-primary`.
- * @param property - The CSS property where the variable is used. e.g. `color`.
+ * @param cssVar - The CSS mixin name. e.g. `alert.default`.
  * @param docsUrl - The URL to the documentation page for the deprecated variable. e.g. `https://your-docs-link.com`.
  */
-function generateCssVarUsageMessage({
+function generateCssMixinUsageMessage({
   replacement,
-  cssVar,
+  cssMixin,
   decl,
   docsUrl,
 }: {
-  cssVar: string;
+  cssMixin: string;
   decl: Declaration;
   replacement?: string;
   docsUrl?: string;
@@ -79,5 +80,5 @@ function generateCssVarUsageMessage({
   const docsLink = docsUrl
     ? ` <a href="${docsUrl}" target="_blank">Learn more</a>.`
     : '';
-  return `🎨 CSS variable <code>${cssVar}</code> on <code>${property}</code> of selector ${selector} is deprecated${replacementMsg}.${docsLink}`;
+  return `🎨 CSS mixin <code>${cssMixin}</code> on <code>${property}</code> of selector ${selector} is deprecated${replacementMsg}.${docsLink}`;
 }

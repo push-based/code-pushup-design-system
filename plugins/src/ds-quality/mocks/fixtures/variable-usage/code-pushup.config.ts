@@ -1,17 +1,17 @@
-import { TokenReplacementDefinition } from '../../../src/lib/runner/audits/style-tokens/types';
+import { DeprecationDefinition } from '../../../src/lib/runner/audits/types';
 import dsQualityPlugin from '../../../src/index';
 
-const deprecatedTokens: TokenReplacementDefinition[] = [
+const deprecatedTokens: DeprecationDefinition[] = [
   {
-    deprecatedToken: 'semantic-color-ds-deprecated-primary',
-    tokenReplacement: 'primary-color'
+    deprecatedEntity: 'semantic-color-ds-deprecated-primary',
+    replacement: 'primary-color'
   },
   {
-    deprecatedToken: 'semantic-color-ds-deprecated-primary',
-    tokenReplacement: 'secondary-color'
+    deprecatedEntity: 'semantic-color-ds-deprecated-primary',
+    replacement: 'secondary-color'
   },
   {
-    deprecatedToken: 'semantic-color-ds-deprecated-accent'
+    deprecatedEntity: 'semantic-color-ds-deprecated-accent'
   }
 ];
 
@@ -24,6 +24,7 @@ export default {
     dsQualityPlugin({
       directory: 'plugins/src/ds-quality/mocks/fixtures/variable-usage',
       deprecatedTokens,
+      deprecatedMixins: [],
     }),
   ],
 };

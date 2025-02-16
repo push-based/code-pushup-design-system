@@ -1,12 +1,7 @@
-import { ClassDecoratorVisitor } from './decorator-config.visitor';
-import ts from 'typescript';
+import { classDecoratorVisitor } from './decorator-config.visitor';
+import * as ts from 'typescript';
 
 describe('DecoratorConfigVisitor', () => {
-  let visitor: ClassDecoratorVisitor;
-
-  beforeEach(() => {
-    visitor = new ClassDecoratorVisitor();
-  });
 
   it.skip('should not find class when it is not a class-binding', () => {
     const sourceCode = `
@@ -28,9 +23,10 @@ describe('DecoratorConfigVisitor', () => {
       true
     );
 
+    const visitor  = classDecoratorVisitor({ sourceFile })
     ts.visitNode(sourceFile, visitor);
 
-    expect(visitor.getComponents()).toEqual([]);
+    expect(visitor.components).toEqual([]);
   });
 
   it('should not find class when it is not a class-binding', () => {
@@ -55,10 +51,11 @@ export class AppComponent {
       ts.ScriptTarget.Latest,
       true
     );
+    const visitor  = classDecoratorVisitor({ sourceFile })
 
     ts.visitNode(sourceFile, visitor);
 
-    expect(visitor.getComponents()).toStrictEqual([
+    expect(visitor.components).toStrictEqual([
       {
         className: 'AppComponent',
         decoratorName: 'Component',

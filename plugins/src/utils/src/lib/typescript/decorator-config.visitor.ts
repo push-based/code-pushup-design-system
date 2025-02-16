@@ -12,7 +12,7 @@ import {
 import { parseTemplate } from '@angular/compiler';
 import { resolveFileCached } from '../utils/file.resolver';
 import * as path from 'node:path';
-import { ParsedComponent } from '../utils/types';
+import { ParsedComponent } from '../angular/types';
 import { parseStylesheet } from '../styles/stylesheet.parse';
 
 const DEBUG = false;

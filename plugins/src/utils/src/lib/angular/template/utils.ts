@@ -10,7 +10,7 @@ import type { Root } from 'postcss';
 import { ComponentReplacement } from '../../../../ds-component-coverage/src';
 import { ClassUsageVisitor } from '../../../../ds-component-coverage/src/lib/runner/audits/ds-coverage/class-usage.visitor';
 import { visitEachTmplChild } from './template.walk';
-import { TokenReplacementDefinition } from '../../../../ds-quality/src/lib/runner/audits/style-tokens/types';
+import { DeprecationDefinition } from '../../../../ds-quality/src/lib/runner/audits/style-tokens/types';
 
 /**
  * Convert a TmplAstElement to an Issue source object and adjust its position based on startLine.

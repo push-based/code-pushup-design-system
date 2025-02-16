@@ -1,5 +1,6 @@
 import { fastFindInFiles } from 'fast-find-in-files';
-import { ANGULAR_COMPONENT_REGEX } from './constants';
+/** Angular component decorator regex. */
+export const ANGULAR_COMPONENT_REGEX = '@Component';
 
 /**
  * Finds and parses Angular components in a directory.

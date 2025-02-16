@@ -10,8 +10,8 @@ describe('createCssVarUsageVisitor', () => {
     const styles = `.btn { color: var(--primary-color-btn); }`;
 
     tokenAstVisitor = createCssVarUsageVisitor({
-      tokenReplacement: 'primary-color-btn-new',
-      deprecatedTokens: ['primary-color-btn'],
+      replacement: 'primary-color-btn-new',
+      deprecatedEntity: ['primary-color-btn'],
       docsUrl: '',
     });
 

@@ -8,10 +8,3 @@
  * ```
  */
 export const extractCssVariableNameRegex = /var\(--([\w-]+)\)/g;
-
-
-
-export const cssSemanticVariablesRegex = /--(?!semantic\b)([\w-]+)/g;
-
-export const mixinsNameRegex = /@mixin\s([A-Za-z0-9]*)\s*{/g;
-

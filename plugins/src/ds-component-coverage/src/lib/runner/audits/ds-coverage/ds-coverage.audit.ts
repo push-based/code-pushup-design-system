@@ -3,9 +3,9 @@ import { AuditOutputs } from '@code-pushup/models';
 import {
   ParsedComponent,
   visitComponentStyles,
+  visitComponentTemplate,
 } from '../../../../../../utils/src';
 import { ComponentReplacement } from './types';
-import { visitComponentTemplate } from '../../../../../../utils/src/lib/template/utils';
 import { getClassUsageIssues } from './class-usage.utils';
 import { getClassDefinitionIssues } from './class-definition.utils';
 

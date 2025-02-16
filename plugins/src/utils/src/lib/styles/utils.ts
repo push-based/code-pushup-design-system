@@ -1,6 +1,7 @@
 import { Issue } from '@code-pushup/models';
 import { type Root, Rule } from 'postcss';
-import { Asset, ParsedComponent } from '../utils/types';
+import { Asset } from '../utils/types';
+import { ParsedComponent } from '../angular/types';
 
 /**
  * Convert a Root to an Issue source object and adjust its position based on startLine.
@@ -36,7 +37,7 @@ export async function visitComponentStyles<T>(
   component: ParsedComponent,
   visitorArgument: T,
   getIssues: (tokenReplacement: T, asset: Asset<Root>) => Promise<Issue[]>
-): Promise<Issue[]> {
+): Promise<(Issue & {code?: number})[]> {
   const { styles, styleUrls, styleUrl } = component;
 
   if (styleUrls == null && styles == null && styleUrl == null) {

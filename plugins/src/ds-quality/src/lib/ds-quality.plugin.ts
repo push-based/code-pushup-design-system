@@ -1,13 +1,15 @@
 import { PluginConfig } from '@code-pushup/models';
-import { TokenReplacementDefinition } from '../../src/lib/runner/audits/style-tokens/types';
+import { DeprecationDefinition } from '../../src/lib/runner/audits/types';
 import { getStyleTokenAudits } from '../../src/lib/runner/audits/style-tokens/utils';
 import { runnerFunction } from '../../src/lib/runner/create-runner';
+import { getStyleMixinAudits } from './runner/audits/style-mixins/utils';
 
 export type DsQualityPluginConfig = QualityRunnerOptions;
 
 export type QualityRunnerOptions = {
   directory: string;
-  deprecatedTokens: TokenReplacementDefinition[];
+  deprecatedTokens: DeprecationDefinition[];
+  deprecatedMixins: DeprecationDefinition[];
 };
 
 export const DS_QUALITY_PLUGIN_SLUG = 'ds-quality';
@@ -26,7 +28,10 @@ export function dsQualityPlugin(options: DsQualityPluginConfig): PluginConfig {
     icon: 'angular',
     description:
       'A plugin to measure and assert the quality of the design system source code.',
-    audits: getStyleTokenAudits(options.deprecatedTokens),
+    audits: [
+      ...getStyleTokenAudits(options.deprecatedTokens),
+      ...getStyleMixinAudits(options.deprecatedMixins),
+    ],
     runner: () => runnerFunction(options),
   } as const;
 }
