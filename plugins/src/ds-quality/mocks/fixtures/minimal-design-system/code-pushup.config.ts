@@ -1,20 +1,28 @@
-import { TokenReplacementDefinition } from '../../../src/lib/runner/audits/style-tokens/types';
-import { readDeprecatedCssVarsFromTextFile } from '../../../src/index';
 import { dsQualityPluginCoreConfig } from '../../../src/core.config';
+import { DeprecationDefinition } from '../../../src/lib/runner/audits/types';
+import { readLinesFromTextFile } from '../../../src/lib/utils';
 
-const deprecatedTokens: TokenReplacementDefinition[] = [
+const deprecatedTokens: DeprecationDefinition[] = [
   ...(
-    await readDeprecatedCssVarsFromTextFile(
+    await readLinesFromTextFile(
       'plugins/src/ds-quality/mocks/fixtures/minimal-design-system/ui/generated/deprecated.txt'
     )
-  ).map((token) => ({ deprecatedToken: token })),
+  ).map((token) => ({ deprecatedEntity: token.replace('--', '') })),
   {
-    deprecatedToken: 'semantic-color-ds-deprecated-primary',
-    tokenReplacement: 'secondary-color',
+    deprecatedEntity: 'semantic-color-ds-deprecated-primary',
+    replacement: 'secondary-color',
   },
   {
-    deprecatedToken: 'semantic-color-ds-deprecated-accent',
+    deprecatedEntity: 'semantic-color-ds-deprecated-accent',
   },
+];
+
+const deprecatedMixins: DeprecationDefinition[] = [
+  ...(
+    await readLinesFromTextFile(
+      'plugins/src/ds-quality/mocks/fixtures/minimal-design-system/ui/generated/deprecated-mixins.txt'
+    )
+  ).map((token) => ({ deprecatedEntity: token }))
 ];
 
 export default {
@@ -25,5 +33,6 @@ export default {
   ...(await dsQualityPluginCoreConfig({
     directory: 'plugins/src/ds-quality/mocks/fixtures/minimal-design-system',
     deprecatedTokens,
+    deprecatedMixins,
   }))
 };

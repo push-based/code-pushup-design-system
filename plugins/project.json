@@ -74,6 +74,13 @@
         "onlyPlugins": "ds-quality",
         "progress": false
       }
+    },
+    "ds-quality:mixin-usage": {
+      "command": "npx @code-pushup/cli collect --config=plugins/src/ds-quality/mocks/fixtures/mixin-usage/code-pushup.config.ts",
+      "options": {
+        "onlyPlugins": "ds-quality",
+        "progress": false
+      }
     }
   }
 }
