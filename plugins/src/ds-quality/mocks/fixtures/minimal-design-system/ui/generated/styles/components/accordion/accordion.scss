@@ -13,6 +13,11 @@
   --ds-accordion-space-header-padding-top: var(--semantic-spacing-container-padding-sm);
 }
 
+/* ❌ Usage of deprecated mixin accordion */
+@mixin accordion {
+  --ds-accordion-space-header-padding-top: var(--semantic-spacing-container-padding-sm);
+}
+
 @mixin surface-high {
   --ds-accordion-active-color-background: var(--semantic-color-surface-container-highest-active);
   --ds-accordion-active-color-icon: var(--semantic-color-utility-base);

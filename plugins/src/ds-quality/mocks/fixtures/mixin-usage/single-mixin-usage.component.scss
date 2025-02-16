@@ -1,0 +1,8 @@
+@use './single.mixin' as single-mixin;
+
+.single-mixin {
+  /**
+* ❌ Bad: Deprecated mixin usage [`semantic-color-ds-accordion-background-active`](./../../generated/deprecated.txt#L1)
+**/
+  @include single-mixin.mixin-name;
+}

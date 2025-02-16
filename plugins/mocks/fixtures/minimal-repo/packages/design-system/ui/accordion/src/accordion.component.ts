@@ -20,19 +20,7 @@ export const DS_ACCORDION_VARIANT_ARRAY = ['transparent', 'surface-lowest', 'sur
 export type DsAccordionVariant = (typeof DS_ACCORDION_VARIANT_ARRAY)[number];
 
 @Component({
-  styles: [
-    `
-      @use './../../generated/styles/components/accordion/accordion' as
-        ds-accordion;
-
-      .ds-accordion {
-        /**
-     * ❌ Bad: Deprecated token usage [\`semantic-color-ds-accordion-background-active\`](./../../generated/deprecated.txt#L1)
-     **/
-        color: var(--semantic-color-ds-accordion-background-active);
-      }
-    `,
-  ],
+  styleUrls: ['./accordion.component.scss'],
   selector: 'ds-accordion',
   template: `
     <div class="ds-accordion-header-wrapper">

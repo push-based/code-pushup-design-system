@@ -1,3 +1,4 @@
+accordion.default
 alert.default
 carousel-arrow.active
 carousel-arrow.active-inverse

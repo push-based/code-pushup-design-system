@@ -1,4 +1,4 @@
-alert.default
+accordion.shared
 carousel-arrow.active
 carousel-arrow.active-inverse
 carousel-arrow.enabled

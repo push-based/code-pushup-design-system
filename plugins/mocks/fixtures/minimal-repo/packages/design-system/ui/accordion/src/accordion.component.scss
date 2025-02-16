@@ -1,0 +1,12 @@
+@use './../../generated/styles/components/accordion/accordion' as accordion;
+
+.ds-accordion {
+  /**
+* ❌ Bad: Deprecated token usage [`semantic-color-ds-accordion-background-active`](./../../generated/deprecated.txt#L1)
+**/
+  color: var(--semantic-color-ds-accordion-background-active);
+  /**
+* ❌ Bad: Deprecated mixin usage [`semantic-color-ds-accordion-background-active`](./../../generated/deprecated.txt#L1)
+**/
+  @include accordion.shared;
+}
