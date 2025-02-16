@@ -18,7 +18,9 @@
       "@code-pushup-design-system/angular-ds-coverage": [
         "plugins/angular-ds-coverage/src/index.ts"
       ],
-      "@code-pushup-design-system/plugins/utils": ["plugins/utils/src/index.ts"],
+      "@code-pushup-design-system/plugins/utils": [
+        "plugins/utils/src/index.ts"
+      ],
       "@design-system/usage-reports-utils": [
         "libs/design-system/usage-reports-utils/src/index.ts"
       ],
