@@ -19,6 +19,18 @@
         ]
       }
     },
+    "repo-product:demo": {
+      "command": "npx @code-pushup/cli collect --config=plugins/mocks/fixtures/minimal-repo/packages/sports/code-pushup.config.ts",
+      "options": {
+        "progress": false
+      }
+    },
+    "repo-ds:demo": {
+      "command": "npx @code-pushup/cli collect --config=/Users/michael_hladky/WebstormProjects/code-pushup-design-system/plugins/mocks/fixtures/minimal-repo/packages/design-system/code-pushup.config.ts",
+      "options": {
+        "progress": false
+      }
+    },
     "ds-plugins:demo": {
       "command": "npx @code-pushup/cli collect --config=plugins/src/ds-component-coverage/mocks/fixtures/e2e/demo/code-pushup.config.ts",
       "options": {

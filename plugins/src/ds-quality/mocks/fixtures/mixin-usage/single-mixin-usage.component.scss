@@ -1,8 +1,8 @@
-@use './single.mixin' as single-mixin;
+@use './single-mixin' as single-mixin-alias;
 
-.single-mixin {
+.selector-including-deprecated-mixin {
   /**
-* ❌ Bad: Deprecated mixin usage [`semantic-color-ds-accordion-background-active`](./../../generated/deprecated.txt#L1)
+* ❌ Bad: Deprecated mixin usage `single-mixin.mixin-name`
 **/
-  @include single-mixin.mixin-name;
+  @include single-mixin-alias.mixin-name;
 }

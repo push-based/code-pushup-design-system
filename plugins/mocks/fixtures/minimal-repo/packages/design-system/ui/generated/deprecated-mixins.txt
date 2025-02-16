@@ -1,4 +1,4 @@
-accordion.shared
+deprecated-accordion.deprecated-mixin-name
 carousel-arrow.active
 carousel-arrow.active-inverse
 carousel-arrow.enabled

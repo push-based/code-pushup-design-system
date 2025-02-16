@@ -1,4 +1,4 @@
-import { Root } from 'postcss';
+import { Root, Rule } from 'postcss';
 import { CssAstVisitor } from './stylesheet.visitor';
 
 /**
@@ -17,4 +17,51 @@ export function visitEachChild<T>(root: Root, visitor: CssAstVisitor<T>) {
     console.log('visitMethodName:', visitMethodName)
     visitor[visitMethodName as keyof CssAstVisitor]?.(node as any);
   });
+}
+
+
+
+export function visitStyleSheet<T>(root: Root, visitor: CssAstVisitor<T>) {
+  for (const node of root.nodes) {
+
+    switch (node.type) {
+      case 'rule':
+        visitor?.visitRule?.(node);
+        break;
+      case 'atrule':
+        visitor?.visitAtRule?.(node);
+        break;
+      case 'decl':
+        throw new Error('visit declaration not implemented')
+      // visitor?.visitDeclaration?.(node);
+      case 'comment':
+        visitor?.visitComment?.(node);
+        break;
+      default:
+        throw new Error(`Unknown node type: ${(node as Root).type}`);
+    }
+  }
+}
+
+export function visitEachStyleNode<T>(nodes: Root['nodes'], visitor: CssAstVisitor<T>) {
+  for (const node of nodes) {
+
+    switch (node.type) {
+      case 'rule':
+        visitor?.visitRule?.(node);
+        visitEachStyleNode((node as Rule).nodes, visitor);
+        break;
+      case 'atrule':
+        visitor?.visitAtRule?.(node);
+        break;
+      case 'decl':
+       visitor?.visitDecl?.(node);
+        break;
+      case 'comment':
+        visitor?.visitComment?.(node);
+        break;
+      default:
+        throw new Error(`Unknown node type: ${(node as Root).type}`);
+    }
+  }
 }

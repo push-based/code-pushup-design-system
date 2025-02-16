@@ -1,10 +1,13 @@
 import { dsQualityPlugin } from './lib/ds-quality.plugin';
-export { readDeprecatedEntitiesFromTextFile } from './lib/utils';
+export { type DeprecationDefinition } from './lib/runner/audits/types';
 
+export { dsQualityPlugin } from './lib/ds-quality.plugin';
 export {
-  DsQualityPluginConfig,
-  QualityRunnerOptions,
   DS_QUALITY_PLUGIN_SLUG,
+  type DsQualityPluginConfig,
+  type QualityRunnerOptions,
 } from './lib/ds-quality.plugin';
 
 export default dsQualityPlugin;
+
+export { readLinesFromTextFile } from './lib/utils';

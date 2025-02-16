@@ -1,12 +1,12 @@
 import { Issue } from '@code-pushup/models';
-import { Declaration, Rule } from 'postcss';
+import { Rule } from 'postcss';
 import {
   CssAstVisitor,
   DiagnosticsAware,
   styleAstRuleToSource,
 } from '../../../../../../utils/src';
-import { extractMixinNameRegex } from './constants';
 import { DeprecationDefinition } from '../types';
+import AtRule from 'postcss/lib/at-rule.js';
 
 export const createCssMixinUsageVisitor = (
   tokenReplacementDefinition: DeprecationDefinition,
@@ -15,7 +15,7 @@ export const createCssMixinUsageVisitor = (
   const { deprecatedEntity, replacement, docsUrl } = tokenReplacementDefinition;
   let diagnostics: (Issue & { code?: number })[] = [];
 
-  return {
+  const visitor = {
     getIssues() {
       return diagnostics;
     },
@@ -24,34 +24,33 @@ export const createCssMixinUsageVisitor = (
       diagnostics = [];
     },
 
-    visitDecl(decl: Declaration) {
-      const propVal = decl.value;
-      const usedMixins = Array.from(
-        propVal.matchAll(extractMixinNameRegex)
-      ).map((match) => match[1]);
+    visitAtRule(atRule: AtRule) {
+      const atRuleName = atRule.name;
 
-      if (usedMixins.length === 0) {
+      // only check for @include at-rule
+      if (atRuleName !== 'include') {
         return;
       }
+      const mixinName = atRule.params;
 
-      usedMixins.forEach((cssMixinName) => {
-        if (deprecatedEntity === cssMixinName) {
-          const message = generateCssMixinUsageMessage({
-            cssMixin: cssMixinName,
-            replacement,
-            decl,
-            docsUrl,
-          });
-          diagnostics.push({
-            code: 2002,
-            message,
-            severity: 'error',
-            source: styleAstRuleToSource(decl.parent as Rule, startLine),
-          });
-        }
-      });
+      if (deprecatedEntity === mixinName) {
+        const message = generateCssMixinUsageMessage({
+          cssMixin: mixinName,
+          replacement,
+          atRule,
+          docsUrl,
+        });
+        diagnostics.push({
+          code: 2002,
+          message,
+          severity: 'error',
+          source: styleAstRuleToSource(atRule.parent as Rule, startLine),
+        });
+      }
     },
   };
+
+  return visitor;
 };
 
 /**
@@ -63,16 +62,15 @@ export const createCssMixinUsageVisitor = (
 function generateCssMixinUsageMessage({
   replacement,
   cssMixin,
-  decl,
+  atRule,
   docsUrl,
 }: {
   cssMixin: string;
-  decl: Declaration;
+  atRule: AtRule;
   replacement?: string;
   docsUrl?: string;
 }): string {
-  const property = decl.prop;
-  const selector = (decl.parent as Rule)?.selector ?? '';
+  const selector = (atRule.parent as Rule)?.selector ?? '';
   const replacementMsg = replacement
     ? ` use <code>${replacement}</code> instead`
     : '';
@@ -80,5 +78,5 @@ function generateCssMixinUsageMessage({
   const docsLink = docsUrl
     ? ` <a href="${docsUrl}" target="_blank">Learn more</a>.`
     : '';
-  return `🎨 CSS mixin <code>${cssMixin}</code> on <code>${property}</code> of selector ${selector} is deprecated${replacementMsg}.${docsLink}`;
+  return `🎨 Mixin <code>${cssMixin}</code> included in selector <code>${selector}</code> is deprecated${replacementMsg}.${docsLink}`;
 }

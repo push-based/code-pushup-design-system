@@ -1,6 +1,6 @@
 @mixin shared {
-  /* ❌ Usage of deprecated token semantic-color-ds-accordion-background-active*/
-  --ds-accordion-bg: var(--semantic-color-ds-accordion-background-active);
+  /* ❌ Usage of deprecated token deprecated-accordion-token defined in `deprecated.txt`*/
+  --ds-accordion-bg: var(--deprecated-accordion-token);
   --ds-accordion-size-min-height: var(--semantic-size-x11);
   --ds-accordion-space-content-padding-bottom: var(--semantic-spacing-container-padding-xl);
   --ds-accordion-space-content-padding-left: var(--semantic-spacing-container-padding-xl);
@@ -13,7 +13,8 @@
   --ds-accordion-space-header-padding-top: var(--semantic-spacing-container-padding-sm);
 }
 
-@mixin surface-high {
+/* ❌ Usage of deprecated mixin `deprecated-mixin-name` defined in `deprecated-mixins.txt`*/
+@mixin deprecated-mixin-name {
   --ds-accordion-active-color-background: var(--semantic-color-surface-container-highest-active);
   --ds-accordion-active-color-icon: var(--semantic-color-utility-base);
   --ds-accordion-active-color-subtitle: var(--semantic-color-on-surface-subtle);

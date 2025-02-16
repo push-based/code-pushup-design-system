@@ -5,7 +5,6 @@ import {
   parseComponents,
   ParsedComponent,
   visitComponentStyles,
-  visitEachChild,
 } from '../../../../utils/src';
 import {
   getStyleMixinAuditOutput,
@@ -14,8 +13,9 @@ import {
 import { DeprecationDefinition } from './audits/types';
 import type { Root } from 'postcss';
 import { createCssVarUsageVisitor } from './audits/style-tokens/variable-definition.visitor';
-import { createCssMixinUsageVisitor } from './audits/style-mixins/mixin-definition.visitor';
-import { getStyleMixinAudits } from './audits/style-mixins/utils';
+import { createCssMixinUsageVisitor } from './audits/style-mixins/mixin-usage.visitor';
+import { visitEachStyleNode } from '../../../../utils/src/lib/styles/stylesheet.walk';
+import { createCssMixinImportVisitor } from './audits/style-mixins/mixin-import.visitor';
 
 export type CreateRunnerConfig = {
   directory: string;
@@ -28,37 +28,42 @@ export type CreateRunnerConfig = {
  * @param options Plugin configuration. Directory and DesignSystem components.
  */
 export async function runnerFunction({
-                                       directory,
-                                       deprecatedTokens = [],
-                                       deprecatedMixins = [],
-                                     }: CreateRunnerConfig): Promise<AuditOutputs> {
-  const parsedComponents: ParsedComponent[] = parseComponents(findComponents({ directory }));
+  directory,
+  deprecatedTokens = [],
+  deprecatedMixins = [],
+}: CreateRunnerConfig): Promise<AuditOutputs> {
+  const parsedComponents: ParsedComponent[] = parseComponents(
+    findComponents({ directory })
+  );
 
   const auditResults: AuditOutputs[] = await Promise.all(
     parsedComponents.map(async (parsedComponent) => {
-      const tokenAuditPromises = deprecatedTokens.map(async (deprecatedToken) => {
-        const issues = await visitComponentStyles(
-          parsedComponent,
-          deprecatedToken,
-          getTokenIssues
-        );
-        return getStyleTokenAuditOutput(deprecatedToken, issues);
-      });
+      const tokenAuditPromises = deprecatedTokens.map(
+        async (deprecatedToken) => {
+          const issues = await visitComponentStyles(
+            parsedComponent,
+            deprecatedToken,
+            getTokenIssues
+          );
+          return getStyleTokenAuditOutput(deprecatedToken, issues);
+        }
+      );
 
-      const mixinAuditPromises = deprecatedMixins.map(async (deprecatedMixin) => {
-        const issues = await visitComponentStyles(
-          parsedComponent,
-          deprecatedMixin,
-          getMixinIssues
-        );
-        return getStyleMixinAuditOutput(deprecatedMixin, issues);
-      });
+      const mixinAuditPromises = deprecatedMixins.map(
+        async (deprecatedMixin) => {
+          const issues = await visitComponentStyles(
+            parsedComponent,
+            deprecatedMixin,
+            getMixinIssues
+          );
+          return getStyleMixinAuditOutput(deprecatedMixin, issues);
+        }
+      );
 
       const [tokenAudits, mixinAudits] = await Promise.all([
         Promise.all(tokenAuditPromises),
         Promise.all(mixinAuditPromises),
       ]);
-      console.log('mixinAudits:', mixinAudits.flat())
 
       return [...tokenAudits.flat(), ...mixinAudits.flat()];
     })
@@ -74,7 +79,7 @@ async function getTokenIssues(
   const tokenVisitor = createCssVarUsageVisitor(replacement, asset.startLine);
 
   const ast = (await asset.parse()).root as unknown as Root;
-  visitEachChild(ast, tokenVisitor);
+  visitEachStyleNode(ast.nodes, tokenVisitor);
 
   return tokenVisitor.getIssues();
 }
@@ -83,10 +88,18 @@ async function getMixinIssues(
   replacement: DeprecationDefinition,
   asset: Asset<Root>
 ): Promise<Issue[]> {
-  const tokenVisitor = createCssMixinUsageVisitor(replacement, asset.startLine);
+  const mixinUsageVisitor = createCssMixinUsageVisitor(
+    replacement,
+    asset.startLine
+  );
+  const mixinImportVisitor = createCssMixinImportVisitor(
+    replacement,
+    asset.startLine
+  );
 
   const ast = (await asset.parse()).root as unknown as Root;
-  visitEachChild(ast, tokenVisitor);
+  visitEachStyleNode(ast.nodes, mixinUsageVisitor);
+  visitEachStyleNode(ast.nodes, mixinImportVisitor);
 
-  return tokenVisitor.getIssues();
+  return [...mixinUsageVisitor.getIssues(), ...mixinImportVisitor.getIssues()];
 }
