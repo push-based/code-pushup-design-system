@@ -4,7 +4,7 @@ import { angularDsCoveragePluginCoreConfig } from '../../../../src/core.config';
 const dsComponents: ComponentReplacement[] = [
   {
     componentName: 'DSButton',
-    matchingCssClasses: ['btn', 'btn-primary', 'legacy-button'],
+    deprecatedCssClasses: ['btn', 'btn-primary', 'legacy-button'],
     docsUrl:
       'https://storybook.entaingroup.corp/latest/?path=/docs/components-button--overview',
   },

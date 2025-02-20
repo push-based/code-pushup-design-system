@@ -1,4 +1,4 @@
-import { getStyleTokenAuditSlug } from './utils';
+import { getStyleVariableAuditSlug } from './utils';
 import { AuditOutput, Issue } from '@code-pushup/models';
 import { DeprecationDefinition } from '../types';
 import { pluralize } from '@code-pushup/utils';
@@ -16,12 +16,12 @@ export function scoreAuditOutput(
   };
 }
 
-export function getStyleTokenAuditOutput(
+export function getStyleVariableAuditOutput(
   { deprecatedEntity }: DeprecationDefinition,
   issues: Issue[]
 ): AuditOutput {
   return {
-    slug: getStyleTokenAuditSlug(deprecatedEntity),
+    slug: getStyleVariableAuditSlug(deprecatedEntity),
     displayValue: `${issues.length} ${pluralize('token', issues.length)} found`,
     ...scoreAuditOutput(issues),
   };

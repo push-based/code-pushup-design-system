@@ -8,7 +8,7 @@ describe('ClassCollectorVisitor', () => {
   beforeEach(() => {
     visitor = new ClassUsageVisitor({
       componentName: 'CounterComponent',
-      matchingCssClasses: ['count'],
+      deprecatedCssClasses: ['count'],
       docsUrl: 'my.doc#CounterComponent',
     });
   });

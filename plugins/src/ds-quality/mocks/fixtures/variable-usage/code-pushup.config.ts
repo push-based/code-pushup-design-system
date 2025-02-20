@@ -1,4 +1,4 @@
-import { DeprecationDefinition } from '../../../src/lib/runner/audits/types';
+import { DeprecationDefinition } from '../../../src';
 import dsQualityPlugin from '../../../src/index';
 
 const deprecatedTokens: DeprecationDefinition[] = [
@@ -23,7 +23,7 @@ export default {
   plugins: [
     dsQualityPlugin({
       directory: 'plugins/src/ds-quality/mocks/fixtures/variable-usage',
-      deprecatedTokens,
+      deprecatedVariables: deprecatedTokens,
       deprecatedMixins: [],
     }),
   ],

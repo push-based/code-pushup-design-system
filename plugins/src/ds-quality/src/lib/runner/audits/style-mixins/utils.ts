@@ -6,7 +6,7 @@ export function getStyleMixinAuditSlug(deprecatedEntity: string): string {
   return slugify(`deprecated-mixin-${slugify(deprecatedEntity)}`);
 }
 
-export function getStyleMixinAudits(
+export function getDeprecatedMixinAudits(
   deprecatedMixins: DeprecationDefinition[]
 ): Audit[] {
   return deprecatedMixins.map(({ deprecatedEntity }) => ({

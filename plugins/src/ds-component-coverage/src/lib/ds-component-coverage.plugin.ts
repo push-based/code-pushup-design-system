@@ -3,7 +3,7 @@ import { CreateRunnerConfig, runnerFunction } from './runner/create-runner';
 import { getAudits } from './utils';
 import { ANGULAR_DS_COVERAGE_PLUGIN_SLUG } from './constants';
 
-export type AngularDsCoveragePluginConfig = CreateRunnerConfig;
+export type DsComponentCoveragePluginConfig = CreateRunnerConfig;
 
 /**
  * Plugin to measure and assert usage of DesignSystem components in an Angular project.
@@ -11,8 +11,8 @@ export type AngularDsCoveragePluginConfig = CreateRunnerConfig;
  *
  * @param options
  */
-export function angularDsCoverage(
-  options: AngularDsCoveragePluginConfig
+export function dsComponentCoveragePlugin(
+  options: DsComponentCoveragePluginConfig
 ): PluginConfig {
   return {
     slug: ANGULAR_DS_COVERAGE_PLUGIN_SLUG,
@@ -25,4 +25,4 @@ export function angularDsCoverage(
   } as const;
 }
 
-export default angularDsCoverage;
+export default dsComponentCoveragePlugin;

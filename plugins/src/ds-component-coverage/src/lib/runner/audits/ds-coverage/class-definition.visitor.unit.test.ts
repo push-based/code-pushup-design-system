@@ -27,7 +27,7 @@ describe('ClassUsageStylesheetVisitor', () => {
              `;
 
     cssAstVisitor = createClassDefinitionVisitor({
-      matchingCssClasses: ['btn'],
+      deprecatedCssClasses: ['btn'],
       componentName: 'DsButton',
     });
 

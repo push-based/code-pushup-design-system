@@ -95,11 +95,11 @@ export class ClassUsageVisitor
   }
 
   visitTextAttribute(attribute: TmplAstTextAttribute): void {
-    const { matchingCssClasses, ...compRepl } = this.componentReplacement;
+    const { deprecatedCssClasses, ...compRepl } = this.componentReplacement;
     if (attribute.name === 'class' && this.currentElement) {
       const classNames = parseClassNames(attribute.value);
       for (const className of classNames) {
-        if (matchingCssClasses.includes(className)) {
+        if (deprecatedCssClasses.includes(className)) {
           this.issues.push({
             severity: 'error', // @TODO if we consider transformations this needs to be dynamic
             message: generateClassUsageMessage({
@@ -118,12 +118,12 @@ export class ClassUsageVisitor
   visitBoundAttribute(attribute: TmplAstBoundAttribute): void {
     if (!this.currentElement) return;
 
-    const { matchingCssClasses, ...compRepl } = this.componentReplacement;
+    const { deprecatedCssClasses, ...compRepl } = this.componentReplacement;
 
     // Check `[class.foo]`
     if (
       attribute.type === BindingType.Class &&
-      matchingCssClasses.includes(attribute.name)
+      deprecatedCssClasses.includes(attribute.name)
     ) {
       this.issues.push({
         severity: 'error', // @TODO if we consider transformations this needs to be dynamic
@@ -141,7 +141,7 @@ export class ClassUsageVisitor
     if (attribute.name === 'ngClass') {
       const value: ASTWithSource = attribute.value as ASTWithSource;
       const sourceString = value.source ?? '';
-      for (const className of matchingCssClasses) {
+      for (const className of deprecatedCssClasses) {
         if (sourceString.includes(className)) {
           this.issues.push({
             severity: 'error', // @TODO if we consider transformations this needs to be dynamic

@@ -19,7 +19,7 @@ export default {
     dsQualityPlugin({
       directory: 'plugins/src/ds-quality/mocks/fixtures/mixin-usage',
       deprecatedMixins,
-      deprecatedTokens: [],
+      deprecatedVariables: [],
     }),
   ],
 };

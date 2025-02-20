@@ -1,13 +1,13 @@
 import { CategoryConfig, CoreConfig } from '@code-pushup/models';
 import angularDsCoveragePlugin, {
-  AngularDsCoveragePluginConfig,
+  DsComponentCoveragePluginConfig,
 } from './lib/ds-component-coverage.plugin';
 import { getAngularDsCoverageCategoryRefs } from './lib/utils';
 
 export async function angularDsCoveragePluginCoreConfig({
   directory,
   dsComponents,
-}: AngularDsCoveragePluginConfig) {
+}: DsComponentCoveragePluginConfig) {
   return {
     plugins: [
       angularDsCoveragePlugin({
@@ -21,7 +21,7 @@ export async function angularDsCoveragePluginCoreConfig({
 
 export async function angularDsCoveragePluginCategories({
   dsComponents,
-}: Pick<AngularDsCoveragePluginConfig, 'dsComponents'>): Promise<
+}: Pick<DsComponentCoveragePluginConfig, 'dsComponents'>): Promise<
   CategoryConfig[]
 > {
   return [

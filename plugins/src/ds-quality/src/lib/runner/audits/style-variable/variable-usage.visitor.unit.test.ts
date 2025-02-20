@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createCssVarUsageVisitor } from './variable-definition.visitor';
+import { createCssVarUsageVisitor } from './variable-usage.visitor';
 import postcss from 'postcss';
 import { visitEachChild } from '../../../../../../utils/src';
 
@@ -11,7 +11,7 @@ describe('createCssVarUsageVisitor', () => {
 
     tokenAstVisitor = createCssVarUsageVisitor({
       replacement: 'primary-color-btn-new',
-      deprecatedEntity: ['primary-color-btn'],
+      deprecatedEntity: 'primary-color-btn',
       docsUrl: '',
     });
 

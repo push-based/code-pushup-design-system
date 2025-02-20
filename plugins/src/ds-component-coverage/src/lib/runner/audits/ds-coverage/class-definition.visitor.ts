@@ -15,11 +15,34 @@ import { ComponentReplacement } from './types';
 
 export type ClassDefinitionVisitor = CssAstVisitor & DiagnosticsAware;
 
+/**
+ * Visits a `CssAstVisitor` that is `DiagnosticsAware`and collects the definition of deprecated class names.
+ *
+ * @example
+ * const ast: Root = postcss.parse(`
+ *   .btn {
+ *     color: red;
+ *   }
+ * `);
+ * const visitor = createClassDefinitionVisitor(ast, { deprecatedCssClasses: ['btn'] });
+ * // The visitor will check each `Rule` definition for matching deprecateCssClasses
+ * visitEachStyleNode(ast.nodes, visitor);
+ *
+ * // The visitor is `DiagnosticsAware` and xou can get the issues over a public API.
+ * const issues: Issue & { coed?: number } = visitor.getIssues();
+ *
+ * // Subsequent usags will add to the issues.
+ * // You can also clear the issues
+ * visitor.clear();
+ *
+ * @param componentReplacement
+ * @param startLine
+ */
 export const createClassDefinitionVisitor = (
   componentReplacement: ComponentReplacement,
   startLine = 0
 ): ClassDefinitionVisitor => {
-  const { matchingCssClasses = [] } = componentReplacement;
+  const { deprecatedCssClasses = [] } = componentReplacement;
   let diagnostics: Issue[] = [];
 
   return {
@@ -34,7 +57,7 @@ export const createClassDefinitionVisitor = (
     visitRule(rule: Rule) {
       getMatchingClassNames(
         { selector: rule.selector },
-        matchingCssClasses
+        deprecatedCssClasses
       ).forEach((className) => {
         const message = generateStylesheetUsageMessage({
           className,

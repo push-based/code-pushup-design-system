@@ -1,16 +1,7 @@
-import {
-  ParsedTemplate,
-  TmplAstElement,
-  TmplAstTemplate,
-  TmplAstTextAttribute,
-} from '@angular/compiler';
+import { ParsedTemplate, TmplAstElement } from '@angular/compiler';
 import { Issue } from '@code-pushup/models';
-import { Asset, ParsedComponent } from '../utils/types';
-import type { Root } from 'postcss';
-import { ComponentReplacement } from '../../../../ds-component-coverage/src';
-import { ClassUsageVisitor } from '../../../../ds-component-coverage/src/lib/runner/audits/ds-coverage/class-usage.visitor';
-import { visitEachTmplChild } from './template.walk';
-import { DeprecationDefinition } from '../../../../ds-quality/src/lib/runner/audits/style-tokens/types';
+import { ParsedComponent } from '../types';
+import { Asset } from '../../utils/types';
 
 /**
  * Convert a TmplAstElement to an Issue source object and adjust its position based on startLine.
@@ -18,7 +9,7 @@ import { DeprecationDefinition } from '../../../../ds-quality/src/lib/runner/aud
  * By default, the source location is 0 indexed, so we add 1 to the startLine to make it work in file links.
  *
  * @param element The element to convert.
- * @param startLine The base line number to adjust positions.
+ * @param startLine The baseline number to adjust positions.
  */
 export function tmplAstElementToSource(
   { startSourceSpan, sourceSpan, endSourceSpan }: TmplAstElement,

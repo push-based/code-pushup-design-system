@@ -32,7 +32,7 @@ export default {
   },
   ...(await dsQualityPluginCoreConfig({
     directory: 'plugins/src/ds-quality/mocks/fixtures/minimal-design-system',
-    deprecatedTokens,
+    deprecatedVariables: deprecatedTokens,
     deprecatedMixins,
   }))
 };

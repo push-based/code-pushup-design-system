@@ -21,7 +21,7 @@ export default {
     dsQualityPlugin({
       directory: 'plugins/mocks/fixtures/minimal-repo/packages/design-system',
       deprecatedMixins,
-      deprecatedTokens: [],
+      deprecatedVariables: [],
     }),
   ],
 };

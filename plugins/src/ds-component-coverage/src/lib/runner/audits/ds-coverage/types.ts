@@ -1,5 +1,5 @@
 export type ComponentReplacement = {
   componentName: string;
-  matchingCssClasses: string[];
+  deprecatedCssClasses: string[];
   docsUrl?: string;
 };

@@ -50,9 +50,9 @@ export function getCompCoverageAuditTitle({
 }
 export function getCompCoverageAuditDescription({
   componentName,
-  matchingCssClasses,
+  deprecatedCssClasses,
 }: ComponentReplacement): string {
-  return `Coverage audit for ${componentName} component. Matching classes: ${matchingCssClasses.join(
+  return `Coverage audit for ${componentName} component. Matching classes: ${deprecatedCssClasses.join(
     ', '
   )}`;
 }

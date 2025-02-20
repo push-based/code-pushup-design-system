@@ -3,8 +3,8 @@ import dsQualityPlugin, {
   DS_QUALITY_PLUGIN_SLUG,
   DsQualityPluginConfig,
 } from './lib/ds-quality.plugin';
-import { getStyleTokenAudits } from './lib/runner/audits/style-tokens/utils';
-import { getStyleMixinAudits } from './lib/runner/audits/style-mixins/utils';
+import { getDeprecatedVariableAudits } from './lib/runner/audits/style-variable/utils';
+import { getDeprecatedMixinAudits } from './lib/runner/audits/style-mixins/utils';
 import { DeprecationDefinition } from './lib/runner/audits/types';
 
 export async function dsQualityPluginCoreConfig(opt: DsQualityPluginConfig) {
@@ -15,11 +15,11 @@ export async function dsQualityPluginCoreConfig(opt: DsQualityPluginConfig) {
 }
 
 export async function dsQualityPluginCategories({
-  deprecatedTokens,
+  deprecatedVariables,
   deprecatedMixins,
 }: Pick<
   DsQualityPluginConfig,
-  'deprecatedTokens' | 'deprecatedMixins'
+  'deprecatedVariables' | 'deprecatedMixins'
 >): Promise<CategoryConfig[]> {
   return [
     {
@@ -37,7 +37,7 @@ export async function dsQualityPluginCategories({
 export function getStyleTokenCategoryRefs(
   tokenReplacements: DeprecationDefinition[]
 ): CategoryRef[] {
-  return getStyleTokenAudits(tokenReplacements).map(({ slug }) => ({
+  return getDeprecatedVariableAudits(tokenReplacements).map(({ slug }) => ({
     slug,
     plugin: DS_QUALITY_PLUGIN_SLUG,
     type: 'audit',
@@ -48,7 +48,7 @@ export function getStyleTokenCategoryRefs(
 export function getStyleMixinCategoryRefs(
   tokenReplacements: DeprecationDefinition[]
 ): CategoryRef[] {
-  return getStyleMixinAudits(tokenReplacements).map(({ slug }) => ({
+  return getDeprecatedMixinAudits(tokenReplacements).map(({ slug }) => ({
     slug,
     plugin: DS_QUALITY_PLUGIN_SLUG,
     type: 'audit',

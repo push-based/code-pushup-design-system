@@ -8,11 +8,11 @@ import {
 } from '../../../../utils/src';
 import {
   getStyleMixinAuditOutput,
-  getStyleTokenAuditOutput,
-} from './audits/style-tokens/style-token.audit';
+  getStyleVariableAuditOutput,
+} from './audits/style-variable/style-variable.audit';
 import { DeprecationDefinition } from './audits/types';
 import type { Root } from 'postcss';
-import { createCssVarUsageVisitor } from './audits/style-tokens/variable-definition.visitor';
+import { createCssVarUsageVisitor } from './audits/style-variable/variable-usage.visitor';
 import { createCssMixinUsageVisitor } from './audits/style-mixins/mixin-usage.visitor';
 import { visitEachStyleNode } from '../../../../utils/src/lib/styles/stylesheet.walk';
 import { createCssMixinImportVisitor } from './audits/style-mixins/mixin-import.visitor';
@@ -33,7 +33,7 @@ export async function runnerFunction({
   deprecatedMixins = [],
 }: CreateRunnerConfig): Promise<AuditOutputs> {
   const parsedComponents: ParsedComponent[] = parseComponents(
-    findComponents({ directory })
+    await findComponents({ directory })
   );
 
   const auditResults: AuditOutputs[] = await Promise.all(
@@ -45,7 +45,7 @@ export async function runnerFunction({
             deprecatedToken,
             getTokenIssues
           );
-          return getStyleTokenAuditOutput(deprecatedToken, issues);
+          return getStyleVariableAuditOutput(deprecatedToken, issues);
         }
       );
 

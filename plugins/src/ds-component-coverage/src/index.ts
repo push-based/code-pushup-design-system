@@ -1,10 +1,10 @@
-import { angularDsCoverage } from './lib/ds-component-coverage.plugin';
+import { dsComponentCoveragePlugin } from './lib/ds-component-coverage.plugin';
 export {
-  angularDsCoverage,
-  AngularDsCoveragePluginConfig,
+  dsComponentCoveragePlugin,
+  DsComponentCoveragePluginConfig,
 } from './lib/ds-component-coverage.plugin';
 export { getAngularDsCoverageCategoryRefs } from './lib/utils';
 export { ANGULAR_DS_COVERAGE_PLUGIN_SLUG } from './lib/constants';
 
-export default angularDsCoverage;
+export default dsComponentCoveragePlugin;
 export { ComponentReplacement } from './lib/runner/audits/ds-coverage/types';
