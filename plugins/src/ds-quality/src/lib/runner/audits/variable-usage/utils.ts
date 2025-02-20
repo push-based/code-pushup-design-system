@@ -1,6 +1,10 @@
-import { Audit } from '@code-pushup/models';
+import { Audit, Issue } from '@code-pushup/models';
 import { slugify } from '@code-pushup/utils';
 import { DeprecationDefinition } from '../types';
+import { Asset } from '../../../../../../utils/src';
+import type { Root } from 'postcss';
+import { createCssVarUsageVisitor } from './variable-usage.visitor';
+import { visitEachStyleNode } from '../../../../../../utils/src/lib/styles/stylesheet.walk';
 
 export function getStyleVariableAuditSlug(deprecatedToken: string): string {
   return slugify(`deprecated-token-${deprecatedToken}`);
@@ -22,4 +26,16 @@ export function getDeprecatedVariableAudits(
     title: getStyleTokenAuditTitle(deprecatedEntity),
     description: getStyleTokenAuditDescription(deprecatedEntity),
   }));
+}
+
+export async function getVariableUsageIssues(
+  replacement: DeprecationDefinition,
+  asset: Asset<Root>
+): Promise<Issue[]> {
+  const tokenVisitor = createCssVarUsageVisitor(replacement, asset.startLine);
+
+  const ast = (await asset.parse()).root as unknown as Root;
+  visitEachStyleNode(ast.nodes, tokenVisitor);
+
+  return tokenVisitor.getIssues();
 }

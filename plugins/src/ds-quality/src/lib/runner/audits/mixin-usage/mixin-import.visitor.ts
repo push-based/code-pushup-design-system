@@ -29,12 +29,11 @@ export const createCssMixinImportVisitor = (
       const atRuleName = atRule.name;
 
       // only check for `@use` at-rules
-      if(atRuleName !== 'use') {
+      if (atRuleName !== 'use') {
         return;
       }
 
-      const [_, __, importAlias] =
-        atRule.params.match(useImportRegex) ?? [];
+      const [_, __, importAlias] = atRule.params.match(useImportRegex) ?? [];
 
       if (importAlias == null) {
         return;
@@ -47,7 +46,6 @@ export const createCssMixinImportVisitor = (
           docsUrl,
         });
         diagnostics.push({
-          code: 2003,
           message,
           severity: 'error',
           source: styleAstRuleToSource(atRule.parent as Rule, startLine),
@@ -65,14 +63,15 @@ export const createCssMixinImportVisitor = (
  */
 function generateCssMixinImportMessage({
   replacement,
-                                         atRule,
+  atRule,
   docsUrl,
 }: {
   atRule: AtRule;
   replacement?: string;
   docsUrl?: string;
 }): string {
-  const [_, importPath, importAlias] = atRule.params.match(useImportRegex) ?? [];
+  const [_, importPath, importAlias] =
+    atRule.params.match(useImportRegex) ?? [];
   const replacementMsg = replacement
     ? ` use <code>${replacement}</code> instead`
     : '';

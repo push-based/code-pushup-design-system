@@ -15,7 +15,7 @@ export const createCssMixinUsageVisitor = (
   const { deprecatedEntity, replacement, docsUrl } = tokenReplacementDefinition;
   let diagnostics: (Issue & { code?: number })[] = [];
 
-  const visitor = {
+  return {
     getIssues() {
       return diagnostics;
     },
@@ -49,8 +49,6 @@ export const createCssMixinUsageVisitor = (
       }
     },
   };
-
-  return visitor;
 };
 
 /**

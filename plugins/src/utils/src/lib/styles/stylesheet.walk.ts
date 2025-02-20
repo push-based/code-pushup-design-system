@@ -14,16 +14,12 @@ export function visitEachChild<T>(root: Root, visitor: CssAstVisitor<T>) {
     const visitMethodName = `visit${
       node.type[0].toUpperCase() + node.type.slice(1)
     }`;
-    console.log('visitMethodName:', visitMethodName)
     visitor[visitMethodName as keyof CssAstVisitor]?.(node as any);
   });
 }
 
-
-
 export function visitStyleSheet<T>(root: Root, visitor: CssAstVisitor<T>) {
   for (const node of root.nodes) {
-
     switch (node.type) {
       case 'rule':
         visitor?.visitRule?.(node);
@@ -32,7 +28,7 @@ export function visitStyleSheet<T>(root: Root, visitor: CssAstVisitor<T>) {
         visitor?.visitAtRule?.(node);
         break;
       case 'decl':
-        throw new Error('visit declaration not implemented')
+        throw new Error('visit declaration not implemented');
       // visitor?.visitDeclaration?.(node);
       case 'comment':
         visitor?.visitComment?.(node);
@@ -43,9 +39,11 @@ export function visitStyleSheet<T>(root: Root, visitor: CssAstVisitor<T>) {
   }
 }
 
-export function visitEachStyleNode<T>(nodes: Root['nodes'], visitor: CssAstVisitor<T>) {
+export function visitEachStyleNode<T>(
+  nodes: Root['nodes'],
+  visitor: CssAstVisitor<T>
+) {
   for (const node of nodes) {
-
     switch (node.type) {
       case 'rule':
         visitor?.visitRule?.(node);
@@ -55,7 +53,7 @@ export function visitEachStyleNode<T>(nodes: Root['nodes'], visitor: CssAstVisit
         visitor?.visitAtRule?.(node);
         break;
       case 'decl':
-       visitor?.visitDecl?.(node);
+        visitor?.visitDecl?.(node);
         break;
       case 'comment':
         visitor?.visitComment?.(node);

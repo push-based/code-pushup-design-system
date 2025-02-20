@@ -1,6 +1,5 @@
-import { AuditOutputs, Issue } from '@code-pushup/models';
+import { AuditOutputs } from '@code-pushup/models';
 import {
-  Asset,
   findComponents,
   parseComponents,
   ParsedComponent,
@@ -9,13 +8,10 @@ import {
 import {
   getStyleMixinAuditOutput,
   getStyleVariableAuditOutput,
-} from './audits/style-variable/style-variable.audit';
+} from './audits/variable-usage/variable-usage.audit';
 import { DeprecationDefinition } from './audits/types';
-import type { Root } from 'postcss';
-import { createCssVarUsageVisitor } from './audits/style-variable/variable-usage.visitor';
-import { createCssMixinUsageVisitor } from './audits/style-mixins/mixin-usage.visitor';
-import { visitEachStyleNode } from '../../../../utils/src/lib/styles/stylesheet.walk';
-import { createCssMixinImportVisitor } from './audits/style-mixins/mixin-import.visitor';
+import { getMixinUsageIssues } from './audits/mixin-usage/utils';
+import { getVariableUsageIssues } from './audits/variable-usage/utils';
 
 export type CreateRunnerConfig = {
   directory: string;
@@ -43,7 +39,7 @@ export async function runnerFunction({
           const issues = await visitComponentStyles(
             parsedComponent,
             deprecatedToken,
-            getTokenIssues
+            getVariableUsageIssues
           );
           return getStyleVariableAuditOutput(deprecatedToken, issues);
         }
@@ -54,7 +50,7 @@ export async function runnerFunction({
           const issues = await visitComponentStyles(
             parsedComponent,
             deprecatedMixin,
-            getMixinIssues
+            getMixinUsageIssues
           );
           return getStyleMixinAuditOutput(deprecatedMixin, issues);
         }
@@ -70,36 +66,4 @@ export async function runnerFunction({
   );
 
   return auditResults.flat();
-}
-
-async function getTokenIssues(
-  replacement: DeprecationDefinition,
-  asset: Asset<Root>
-): Promise<Issue[]> {
-  const tokenVisitor = createCssVarUsageVisitor(replacement, asset.startLine);
-
-  const ast = (await asset.parse()).root as unknown as Root;
-  visitEachStyleNode(ast.nodes, tokenVisitor);
-
-  return tokenVisitor.getIssues();
-}
-
-async function getMixinIssues(
-  replacement: DeprecationDefinition,
-  asset: Asset<Root>
-): Promise<Issue[]> {
-  const mixinUsageVisitor = createCssMixinUsageVisitor(
-    replacement,
-    asset.startLine
-  );
-  const mixinImportVisitor = createCssMixinImportVisitor(
-    replacement,
-    asset.startLine
-  );
-
-  const ast = (await asset.parse()).root as unknown as Root;
-  visitEachStyleNode(ast.nodes, mixinUsageVisitor);
-  visitEachStyleNode(ast.nodes, mixinImportVisitor);
-
-  return [...mixinUsageVisitor.getIssues(), ...mixinImportVisitor.getIssues()];
 }

@@ -19,22 +19,20 @@ describe('createCssVarUsageVisitor', () => {
 
     visitEachChild(ast, tokenAstVisitor);
 
-    expect(tokenAstVisitor?.getIssues?.()).toStrictEqual(
-      [
-        {
-          "message": `🎨 The CSS variable <code>primary-color-btn</code> in <code>color</code> is deprecated. Replace it with the recommended alternative. <a href="https://your-docs-link.com" target="_blank">Learn more</a>.`,
-          "severity": "error",
-          "source": {
-            "file": expect.stringMatching(/ds-quality\/styles\.css$/),
-            "position": {
-              "endColumn": 39,
-              "endLine": 1,
-              "startColumn": 8,
-              "startLine": 1,
-            },
+    expect(tokenAstVisitor?.getIssues?.()).toStrictEqual([
+      {
+        message: `🎨 The CSS variable <code>primary-color-btn</code> in <code>color</code> is deprecated. Replace it with the recommended alternative. <a href="https://your-docs-link.com" target="_blank">Learn more</a>.`,
+        severity: 'error',
+        source: {
+          file: expect.stringMatching(/ds-quality\/styles\.css$/),
+          position: {
+            endColumn: 39,
+            endLine: 1,
+            startColumn: 8,
+            startLine: 1,
           },
         },
-      ]
-    );
+      },
+    ]);
   });
 });

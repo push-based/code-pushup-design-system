@@ -2,11 +2,11 @@ import { getStyleVariableAuditSlug } from './utils';
 import { AuditOutput, Issue } from '@code-pushup/models';
 import { DeprecationDefinition } from '../types';
 import { pluralize } from '@code-pushup/utils';
-import { getStyleMixinAuditSlug } from '../style-mixins/utils';
+import { getStyleMixinAuditSlug } from '../mixins-usage/utils';
 
 export function scoreAuditOutput(
   issues: Issue[]
-): Pick<AuditOutput,'score' |'value' | 'details'> {
+): Pick<AuditOutput, 'score' | 'value' | 'details'> {
   return {
     score: issues.length === 0 ? 1 : 0,
     value: issues.length,

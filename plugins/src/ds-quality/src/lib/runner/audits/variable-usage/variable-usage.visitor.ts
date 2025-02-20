@@ -1,6 +1,10 @@
 import { Issue } from '@code-pushup/models';
 import { Declaration, Rule } from 'postcss';
-import { CssAstVisitor, DiagnosticsAware, styleAstRuleToSource } from '../../../../../../utils/src';
+import {
+  CssAstVisitor,
+  DiagnosticsAware,
+  styleAstRuleToSource,
+} from '../../../../../../utils/src';
 import { DeprecationDefinition } from '../types';
 import { extractCssVariableNameRegex } from './constants';
 
@@ -8,9 +12,8 @@ export const createCssVarUsageVisitor = (
   tokenReplacementDefinition: DeprecationDefinition,
   startLine = 0
 ): DiagnosticsAware & CssAstVisitor => {
-  const { deprecatedEntity, replacement, docsUrl } =
-    tokenReplacementDefinition;
-  let diagnostics: (Issue & {code?: number})[] = [];
+  const { deprecatedEntity, replacement, docsUrl } = tokenReplacementDefinition;
+  let diagnostics: (Issue & { code?: number })[] = [];
 
   return {
     getIssues() {

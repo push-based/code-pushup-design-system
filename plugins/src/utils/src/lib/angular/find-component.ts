@@ -19,7 +19,7 @@ export async function findComponents(opt: { directory: string }) {
     .crawl(opt.directory)
     .withPromise();
   const directories = Array.from(new Set(files.map((file) => dirname(file))));
-  console.log('directories', directories)
+
   return directories
     .flatMap((directory) =>
       fastFindInFiles({
