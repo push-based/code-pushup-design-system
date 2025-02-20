@@ -1,5 +1,5 @@
 {
-  "name": "ds-cp-plugin",
+  "name": "ds-cp",
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "plugins/src",
   "projectType": "library",

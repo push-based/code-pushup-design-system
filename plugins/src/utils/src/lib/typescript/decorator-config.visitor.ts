@@ -54,7 +54,7 @@ export function classDecoratorVisitor({
         startLine: ts.getLineAndCharacterOfPosition(
           sourceFile,
           node.getStart(sourceFile)
-        ).line, // 0 indexed (linkable index is set in the issue creation logic)
+        ).line,
         className: currentClassName,
         fileName: sourceFile.fileName,
       } as ParsedComponent;

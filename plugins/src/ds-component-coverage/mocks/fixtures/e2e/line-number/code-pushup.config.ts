@@ -12,11 +12,11 @@ const dsComponents: ComponentReplacement[] = [
 
 export default {
   persist: {
-    outputDir: '.code-pushup/angular-ds/ds-component-coverage/line-number',
+    outputDir: '.code-pushup/ds-component-coverage/line-number',
     format: ['json', 'md'],
   },
   ...(await angularDsCoveragePluginCoreConfig({
-    directory: 'plugins/src/ds-component-coverage/mocks/fixtures/ds-component-coverage/line-number',
+    directory: './plugins/src/ds-component-coverage/mocks/fixtures/e2e/line-number',
     dsComponents,
   })),
 };

@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 
 @Component({
-  styles: [`.btn {
-    color: red;
-  }`],
-  selector: 'inl-styl-span',
-  template: '',
+  template: `<button class="btn">
+      click
+    </button>`,
+  selector: 'inl-tmpl-span',
 })
 export class InlStylSingleComponent {}

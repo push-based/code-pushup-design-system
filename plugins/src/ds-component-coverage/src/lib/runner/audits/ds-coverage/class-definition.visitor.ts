@@ -59,24 +59,24 @@ export const createClassDefinitionVisitor = (
         { selector: rule.selector },
         deprecatedCssClasses
       ).forEach((className) => {
-        const message = generateStylesheetUsageMessage({
+        const message = classUsageMessage({
           className,
           rule,
           componentName: componentReplacement.componentName,
           docsUrl: componentReplacement.docsUrl,
         });
-
+        const isInline = rule.source?.input.file?.match(/\.ts$/) != null;
         diagnostics.push({
           message,
           severity: 'error',
-          source: styleAstRuleToSource(rule, startLine),
+          source: styleAstRuleToSource(rule, isInline ? startLine : 0),
         });
       });
     },
   };
 };
 
-function generateStylesheetUsageMessage({
+function classUsageMessage({
   className,
   rule,
   componentName,

@@ -29,6 +29,6 @@ export function parseComponents(
       const visitor = classDecoratorVisitor({ sourceFile });
 
       ts.visitEachChild(sourceFile, visitor, undefined);
-      return [...visitor.components];
+      return visitor.components;
     });
 }

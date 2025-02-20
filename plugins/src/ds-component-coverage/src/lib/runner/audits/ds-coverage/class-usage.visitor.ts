@@ -100,6 +100,9 @@ export class ClassUsageVisitor
       const classNames = parseClassNames(attribute.value);
       for (const className of classNames) {
         if (deprecatedCssClasses.includes(className)) {
+          const isInline =
+            attribute.sourceSpan.start.file.url.match(/\.ts$/) != null;
+          const startLine = isInline ? this.startLine : 0;
           this.issues.push({
             severity: 'error', // @TODO if we consider transformations this needs to be dynamic
             message: generateClassUsageMessage({
@@ -108,7 +111,7 @@ export class ClassUsageVisitor
               className,
               attribute: `${attribute.name}`,
             }),
-            source: tmplAstElementToSource(this.currentElement, this.startLine),
+            source: tmplAstElementToSource(this.currentElement, startLine),
           });
         }
       }

@@ -1,6 +1,6 @@
 import { TmplAstNode, TmplAstRecursiveVisitor } from '@angular/compiler';
 
-export function visitEachTmplChild<T>(
+export function visitEachTmplChild(
   nodes: TmplAstNode[],
   visitor: TmplAstRecursiveVisitor
 ) {

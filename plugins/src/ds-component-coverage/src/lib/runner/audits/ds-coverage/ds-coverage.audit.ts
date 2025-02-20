@@ -19,7 +19,6 @@ export function dsCompCoverageAuditOutputs(
         await Promise.all(
           parsedComponents.flatMap(async (component) => {
             return [
-              // template checks
               ...(await visitComponentTemplate(
                 component,
                 dsComponent,

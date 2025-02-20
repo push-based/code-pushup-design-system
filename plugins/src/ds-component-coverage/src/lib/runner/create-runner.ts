@@ -19,8 +19,5 @@ export async function runnerFunction({
   dsComponents,
 }: CreateRunnerConfig): Promise<AuditOutputs> {
   const parsedComponents = parseComponents(await findComponents({ directory }));
-console.log('parsedComponents: ', parsedComponents.map(({className}) => className))
-  return [
-    ...(await dsCompCoverageAuditOutputs(dsComponents, parsedComponents)),
-  ];
+  return dsCompCoverageAuditOutputs(dsComponents, parsedComponents);
 }

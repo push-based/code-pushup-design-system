@@ -1,6 +1,6 @@
 import { describe, expect } from 'vitest';
-import { tmplAstElementToSource } from '../template/utils';
-import { parseTemplate } from '@angular/compiler';
+import { tmplAstElementToSource } from './utils';
+import { parseTemplate, TmplAstElement } from '@angular/compiler';
 
 describe('tmplAstElementToSource', () => {
   it('should have line number starting from 1', () => {
@@ -8,16 +8,14 @@ describe('tmplAstElementToSource', () => {
       `<button class="btn">click</button>`,
       'inline-template.component.ts'
     );
-    const attribute = result.nodes.at(0);
+    const attribute = result.nodes.at(0) as TmplAstElement;
     const source = tmplAstElementToSource(attribute);
-    expect(source).toStrictEqual(
-      {
-        "file": "inline-template.component.ts",
-        "position": {
-          "startLine": 1,
-        },
-      }
-    );
+    expect(source).toStrictEqual({
+      file: 'inline-template.component.ts',
+      position: {
+        startLine: 1,
+      },
+    });
   });
 
   it('should have line number where startLine is respected', () => {
@@ -61,7 +59,8 @@ describe('tmplAstElementToSource', () => {
   });
 
   it('should have correct line number for spans', () => {
-    const result = parseTemplate(`<button class="btn">
+    const result = parseTemplate(
+      `<button class="btn">
   click
 </button>`,
       'template.html'
