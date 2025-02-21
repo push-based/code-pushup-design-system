@@ -15,8 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@code-pushup-design-system/angular-ds-coverage": [
-        "plugins/angular-ds-coverage/src/index.ts"
+      "@frontend/design-system-reports": [
+        "plugins/src/index.ts"
       ],
       "@code-pushup-design-system/plugins/utils": [
         "plugins/utils/src/index.ts"

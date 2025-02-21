@@ -1,5 +1,5 @@
 {
-  "name": "ds-cp",
+  "name": "design-system-reports",
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "plugins/src",
   "projectType": "library",

@@ -1,5 +1,5 @@
 import { mergeConfigs } from '@code-pushup/utils';
-import { dsComponentCoveragePluginCoreConfig } from '../../../../../src';
+import { dsComponentCoveragePluginCoreConfig } from '@frontend/design-system-reports';
 
 export default mergeConfigs(
   {
