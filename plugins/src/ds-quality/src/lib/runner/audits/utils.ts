@@ -8,7 +8,7 @@ export function scoreAuditOutput(
     score: issues.length === 0 ? 1 : 0,
     value: issues.length,
     details: {
-      issues,
+      issues
     },
   };
 }

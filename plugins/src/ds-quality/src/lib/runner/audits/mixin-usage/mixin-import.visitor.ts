@@ -7,7 +7,7 @@ import {
 } from '../../../../../../utils/src';
 import { useImportRegex } from './constants';
 import { DeprecationDefinition } from '../types';
-import { IssueCode } from '../../../constants';
+import {  ISSUE_CODES } from '../constants';
 
 export const createCssMixinImportVisitor = (
   tokenReplacementDefinition: DeprecationDefinition,
@@ -46,7 +46,7 @@ export const createCssMixinImportVisitor = (
           docsUrl,
         });
         diagnostics.push({
-          code: IssueCode.MixinImport,
+          code: ISSUE_CODES.MixinImport,
           message,
           severity: 'error',
           source: styleAstRuleToSource(atRule.parent as Rule, startLine),

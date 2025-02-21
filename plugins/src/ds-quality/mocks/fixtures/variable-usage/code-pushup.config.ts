@@ -15,7 +15,7 @@ const deprecatedVariables: DeprecationDefinition[] = [
 
 export default {
   persist: {
-    outputDir: '.code-pushup/angular-ds/ds-quality/variable-usage',
+    outputDir: '.code-pushup/ds-quality/variable-usage',
     format: ['json', 'md'],
   },
   plugins: [

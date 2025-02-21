@@ -7,7 +7,7 @@ import {
 } from '../../../../../../utils/src';
 import { DeprecationDefinition } from '../types';
 import { extractCssVariableNameRegex } from './constants';
-import { IssueCode } from '../../../constants';
+import { ISSUE_CODES } from '../constants';
 
 export const createCssVarUsageVisitor = (
   tokenReplacementDefinition: DeprecationDefinition,
@@ -45,7 +45,7 @@ export const createCssVarUsageVisitor = (
             docsUrl,
           });
           diagnostics.push({
-            code: IssueCode.VariableUsage,
+            code: ISSUE_CODES.VariableUsage,
             message,
             severity: 'error',
             source: styleAstRuleToSource(decl.parent as Rule, startLine),

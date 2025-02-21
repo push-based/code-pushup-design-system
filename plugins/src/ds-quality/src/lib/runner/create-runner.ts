@@ -1,4 +1,4 @@
-import { AuditOutputs } from '@code-pushup/models';
+import { AuditOutputs, Issue } from '@code-pushup/models';
 import {
   findComponents,
   parseComponents,
@@ -30,38 +30,41 @@ export async function runnerFunction({
     await findComponents({ directory })
   );
 
-  const auditResults: AuditOutputs[] = await Promise.all(
+  // Collect issues per deprecated token
+  const variableIssuesMap = new Map<DeprecationDefinition, (Issue)[]>();
+  const mixinIssuesMap = new Map<DeprecationDefinition, Issue[]>();
+
+  await Promise.all(
     parsedComponents.map(async (parsedComponent) => {
-      const variableUsageAuditPromises = deprecatedVariables.map(
-        async (deprecatedToken) => {
-          const issues = await visitComponentStyles(
-            parsedComponent,
-            deprecatedToken,
-            getVariableUsageIssues
-          );
-          return getVariableUsageAuditOutput(deprecatedToken, issues);
-        }
+      await Promise.all(
+        deprecatedVariables.map(async (deprecatedToken) => {
+          const tokenIssues = await visitComponentStyles(parsedComponent, deprecatedToken, getVariableUsageIssues);
+          if (!variableIssuesMap.has(deprecatedToken)) {
+            variableIssuesMap.set(deprecatedToken, []);
+          }
+          variableIssuesMap.get(deprecatedToken).push(...tokenIssues);
+        })
       );
-
-      const mixinAuditPromises = deprecatedMixins.map(
-        async (deprecatedMixin) => {
-          const issues = await visitComponentStyles(
-            parsedComponent,
-            deprecatedMixin,
-            getMixinUsageIssues
-          );
-          return getMixinUsageAuditOutput(deprecatedMixin, issues);
-        }
+      await Promise.all(
+        deprecatedMixins.map(async (deprecatedMixin) => {
+          const mixinIssues = await visitComponentStyles(parsedComponent, deprecatedMixin, getMixinUsageIssues);
+          if (!mixinIssuesMap.has(deprecatedMixin)) {
+            mixinIssuesMap.set(deprecatedMixin, []);
+          }
+          mixinIssuesMap.get(deprecatedMixin).push(...mixinIssues);
+        })
       );
-
-      const [variableUsageAudits, mixinUsageAudits] = await Promise.all([
-        Promise.all(variableUsageAuditPromises),
-        Promise.all(mixinAuditPromises),
-      ]);
-
-      return [...variableUsageAudits.flat(), ...mixinUsageAudits.flat()];
     })
   );
 
-  return auditResults.flat();
+  // Process issues per audit type
+  const variableUsageAudits = Array.from(variableIssuesMap.entries()).map(
+    ([deprecatedToken, issues]) => getVariableUsageAuditOutput(deprecatedToken, issues)
+  );
+
+  const mixinUsageAudits = Array.from(mixinIssuesMap.entries()).map(
+    ([deprecatedMixin, issues]) => getMixinUsageAuditOutput(deprecatedMixin, issues)
+  );
+
+  return [...variableUsageAudits, ...mixinUsageAudits];
 }

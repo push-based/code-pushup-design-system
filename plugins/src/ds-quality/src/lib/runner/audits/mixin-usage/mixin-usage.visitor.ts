@@ -6,7 +6,7 @@ import {
   styleAstRuleToSource,
 } from '../../../../../../utils/src';
 import { DeprecationDefinition } from '../types';
-import { IssueCode } from '../../../constants';
+import { ISSUE_CODES } from '../constants';
 
 export const createCssMixinUsageVisitor = (
   tokenReplacementDefinition: DeprecationDefinition,
@@ -41,7 +41,7 @@ export const createCssMixinUsageVisitor = (
           docsUrl,
         });
         diagnostics.push({
-          code: IssueCode.MixinUsage,
+          code: ISSUE_CODES.MixinUsage,
           message,
           severity: 'error',
           source: styleAstRuleToSource(atRule.parent as Rule, startLine),
