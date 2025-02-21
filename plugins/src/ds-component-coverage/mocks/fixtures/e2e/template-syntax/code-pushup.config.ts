@@ -12,11 +12,12 @@ const dsComponents: ComponentReplacement[] = [
 
 export default {
   persist: {
-    outputDir: '.code-pushup/angular-ds/ds-component-coverage/template-syntax',
+    outputDir: '.code-pushup/ds-component-coverage/template-syntax',
     format: ['json', 'md'],
   },
   ...(await dsComponentCoveragePluginCoreConfig({
-    directory: 'plugins/src/ds-component-coverage/mocks/fixtures/ds-component-coverage/template-syntax',
+    directory:
+      'plugins/src/ds-component-coverage/mocks/fixtures/e2e/template-syntax',
     dsComponents,
   })),
 };

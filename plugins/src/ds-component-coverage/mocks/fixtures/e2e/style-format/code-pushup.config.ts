@@ -11,11 +11,12 @@ const dsComponents: ComponentReplacement[] = [
 ];
 export default {
   persist: {
-    outputDir: '.code-pushup/angular-ds/ds-component-coverage/style-format',
+    outputDir: '.code-pushup/ds-component-coverage/style-format',
     format: ['json', 'md'],
   },
   ...(await dsComponentCoveragePluginCoreConfig({
-    directory: 'plugins/src/ds-component-coverage/mocks/fixtures/ds-component-coverage/style-format',
+    directory:
+      'plugins/src/ds-component-coverage/mocks/fixtures/e2e/style-format',
     dsComponents,
   })),
 };

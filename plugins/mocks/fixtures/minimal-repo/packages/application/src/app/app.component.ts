@@ -16,7 +16,7 @@ import { BadMixedExternalAssetsComponent } from './components/bad-mixed-external
     BadModalProgressComponent,
     BadButtonDropdownComponent,
     MixedStylesComponent,
-    BadMixedExternalAssetsComponent
+    BadMixedExternalAssetsComponent,
   ],
   template: `
     <h1>{{ title }}</h1>
@@ -28,7 +28,7 @@ import { BadMixedExternalAssetsComponent } from './components/bad-mixed-external
     <app-bad-button-dropdown></app-bad-button-dropdown>
     <app-bad-mixed-external-assets></app-bad-mixed-external-assets>
     <router-outlet />
-  `
+  `,
 })
 export class AppComponent {
   title = 'minimal';

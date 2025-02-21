@@ -1,4 +1,5 @@
-@use './../../generated/styles/components/accordion/accordion' as deprecated-accordion;
+@use './../../generated/styles/components/accordion/accordion' as
+  deprecated-accordion;
 
 .ds-accordion {
   /**
@@ -9,8 +10,8 @@
 
 .ds-accordion-special {
   /**
-   * ❌ Bad: Deprecated mixin usage `ds-accordion.deprecated-mixin-name`
+   * ❌ Bad: Deprecated mixin usage `ds-accordion.accordion-mixin-deprecated`
   **/
 
-  @include deprecated-accordion.deprecated-mixin-name;
+  @include deprecated-accordion.accordion-mixin-deprecated;
 }

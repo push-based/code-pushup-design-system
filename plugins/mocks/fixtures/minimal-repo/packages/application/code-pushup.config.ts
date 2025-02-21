@@ -4,13 +4,13 @@ import { dsComponentCoveragePluginCoreConfig } from '../../../../../src';
 export default mergeConfigs(
   {
     persist: {
-      outputDir: '.code-pushup/product/sports',
+      outputDir: '.code-pushup/packages/application',
       format: ['json', 'md'],
     },
     plugins: [],
   },
   await dsComponentCoveragePluginCoreConfig({
-    directory: 'plugins/mocks/fixtures/minimal-repo/packages/sports',
+    directory: 'plugins/mocks/fixtures/minimal-repo/packages/application',
     dsComponents: [
       {
         componentName: 'DSButton',
@@ -44,19 +44,23 @@ export default mergeConfigs(
       },
       {
         componentName: 'DSDropdown',
-        deprecatedCssClasses: ['dropdown', 'legacy-dropdown', 'custom-dropdown'],
+        deprecatedCssClasses: [
+          'dropdown',
+          'legacy-dropdown',
+          'custom-dropdown',
+        ],
         docsUrl:
           'https://storybook.entaingroup.corp/latest/?path=/docs/components-dropdown--overview',
       },
       {
         componentName: 'DSAlert',
-        deprecatedCssClasses: ['alert',  'alert-warning'],
+        deprecatedCssClasses: ['alert', 'alert-warning'],
         docsUrl:
           'https://storybook.entaingroup.corp/latest/?path=/docs/components-alert--overview',
       },
       {
         componentName: 'DSAlertTooltip',
-        deprecatedCssClasses: ['alert',  'alert-tooltip'],
+        deprecatedCssClasses: ['alert', 'alert-tooltip'],
         docsUrl:
           'https://storybook.entaingroup.corp/latest/?path=/docs/components-alert-tooltip--overview',
       },
@@ -68,7 +72,11 @@ export default mergeConfigs(
       },
       {
         componentName: 'DSProgressBar',
-        deprecatedCssClasses: ['progress-bar', 'loading-bar', 'legacy-progress'],
+        deprecatedCssClasses: [
+          'progress-bar',
+          'loading-bar',
+          'legacy-progress',
+        ],
         docsUrl:
           'https://storybook.entaingroup.corp/latest/?path=/docs/components-progressbar--overview',
       },

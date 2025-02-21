@@ -2,14 +2,16 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-bad-button-dropdown',
-  styles: [`
-  .btn {
-    margin: 10px;
-  }
-  .btn-dropdown {
-    padding: 10px;
-  }
-  `],
+  styles: [
+    `
+      .btn {
+        margin: 10px;
+      }
+      .btn-dropdown {
+        padding: 10px;
+      }
+    `,
+  ],
   template: `
     <button class="btn btn-primary">Click Me</button>
     <select class="btn-dropdown">

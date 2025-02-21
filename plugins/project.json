@@ -7,32 +7,22 @@
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/ds-cp-plugin",
         "main": "plugins/src/index.ts",
         "tsConfig": "plugins/tsconfig.lib.json",
-        "assets": [
-          "plugins/**/*.md"
-        ]
-      }
-    },
-    "repo:demo": {
-      "command": "npx @code-pushup/cli collect --config=plugins/mocks/fixtures/minimal-repo/code-pushup.config.ts",
-      "options": {
-        "progress": false
+        "assets": ["plugins/**/*.md"]
       }
     },
     "repo-product:demo": {
-      "command": "npx @code-pushup/cli collect --config=plugins/mocks/fixtures/minimal-repo/packages/sports/code-pushup.config.ts",
+      "command": "npx @code-pushup/cli collect --config=plugins/mocks/fixtures/minimal-repo/packages/application/code-pushup.config.ts",
       "options": {
         "progress": false
       }
     },
     "repo-ds:demo": {
-      "command": "npx @code-pushup/cli collect --config=/Users/michael_hladky/WebstormProjects/code-pushup-design-system/plugins/mocks/fixtures/minimal-repo/packages/design-system/code-pushup.config.ts",
+      "command": "npx @code-pushup/cli collect --config=./plugins/mocks/fixtures/minimal-repo/packages/design-system/code-pushup.config.ts",
       "options": {
         "progress": false
       }
@@ -58,15 +48,15 @@
         "progress": false
       }
     },
-    "ds-component-coverage:style-format": {
-      "command": "npx @code-pushup/cli collect --config=plugins/src/ds-component-coverage/mocks/fixtures/e2e/style-format/code-pushup.config.ts",
+    "ds-component-coverage:line-number": {
+      "command": "npx @code-pushup/cli collect --config=plugins/src/ds-component-coverage/mocks/fixtures/e2e/line-number/code-pushup.config.ts",
       "options": {
         "onlyPlugins": "ds-component-coverage",
         "progress": false
       }
     },
-    "ds-component-coverage:line-number": {
-      "command": "npx @code-pushup/cli collect --config=plugins/src/ds-component-coverage/mocks/fixtures/e2e/line-number/code-pushup.config.ts",
+    "ds-component-coverage:style-format": {
+      "command": "npx @code-pushup/cli collect --config=plugins/src/ds-component-coverage/mocks/fixtures/e2e/style-format/code-pushup.config.ts",
       "options": {
         "onlyPlugins": "ds-component-coverage",
         "progress": false

@@ -83,7 +83,7 @@ const dsComponents: ComponentReplacement[] = [
 
 export default {
   persist: {
-    outputDir: '.code-pushup/angular-ds/ds-component-coverage/demo',
+    outputDir: '.code-pushup/ds-component-coverage/demo',
     format: ['json', 'md'],
   },
   ...(await dsComponentCoveragePluginCoreConfig({

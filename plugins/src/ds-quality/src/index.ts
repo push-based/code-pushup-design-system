@@ -10,4 +10,8 @@ export {
 
 export default dsQualityPlugin;
 
-export { readLinesFromTextFile } from './lib/utils';
+export {
+  readLinesFromTextFile,
+  readDeprecatedVariables,
+  readDeprecatedMixins,
+} from './lib/utils';
