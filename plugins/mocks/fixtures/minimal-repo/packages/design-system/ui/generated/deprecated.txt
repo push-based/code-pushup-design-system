@@ -1,4 +1,5 @@
 --deprecated-accordion-token
+--deprecated-button-token
 --ds-alert-caution-color-bg
 --ds-alert-caution-color-border
 --ds-carousel-arrow-color-bg

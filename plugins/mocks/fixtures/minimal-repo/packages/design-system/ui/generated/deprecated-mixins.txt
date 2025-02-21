@@ -1,4 +1,5 @@
 deprecated-accordion.deprecated-mixin-name
+deprecated-button.deprecated-mixin-button
 carousel-arrow.active
 carousel-arrow.active-inverse
 carousel-arrow.enabled

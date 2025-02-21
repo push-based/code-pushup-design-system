@@ -1,0 +1,7 @@
+.th-whitelabel {
+  --semantic-color-caution-active: #cd9826; /*var(--reference-color-yellow-800)*/
+  --semantic-color-caution-active-inverse: #cd9826;/*var(--reference-color-yellow-800)*/
+  --semantic-color-caution-base: #ffbd2f;/*var(--reference-color-yellow-700)*/
+  --semantic-size-xhalf: 2px;/*var(--reference-size-xhalf)*/
+  --semantic-spacing-container-padding-2xl: 16px;/*var(--reference-space-x4)*/
+}

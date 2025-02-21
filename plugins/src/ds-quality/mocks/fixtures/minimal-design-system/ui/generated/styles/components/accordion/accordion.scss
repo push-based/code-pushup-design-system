@@ -14,7 +14,7 @@
 }
 
 /* ❌ Usage of deprecated mixin accordion */
-@mixin accordion {
+@mixin accordion-mixin-deprecated {
   --ds-accordion-space-header-padding-top: var(--semantic-spacing-container-padding-sm);
 }
 

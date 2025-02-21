@@ -1,17 +1,4 @@
-import { DeprecationDefinition } from '../../../src';
 import dsQualityPlugin from '../../../src/index';
-
-const deprecatedVariables: DeprecationDefinition[] = [
-  {
-    deprecatedEntity: 'semantic-color-ds-deprecated-primary'
-  },
-  {
-    deprecatedEntity: 'semantic-color-ds-deprecated-secondary'
-  },
-  {
-    deprecatedEntity: 'semantic-color-ds-deprecated-accent'
-  }
-];
 
 export default {
   persist: {
@@ -21,8 +8,17 @@ export default {
   plugins: [
     dsQualityPlugin({
       directory: 'plugins/src/ds-quality/mocks/fixtures/variable-usage',
-      deprecatedVariables,
-      deprecatedMixins: [],
+      deprecatedVariables: [
+        {
+          deprecatedEntity: 'semantic-color-ds-deprecated-primary',
+        },
+        {
+          deprecatedEntity: 'semantic-color-ds-deprecated-secondary',
+        },
+        {
+          deprecatedEntity: 'semantic-color-ds-deprecated-accent',
+        },
+      ],
     }),
   ],
 };

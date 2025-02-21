@@ -1,0 +1,16 @@
+@mixin shared {
+  /* ❌ Usage of deprecated token deprecated-accordion-token defined in `deprecated.txt`*/
+  --ds-button-bg: var(--deprecated-accordion-token);
+  --ds-button-size-min-height: var(--semantic-size-x11);
+}
+
+/* ❌ Usage of deprecated mixin `deprecated-mixin-button` defined in `deprecated-mixins.txt`*/
+@mixin deprecated-mixin-button {
+  --ds-button-active-color-background: var(--semantic-color-surface-container-highest-active);
+  --ds-button-active-color-icon: var(--semantic-color-utility-base);
+}
+
+@mixin surface-high-inverse {
+  --ds-button-active-color-background: var(--semantic-color-surface-container-high-active-inverse);
+  --ds-button-active-color-icon: var(--semantic-color-utility-base-inverse);
+}

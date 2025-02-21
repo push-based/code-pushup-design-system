@@ -1,4 +1,4 @@
-accordion.default
+deprecated-accordion.accordion-mixin-deprecated
 alert.default
 carousel-arrow.active
 carousel-arrow.active-inverse
