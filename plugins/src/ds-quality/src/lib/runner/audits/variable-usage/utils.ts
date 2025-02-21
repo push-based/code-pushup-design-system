@@ -7,7 +7,7 @@ import { createCssVarUsageVisitor } from './variable-usage.visitor';
 import { visitEachStyleNode } from '../../../../../../utils/src/lib/styles/stylesheet.walk';
 
 export function getStyleVariableAuditSlug(deprecatedToken: string): string {
-  return slugify(`deprecated-token-${deprecatedToken}`);
+  return slugify(`deprecated-token-${deprecatedToken.replace('.', '-')}`);
 }
 
 export function getStyleTokenAuditTitle(deprecatedToken: string): string {

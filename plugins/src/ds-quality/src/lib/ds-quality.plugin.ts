@@ -1,18 +1,11 @@
 import { PluginConfig } from '@code-pushup/models';
-import { DeprecationDefinition } from './runner/audits/types';
-import { getDeprecatedVariableAudits } from './runner/audits/style-variable/utils';
-import { runnerFunction } from './runner/create-runner';
-import { getDeprecatedMixinAudits } from './runner/audits/style-mixins/utils';
+import { getDeprecatedVariableAudits } from './runner/audits/variable-usage/utils';
+import { CreateRunnerConfig, runnerFunction } from './runner/create-runner';
+import { getDeprecatedMixinAudits } from './runner/audits/mixin-usage/utils';
+import { DS_QUALITY_PLUGIN_SLUG } from './constants';
 
-export type DsQualityPluginConfig = QualityRunnerOptions;
-
-export type QualityRunnerOptions = {
-  directory: string;
-  deprecatedVariables: DeprecationDefinition[];
-  deprecatedMixins: DeprecationDefinition[];
-};
-
-export const DS_QUALITY_PLUGIN_SLUG = 'ds-quality';
+export type DsQualityPluginConfig = Pick<CreateRunnerConfig, 'directory'> &
+  Partial<Pick<CreateRunnerConfig, 'deprecatedVariables' | 'deprecatedMixins'>>;
 
 /**
  * Plugin to measure and assert usage of DesignSystem components in an Angular project.
@@ -21,6 +14,11 @@ export const DS_QUALITY_PLUGIN_SLUG = 'ds-quality';
  * @param options
  */
 export function dsQualityPlugin(options: DsQualityPluginConfig): PluginConfig {
+  const {
+    deprecatedVariables = [],
+    deprecatedMixins = [],
+    directory,
+  } = options;
   return {
     slug: DS_QUALITY_PLUGIN_SLUG,
     title: 'Design System Quality',
@@ -28,10 +26,15 @@ export function dsQualityPlugin(options: DsQualityPluginConfig): PluginConfig {
     description:
       'A plugin to measure and assert the quality of the design system source code.',
     audits: [
-      ...getDeprecatedVariableAudits(options.deprecatedVariables),
-      ...getDeprecatedMixinAudits(options.deprecatedMixins),
+      ...(deprecatedVariables.length
+        ? getDeprecatedVariableAudits(deprecatedVariables)
+        : []),
+      ...(deprecatedMixins.length
+        ? getDeprecatedMixinAudits(deprecatedMixins)
+        : []),
     ],
-    runner: () => runnerFunction(options),
+    runner: () =>
+      runnerFunction({ directory, deprecatedVariables, deprecatedMixins }),
   } as const;
 }
 

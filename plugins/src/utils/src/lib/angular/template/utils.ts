@@ -1,4 +1,4 @@
-import { ParsedTemplate, TmplAstElement } from '@angular/compiler';
+import { ParsedTemplate, ParseSourceSpan } from '@angular/compiler';
 import { Issue } from '@code-pushup/models';
 import { ParsedComponent } from '../types';
 import { Asset } from '../../utils/types';
@@ -12,7 +12,15 @@ import { Asset } from '../../utils/types';
  * @param startLine The baseline number to adjust positions.
  */
 export function tmplAstElementToSource(
-  { startSourceSpan, sourceSpan, endSourceSpan }: TmplAstElement,
+  {
+    startSourceSpan,
+    sourceSpan,
+    endSourceSpan,
+  }: {
+    sourceSpan: ParseSourceSpan;
+    startSourceSpan: ParseSourceSpan;
+    endSourceSpan: ParseSourceSpan | null;
+  },
   startLine = 0
 ): Issue['source'] {
   const offset = startLine; // TS Ast is 0 indexed so is work in 0 based index out of the box

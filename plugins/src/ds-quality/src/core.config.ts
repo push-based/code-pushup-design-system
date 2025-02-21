@@ -1,11 +1,11 @@
 import { CategoryConfig, CategoryRef, CoreConfig } from '@code-pushup/models';
 import dsQualityPlugin, {
-  DS_QUALITY_PLUGIN_SLUG,
   DsQualityPluginConfig,
 } from './lib/ds-quality.plugin';
-import { getDeprecatedVariableAudits } from './lib/runner/audits/style-variable/utils';
-import { getDeprecatedMixinAudits } from './lib/runner/audits/style-mixins/utils';
+import { getDeprecatedVariableAudits } from './lib/runner/audits/variable-usage/utils';
+import { getDeprecatedMixinAudits } from './lib/runner/audits/mixin-usage/utils';
 import { DeprecationDefinition } from './lib/runner/audits/types';
+import { DS_QUALITY_PLUGIN_SLUG } from './lib/constants';
 
 export async function dsQualityPluginCoreConfig(opt: DsQualityPluginConfig) {
   return {
@@ -27,7 +27,7 @@ export async function dsQualityPluginCategories({
       title: 'Design System Quality',
       description: 'Usage of deprecated design system tokens and mixins',
       refs: [
-        ...getStyleTokenCategoryRefs([...deprecatedTokens]),
+        ...getStyleTokenCategoryRefs([...deprecatedVariables]),
         ...getStyleMixinCategoryRefs([...deprecatedMixins]),
       ],
     },

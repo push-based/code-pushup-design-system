@@ -1,5 +1,5 @@
 import { ComponentReplacement } from '../../../../src/index';
-import { angularDsCoveragePluginCoreConfig } from '../../../../src/core.config';
+import { dsComponentCoveragePluginCoreConfig } from '../../../../src/core.config';
 
 const dsComponents: ComponentReplacement[] = [
   {
@@ -14,7 +14,7 @@ export default {
     outputDir: '.code-pushup/angular-ds/ds-component-coverage/style-format',
     format: ['json', 'md'],
   },
-  ...(await angularDsCoveragePluginCoreConfig({
+  ...(await dsComponentCoveragePluginCoreConfig({
     directory: 'plugins/src/ds-component-coverage/mocks/fixtures/ds-component-coverage/style-format',
     dsComponents,
   })),

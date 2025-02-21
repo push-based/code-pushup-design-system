@@ -7,15 +7,15 @@ import { createCssMixinUsageVisitor } from './mixin-usage.visitor';
 import { createCssMixinImportVisitor } from './mixin-import.visitor';
 import { visitEachStyleNode } from '../../../../../../utils/src/lib/styles/stylesheet.walk';
 
-export function getStyleMixinAuditSlug(deprecatedEntity: string): string {
-  return slugify(`deprecated-mixin-${slugify(deprecatedEntity)}`);
+export function getMixinUsageAuditSlug(deprecatedEntity: string): string {
+  return slugify(`deprecated-mixin-${slugify(deprecatedEntity.replace('.', '-'))}`);
 }
 
 export function getDeprecatedMixinAudits(
   deprecatedMixins: DeprecationDefinition[]
 ): Audit[] {
   return deprecatedMixins.map(({ deprecatedEntity }) => ({
-    slug: getStyleMixinAuditSlug(deprecatedEntity),
+    slug: getMixinUsageAuditSlug(deprecatedEntity),
     title: `Deprecated mixin ${deprecatedEntity} used`,
     description: `Deprecated mixin ${deprecatedEntity} used in the component styles.`,
   }));

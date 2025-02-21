@@ -1,0 +1,13 @@
+:root {
+  --ds-accordion-bg: var(--semantic-color-ds-deprecated-primary);
+
+  /* ❌ Deprecated variable definition semantic-color-ds-deprecated-primary`*/
+  --semantic-color-ds-deprecated-primary: #f00;
+  --semantic-color-ds-deprecated-secondary: #0f0;
+  --semantic-color-ds-deprecated-accent: #00f;
+}
+
+@mixin shared {
+  /* ❌ Usage of deprecated token semantic-color-ds-deprecated-primary defined in `deprecated.txt`*/
+  --ds-accordion-bg: var(--semantic-color-ds-deprecated-primary);
+}

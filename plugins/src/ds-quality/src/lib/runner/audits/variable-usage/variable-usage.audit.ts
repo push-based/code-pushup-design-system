@@ -1,39 +1,16 @@
-import { getStyleVariableAuditSlug } from './utils';
 import { AuditOutput, Issue } from '@code-pushup/models';
 import { DeprecationDefinition } from '../types';
+import { getStyleVariableAuditSlug } from './utils';
 import { pluralize } from '@code-pushup/utils';
-import { getStyleMixinAuditSlug } from '../mixins-usage/utils';
+import { scoreAuditOutput } from '../utils';
 
-export function scoreAuditOutput(
-  issues: Issue[]
-): Pick<AuditOutput, 'score' | 'value' | 'details'> {
-  return {
-    score: issues.length === 0 ? 1 : 0,
-    value: issues.length,
-    details: {
-      issues,
-    },
-  };
-}
-
-export function getStyleVariableAuditOutput(
+export function getVariableUsageAuditOutput(
   { deprecatedEntity }: DeprecationDefinition,
   issues: Issue[]
 ): AuditOutput {
   return {
     slug: getStyleVariableAuditSlug(deprecatedEntity),
     displayValue: `${issues.length} ${pluralize('token', issues.length)} found`,
-    ...scoreAuditOutput(issues),
-  };
-}
-
-export function getStyleMixinAuditOutput(
-  { deprecatedEntity }: DeprecationDefinition,
-  issues: Issue[]
-): AuditOutput {
-  return {
-    slug: getStyleMixinAuditSlug(deprecatedEntity),
-    displayValue: `${issues.length} ${pluralize('mixin', issues.length)} found`,
     ...scoreAuditOutput(issues),
   };
 }

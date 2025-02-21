@@ -1,14 +1,47 @@
+import {
+  DeprecationDefinition,
+  dsComponentCoveragePluginCoreConfig,
+  dsQualityPluginCoreConfig,
+  readLinesFromTextFile,
+} from '../../../src';
 import { mergeConfigs } from '@code-pushup/utils';
-import { dsComponentCoveragePluginCoreConfig } from '../../../../../src';
+
+const deprecatedMixins: DeprecationDefinition[] = [
+  ...(
+    await readLinesFromTextFile(
+      'plugins/mocks/fixtures/minimal-repo/packages/design-system/ui/generated/deprecated-mixins.txt'
+    )
+  ).map((token) => ({ deprecatedEntity: token })),
+];
+
+const deprecatedVariables: DeprecationDefinition[] = [
+  ...(
+    await readLinesFromTextFile(
+      'plugins/src/ds-quality/mocks/fixtures/minimal-design-system/ui/generated/deprecated.txt'
+    )
+  ).map((token) => ({ deprecatedEntity: token.replace('--', '') })),
+  {
+    deprecatedEntity: 'semantic-color-ds-deprecated-primary',
+    replacement: 'secondary-color',
+  },
+  {
+    deprecatedEntity: 'semantic-color-ds-deprecated-accent',
+  },
+];
 
 export default mergeConfigs(
   {
     persist: {
-      outputDir: '.code-pushup/product/sports',
+      outputDir: '.code-pushup/ds/',
       format: ['json', 'md'],
     },
     plugins: [],
   },
+  await dsQualityPluginCoreConfig({
+    directory: 'plugins/src/ds-quality/mocks/fixtures/minimal-design-system',
+    deprecatedVariables: deprecatedVariables,
+    deprecatedMixins,
+  }),
   await dsComponentCoveragePluginCoreConfig({
     directory: 'plugins/mocks/fixtures/minimal-repo/packages/sports',
     dsComponents: [
@@ -44,19 +77,23 @@ export default mergeConfigs(
       },
       {
         componentName: 'DSDropdown',
-        deprecatedCssClasses: ['dropdown', 'legacy-dropdown', 'custom-dropdown'],
+        deprecatedCssClasses: [
+          'dropdown',
+          'legacy-dropdown',
+          'custom-dropdown',
+        ],
         docsUrl:
           'https://storybook.entaingroup.corp/latest/?path=/docs/components-dropdown--overview',
       },
       {
         componentName: 'DSAlert',
-        deprecatedCssClasses: ['alert',  'alert-warning'],
+        deprecatedCssClasses: ['alert', 'alert-warning'],
         docsUrl:
           'https://storybook.entaingroup.corp/latest/?path=/docs/components-alert--overview',
       },
       {
         componentName: 'DSAlertTooltip',
-        deprecatedCssClasses: ['alert',  'alert-tooltip'],
+        deprecatedCssClasses: ['alert', 'alert-tooltip'],
         docsUrl:
           'https://storybook.entaingroup.corp/latest/?path=/docs/components-alert-tooltip--overview',
       },
@@ -68,7 +105,11 @@ export default mergeConfigs(
       },
       {
         componentName: 'DSProgressBar',
-        deprecatedCssClasses: ['progress-bar', 'loading-bar', 'legacy-progress'],
+        deprecatedCssClasses: [
+          'progress-bar',
+          'loading-bar',
+          'legacy-progress',
+        ],
         docsUrl:
           'https://storybook.entaingroup.corp/latest/?path=/docs/components-progressbar--overview',
       },

@@ -23,7 +23,8 @@ describe('tmplAstElementToSource', () => {
       `<button class="btn">click</button>`,
       'template.html'
     );
-    const attribute = result.nodes.at(0)?.attributes.at(0);
+    const attribute = (result.nodes.at(0) as TmplAstElement)?.attributes.at(0);
+
     const source = tmplAstElementToSource(attribute);
 
     expect(source).toStrictEqual({
@@ -44,7 +45,7 @@ describe('tmplAstElementToSource', () => {
 <button class="btn">click</button>`,
       'template.html'
     );
-    const attribute = result.nodes.at(0)?.attributes.at(0);
+    const attribute = (result.nodes.at(0) as TmplAstElement)?.attributes.at(0);
     const source = tmplAstElementToSource(attribute);
 
     expect(source).toStrictEqual({

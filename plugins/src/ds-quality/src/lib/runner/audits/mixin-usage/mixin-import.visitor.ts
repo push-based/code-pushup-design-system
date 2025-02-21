@@ -1,5 +1,5 @@
 import { Issue } from '@code-pushup/models';
-import { Rule } from 'postcss';
+import { Rule, AtRule } from 'postcss';
 import {
   CssAstVisitor,
   DiagnosticsAware,
@@ -7,7 +7,7 @@ import {
 } from '../../../../../../utils/src';
 import { useImportRegex } from './constants';
 import { DeprecationDefinition } from '../types';
-import AtRule from 'postcss/lib/at-rule.js';
+import { IssueCode } from '../../../constants';
 
 export const createCssMixinImportVisitor = (
   tokenReplacementDefinition: DeprecationDefinition,
@@ -46,6 +46,7 @@ export const createCssMixinImportVisitor = (
           docsUrl,
         });
         diagnostics.push({
+          code: IssueCode.MixinImport,
           message,
           severity: 'error',
           source: styleAstRuleToSource(atRule.parent as Rule, startLine),

@@ -1,1 +1,1 @@
-export const ANGULAR_DS_COVERAGE_PLUGIN_SLUG = 'ds-quality';
+export const DS_QUALITY_PLUGIN_SLUG = 'ds-quality';

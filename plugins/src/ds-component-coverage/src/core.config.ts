@@ -4,7 +4,7 @@ import angularDsCoveragePlugin, {
 } from './lib/ds-component-coverage.plugin';
 import { getAngularDsCoverageCategoryRefs } from './lib/utils';
 
-export async function angularDsCoveragePluginCoreConfig({
+export async function dsComponentCoveragePluginCoreConfig({
   directory,
   dsComponents,
 }: DsComponentCoveragePluginConfig) {

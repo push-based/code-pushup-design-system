@@ -3,16 +3,14 @@ import { DeprecationDefinition } from '../../../src/lib/runner/audits/types';
 import { readLinesFromTextFile } from '../../../src/lib/utils';
 
 const deprecatedMixins: DeprecationDefinition[] = [
-  ...(
-    await readLinesFromTextFile(
-      'plugins/src/ds-quality/mocks/fixtures/mixin-usage/deprecated-mixins.txt'
-    )
-  ).map((token) => ({ deprecatedEntity: token })),
+  {
+    deprecatedEntity: 'single-mixin-alias.mixin-name'
+  }
 ];
 
 export default {
   persist: {
-    outputDir: '.code-pushup/angular-ds/ds-quality/mixin-usage',
+    outputDir: '.code-pushup/ds-quality/mixin-usage',
     format: ['json', 'md'],
   },
   plugins: [

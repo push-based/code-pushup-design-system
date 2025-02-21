@@ -19,6 +19,12 @@
         ]
       }
     },
+    "repo:demo": {
+      "command": "npx @code-pushup/cli collect --config=plugins/mocks/fixtures/minimal-repo/code-pushup.config.ts",
+      "options": {
+        "progress": false
+      }
+    },
     "repo-product:demo": {
       "command": "npx @code-pushup/cli collect --config=plugins/mocks/fixtures/minimal-repo/packages/sports/code-pushup.config.ts",
       "options": {

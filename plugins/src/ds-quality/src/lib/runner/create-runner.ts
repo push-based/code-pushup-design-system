@@ -5,18 +5,16 @@ import {
   ParsedComponent,
   visitComponentStyles,
 } from '../../../../utils/src';
-import {
-  getStyleMixinAuditOutput,
-  getStyleVariableAuditOutput,
-} from './audits/variable-usage/variable-usage.audit';
+import { getVariableUsageAuditOutput } from './audits/variable-usage/variable-usage.audit';
 import { DeprecationDefinition } from './audits/types';
 import { getMixinUsageIssues } from './audits/mixin-usage/utils';
 import { getVariableUsageIssues } from './audits/variable-usage/utils';
+import { getMixinUsageAuditOutput } from './audits/mixin-usage/mixin-usage.audit';
 
 export type CreateRunnerConfig = {
   directory: string;
-  deprecatedTokens?: DeprecationDefinition[];
-  deprecatedMixins?: DeprecationDefinition[];
+  deprecatedVariables: DeprecationDefinition[];
+  deprecatedMixins: DeprecationDefinition[];
 };
 
 /**
@@ -25,8 +23,8 @@ export type CreateRunnerConfig = {
  */
 export async function runnerFunction({
   directory,
-  deprecatedTokens = [],
-  deprecatedMixins = [],
+  deprecatedVariables,
+  deprecatedMixins,
 }: CreateRunnerConfig): Promise<AuditOutputs> {
   const parsedComponents: ParsedComponent[] = parseComponents(
     await findComponents({ directory })
@@ -34,14 +32,14 @@ export async function runnerFunction({
 
   const auditResults: AuditOutputs[] = await Promise.all(
     parsedComponents.map(async (parsedComponent) => {
-      const tokenAuditPromises = deprecatedTokens.map(
+      const variableUsageAuditPromises = deprecatedVariables.map(
         async (deprecatedToken) => {
           const issues = await visitComponentStyles(
             parsedComponent,
             deprecatedToken,
             getVariableUsageIssues
           );
-          return getStyleVariableAuditOutput(deprecatedToken, issues);
+          return getVariableUsageAuditOutput(deprecatedToken, issues);
         }
       );
 
@@ -52,16 +50,16 @@ export async function runnerFunction({
             deprecatedMixin,
             getMixinUsageIssues
           );
-          return getStyleMixinAuditOutput(deprecatedMixin, issues);
+          return getMixinUsageAuditOutput(deprecatedMixin, issues);
         }
       );
 
-      const [tokenAudits, mixinAudits] = await Promise.all([
-        Promise.all(tokenAuditPromises),
+      const [variableUsageAudits, mixinUsageAudits] = await Promise.all([
+        Promise.all(variableUsageAuditPromises),
         Promise.all(mixinAuditPromises),
       ]);
 
-      return [...tokenAudits.flat(), ...mixinAudits.flat()];
+      return [...variableUsageAudits.flat(), ...mixinUsageAudits.flat()];
     })
   );
 
