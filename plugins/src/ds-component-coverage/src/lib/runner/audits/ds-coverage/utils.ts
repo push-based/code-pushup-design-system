@@ -7,7 +7,7 @@ import { ComponentReplacement } from './types';
  * @returns Audit output.
  * @param componentReplacements
  */
-export function getCompCoverageAudits(
+export function getCompUsageAudits(
   componentReplacements: ComponentReplacement[]
 ): Audit[] {
   return componentReplacements.map((comp) => ({

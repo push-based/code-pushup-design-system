@@ -1,5 +1,5 @@
 import { ComponentReplacement } from '../../../../src/index';
-import { dsComponentCoveragePluginCoreConfig } from '../../../../src/core.config';
+import { dsComponentUsagePluginCoreConfig } from '../../../../src/core.config';
 
 const dsComponents: ComponentReplacement[] = [
   {
@@ -15,7 +15,7 @@ export default {
     outputDir: '.code-pushup/ds-component-coverage/template-syntax',
     format: ['json', 'md'],
   },
-  ...(await dsComponentCoveragePluginCoreConfig({
+  ...(await dsComponentUsagePluginCoreConfig({
     directory:
       'plugins/src/ds-component-coverage/mocks/fixtures/e2e/template-syntax',
     dsComponents,

@@ -1,9 +1,9 @@
 import { PluginConfig } from '@code-pushup/models';
 import { CreateRunnerConfig, runnerFunction } from './runner/create-runner';
 import { getAudits } from './utils';
-import { ANGULAR_DS_COVERAGE_PLUGIN_SLUG } from './constants';
+import { ANGULAR_DS_USAGE_PLUGIN_SLUG } from './constants';
 
-export type DsComponentCoveragePluginConfig = CreateRunnerConfig;
+export type DsComponentUsagePluginConfig = CreateRunnerConfig;
 
 /**
  * Plugin to measure and assert usage of DesignSystem components in an Angular project.
@@ -12,10 +12,10 @@ export type DsComponentCoveragePluginConfig = CreateRunnerConfig;
  * @param options
  */
 export function dsComponentCoveragePlugin(
-  options: DsComponentCoveragePluginConfig
+  options: DsComponentUsagePluginConfig
 ): PluginConfig {
   return {
-    slug: ANGULAR_DS_COVERAGE_PLUGIN_SLUG,
+    slug: ANGULAR_DS_USAGE_PLUGIN_SLUG,
     title: 'Angular Design System Coverage',
     icon: 'angular',
     description:

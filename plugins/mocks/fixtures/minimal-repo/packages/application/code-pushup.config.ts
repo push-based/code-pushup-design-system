@@ -1,5 +1,5 @@
 import { mergeConfigs } from '@code-pushup/utils';
-import { dsComponentCoveragePluginCoreConfig } from '../../../../../src';
+import { dsComponentUsagePluginCoreConfig } from '../../../../../src';
 
 export default mergeConfigs(
   {
@@ -9,7 +9,7 @@ export default mergeConfigs(
     },
     plugins: [],
   },
-  await dsComponentCoveragePluginCoreConfig({
+  await dsComponentUsagePluginCoreConfig({
     directory: 'plugins/mocks/fixtures/minimal-repo/packages/application',
     dsComponents: [
       {

@@ -2,6 +2,7 @@ import { FastFindInFiles } from 'fast-find-in-files';
 import * as ts from 'typescript';
 import { ParsedComponent } from './types';
 import { classDecoratorVisitor } from '../typescript/decorator-config.visitor';
+import {toUnixPath} from '@code-pushup/utils';
 
 /**
  * Parses Angular components from a `FastFindInFiles` result.
@@ -14,7 +15,7 @@ import { classDecoratorVisitor } from '../typescript/decorator-config.visitor';
 export function parseComponents(
   crawlerResult: FastFindInFiles[]
 ): ParsedComponent[] {
-  const filePaths = new Set(crawlerResult.map((file) => file.filePath));
+  const filePaths = new Set(crawlerResult.map(({ filePath }) => toUnixPath(filePath)));
 
   const program = ts.createProgram([...filePaths], {
     target: ts.ScriptTarget.Latest,
