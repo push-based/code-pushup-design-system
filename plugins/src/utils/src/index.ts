@@ -1,10 +1,12 @@
+export { ANGULAR_COMPONENT_DECORATOR } from './lib/angular/constants';
+
 export { parseClassNames } from './lib/angular/template/utils';
 
 export { classDecoratorVisitor } from './lib/typescript/decorator-config.visitor';
 
 export { parseComponents } from './lib/angular/parse-component';
 export type { ParsedComponent } from './lib/angular/types';
-export { findComponents } from './lib/angular/find-component';
+export { findFilesWithPattern } from './lib/utils/find-in-file';
 
 export { visitComponentStyles } from './lib/styles/utils';
 

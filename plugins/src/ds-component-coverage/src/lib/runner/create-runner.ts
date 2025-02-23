@@ -1,5 +1,9 @@
 import { AuditOutputs } from '@code-pushup/models';
-import { findComponents, parseComponents } from '../../../../utils/src';
+import {
+  ANGULAR_COMPONENT_DECORATOR,
+  findFilesWithPattern,
+  parseComponents,
+} from '../../../../utils/src';
 import { dsCompCoverageAuditOutputs } from './audits/ds-coverage/ds-coverage.audit';
 import { ComponentReplacement } from './audits/ds-coverage/types';
 
@@ -18,6 +22,10 @@ export async function runnerFunction({
   directory,
   dsComponents,
 }: CreateRunnerConfig): Promise<AuditOutputs> {
-  const parsedComponents = parseComponents(await findComponents({ directory }));
+  const componentFiles = await findFilesWithPattern(
+    directory,
+    ANGULAR_COMPONENT_DECORATOR
+  );
+  const parsedComponents = parseComponents(componentFiles);
   return dsCompCoverageAuditOutputs(dsComponents, parsedComponents);
 }

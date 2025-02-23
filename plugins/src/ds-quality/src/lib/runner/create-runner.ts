@@ -1,9 +1,10 @@
 import { AuditOutputs, Issue } from '@code-pushup/models';
 import {
-  findComponents,
+  ANGULAR_COMPONENT_DECORATOR,
+  findFilesWithPattern,
   parseComponents,
   ParsedComponent,
-  visitComponentStyles,
+  visitComponentStyles
 } from '../../../../utils/src';
 import { getVariableUsageAuditOutput } from './audits/variable-usage/variable-usage.audit';
 import { DeprecationDefinition } from './audits/types';
@@ -27,7 +28,7 @@ export async function runnerFunction({
   deprecatedMixins,
 }: CreateRunnerConfig): Promise<AuditOutputs> {
   const parsedComponents: ParsedComponent[] = parseComponents(
-    await findComponents({ directory })
+    await findFilesWithPattern(directory, ANGULAR_COMPONENT_DECORATOR)
   );
 
   // Collect issues per deprecated token
