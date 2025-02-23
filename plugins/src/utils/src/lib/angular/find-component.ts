@@ -1,7 +1,6 @@
 import { fdir } from 'fdir';
 import { dirname } from 'node:path';
 import { crawlFileSystem, readTextFile } from '@code-pushup/utils';
-import {fastFindInFiles} from 'fast-find-in-files';
 
 /** Angular component decorator regex. */
 export const ANGULAR_COMPONENT_REGEX = /@Component/gm;
@@ -21,14 +20,24 @@ export async function findComponents(opt: { directory: string }) {
     .withPromise();
   const directories = Array.from(new Set(files.map((file) => dirname(file))));
 
-  return directories
-    .flatMap((directory) =>
-      fastFindInFiles({
+
+  const results = await Promise.all(
+    directories.map(async (directory) =>
+      crawlFileSystem({
         directory,
-        // Needle to search for Angular components (it does not catch if the class is imported for Angular or not)
-        needle: ANGULAR_COMPONENT_REGEX,
+        fileTransform: async (filePath: string) => {
+          const content = await readTextFile(filePath);
+          return {
+            filePath,
+            totalHits: content.match(ANGULAR_COMPONENT_REGEX)?.length ?? 0,
+          };
+        },
       })
     )
+  );
+
+  return results
+    .flat()
     .filter(({ filePath }) => filePath.endsWith('.ts'))
     .filter(({ totalHits }) => totalHits > 0);
 }
