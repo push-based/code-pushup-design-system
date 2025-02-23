@@ -15,19 +15,26 @@ export async function dsQualityPluginCoreConfig(opt: DsQualityPluginConfig) {
 }
 
 export async function dsQualityPluginCategories({
-  deprecatedVariables,
-  deprecatedMixins,
+  deprecatedVariables = [],
+  deprecatedMixins = [],
 }: Pick<
   DsQualityPluginConfig,
   'deprecatedVariables' | 'deprecatedMixins'
 >): Promise<CategoryConfig[]> {
   return [
     {
-      slug: 'design-system-quality',
-      title: 'Design System Quality',
-      description: 'Usage of deprecated design system tokens and mixins',
+      slug: 'design-system-token-usage',
+      title: 'Design System Token Usage',
+      description: 'Usage of deprecated design system tokens',
       refs: [
         ...getStyleTokenCategoryRefs([...deprecatedVariables]),
+      ],
+    },
+    {
+      slug: 'design-system-mixin-usage',
+      title: 'Design System Mixin Usage',
+      description: 'Usage of deprecated design system mixins',
+      refs: [
         ...getStyleMixinCategoryRefs([...deprecatedMixins]),
       ],
     },

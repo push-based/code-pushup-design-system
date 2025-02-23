@@ -1,35 +1,35 @@
 import { CategoryConfig, CoreConfig } from '@code-pushup/models';
-import angularDsCoveragePlugin, {
-  DsComponentCoveragePluginConfig,
+import angularDsUsagePlugin, {
+  DsComponentUsagePluginConfig,
 } from './lib/ds-component-coverage.plugin';
-import { getAngularDsCoverageCategoryRefs } from './lib/utils';
+import { getAngularDsUsageCategoryRefs } from './lib/utils';
 
-export async function dsComponentCoveragePluginCoreConfig({
+export async function dsComponentUsagePluginCoreConfig({
   directory,
   dsComponents,
-}: DsComponentCoveragePluginConfig) {
+}: DsComponentUsagePluginConfig) {
   return {
     plugins: [
-      angularDsCoveragePlugin({
+      angularDsUsagePlugin({
         directory,
         dsComponents,
       }),
     ],
-    categories: await angularDsCoveragePluginCategories({ dsComponents }),
+    categories: await angularDsUsagePluginCategories({ dsComponents }),
   } as const satisfies CoreConfig;
 }
 
-export async function angularDsCoveragePluginCategories({
+export async function angularDsUsagePluginCategories({
   dsComponents,
-}: Pick<DsComponentCoveragePluginConfig, 'dsComponents'>): Promise<
+}: Pick<DsComponentUsagePluginConfig, 'dsComponents'>): Promise<
   CategoryConfig[]
 > {
   return [
     {
-      slug: 'design-system-coverage',
-      title: 'Design System Coverage',
+      slug: 'design-system-usage',
+      title: 'Design System Usage',
       description: 'Usage of design system components',
-      refs: getAngularDsCoverageCategoryRefs(dsComponents),
-    },
+      refs: getAngularDsUsageCategoryRefs(dsComponents),
+    }
   ];
 }
