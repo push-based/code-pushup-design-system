@@ -15,16 +15,14 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@frontend/design-system-reports": [
-        "plugins/src/index.ts"
-      ],
       "@code-pushup-design-system/plugins/utils": [
         "plugins/utils/src/index.ts"
       ],
       "@design-system/usage-reports-utils": [
         "libs/design-system/usage-reports-utils/src/index.ts"
       ],
-      "@frontend/code-pushup-utils": ["libs/code-pushup-utils/src/index.ts"]
+      "@frontend/code-pushup-utils": ["libs/code-pushup-utils/src/index.ts"],
+      "@frontend/design-system-reports": ["plugins/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

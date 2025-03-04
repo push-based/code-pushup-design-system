@@ -20,7 +20,6 @@ async function fileContainsPattern(
     let searchPatternFound = false;
 
     rl.on('line', (line) => {
-
       if (
         typeof searchPattern === 'string'
           ? line.includes(searchPattern)
@@ -43,11 +42,12 @@ async function fileContainsPattern(
  * @param {string} baseDir - The directory to search.
  * @param {RegExp | string} searchPattern - The pattern to match.
  */
-export async function findFilesWithPattern(baseDir: string, searchPattern: string) {
-
+export async function findFilesWithPattern(
+  baseDir: string,
+  searchPattern: string
+) {
   const l = [];
-  for await (const filePath of findTsFiles(baseDir)) {
-
+  for await (const filePath of findFiles(baseDir)) {
     if (await fileContainsPattern(filePath, searchPattern)) {
       l.push(path.join(process.cwd(), filePath));
     }
@@ -58,13 +58,17 @@ export async function findFilesWithPattern(baseDir: string, searchPattern: strin
 /**
  * Asynchronously iterates over all `.ts` files in a directory using a queue-based stream-like approach.
  * @param {string} baseDir - The directory to search.
+ * @param check
  * @returns {AsyncGenerator<string>} - Yields `.ts` file paths one by one.
  */
-async function* findTsFiles(baseDir: string): AsyncGenerator<string> {
-  const queue: string[] = [baseDir]; // Use a queue to avoid deep recursion
+export async function* findFiles(
+  baseDir: string,
+  check: (filePath: string) => boolean = (fullPath) => fullPath.endsWith('.ts')
+): AsyncGenerator<string> {
+  const queue: string[] = [baseDir];
 
   while (queue.length > 0) {
-    const dir = queue.shift()!; // Get the next directory from the queue
+    const dir = queue.shift()!;
 
     let entries;
     try {
@@ -77,9 +81,9 @@ async function* findTsFiles(baseDir: string): AsyncGenerator<string> {
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) {
-        queue.push(fullPath); // Add directories to queue instead of recursing
-      } else if (entry.isFile() && fullPath.endsWith('.ts')) {
-        yield fullPath; // Yield file paths lazily
+        queue.push(fullPath);
+      } else if (entry.isFile() && check(fullPath)) {
+        yield fullPath;
       }
     }
   }
