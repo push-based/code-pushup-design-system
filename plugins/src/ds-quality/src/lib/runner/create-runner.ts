@@ -4,7 +4,7 @@ import {
   findFilesWithPattern,
   parseComponents,
   ParsedComponent,
-  visitComponentStyles
+  visitComponentStyles,
 } from '../../../../utils/src';
 import { getVariableUsageAuditOutput } from './audits/variable-usage/variable-usage.audit';
 import { DeprecationDefinition } from './audits/types';
@@ -27,7 +27,6 @@ export async function runnerFunction({
   deprecatedVariables,
   deprecatedMixins,
 }: CreateRunnerConfig): Promise<AuditOutputs> {
-
   const componentFiles = await findFilesWithPattern(
     directory,
     ANGULAR_COMPONENT_DECORATOR
@@ -35,27 +34,35 @@ export async function runnerFunction({
   const parsedComponents: ParsedComponent[] = parseComponents(componentFiles);
 
   // Collect issues per deprecated token
-  const variableIssuesMap = new Map<DeprecationDefinition, (Issue)[]>();
+  const variableIssuesMap = new Map<DeprecationDefinition, Issue[]>();
   const mixinIssuesMap = new Map<DeprecationDefinition, Issue[]>();
 
   await Promise.all(
     parsedComponents.map(async (parsedComponent) => {
       await Promise.all(
         deprecatedVariables.map(async (deprecatedToken) => {
-          const tokenIssues = await visitComponentStyles(parsedComponent, deprecatedToken, getVariableUsageIssues);
+          const tokenIssues = await visitComponentStyles(
+            parsedComponent,
+            deprecatedToken,
+            getVariableUsageIssues
+          );
           if (!variableIssuesMap.has(deprecatedToken)) {
             variableIssuesMap.set(deprecatedToken, []);
           }
-          variableIssuesMap.get(deprecatedToken).push(...tokenIssues);
+          variableIssuesMap.get(deprecatedToken)?.push(...tokenIssues);
         })
       );
       await Promise.all(
         deprecatedMixins.map(async (deprecatedMixin) => {
-          const mixinIssues = await visitComponentStyles(parsedComponent, deprecatedMixin, getMixinUsageIssues);
+          const mixinIssues = await visitComponentStyles(
+            parsedComponent,
+            deprecatedMixin,
+            getMixinUsageIssues
+          );
           if (!mixinIssuesMap.has(deprecatedMixin)) {
             mixinIssuesMap.set(deprecatedMixin, []);
           }
-          mixinIssuesMap.get(deprecatedMixin).push(...mixinIssues);
+          mixinIssuesMap.get(deprecatedMixin)?.push(...mixinIssues);
         })
       );
     })
@@ -63,11 +70,13 @@ export async function runnerFunction({
 
   // Process issues per audit type
   const variableUsageAudits = Array.from(variableIssuesMap.entries()).map(
-    ([deprecatedToken, issues]) => getVariableUsageAuditOutput(deprecatedToken, issues)
+    ([deprecatedToken, issues]) =>
+      getVariableUsageAuditOutput(deprecatedToken, issues)
   );
 
   const mixinUsageAudits = Array.from(mixinIssuesMap.entries()).map(
-    ([deprecatedMixin, issues]) => getMixinUsageAuditOutput(deprecatedMixin, issues)
+    ([deprecatedMixin, issues]) =>
+      getMixinUsageAuditOutput(deprecatedMixin, issues)
   );
 
   return [...variableUsageAudits, ...mixinUsageAudits];
