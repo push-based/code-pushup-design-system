@@ -21,27 +21,28 @@ export async function dsQualityPluginCategories({
   DsQualityPluginConfig,
   'deprecatedVariables' | 'deprecatedMixins'
 >): Promise<CategoryConfig[]> {
+  const refs = getStyleVariableCategoryRefs([...deprecatedVariables]);
   return [
-    {
-      slug: 'design-system-token-usage',
-      title: 'Design System Token Usage',
-      description: 'Usage of deprecated design system tokens',
-      refs: [
-        ...getStyleTokenCategoryRefs([...deprecatedVariables]),
-      ],
-    },
+    ...(refs.length > 0
+      ? [
+          {
+            slug: 'design-system-token-usage',
+            title: 'Design System Token Usage',
+            description: 'Usage of deprecated design system tokens',
+            refs,
+          },
+        ]
+      : []),
     {
       slug: 'design-system-mixin-usage',
       title: 'Design System Mixin Usage',
       description: 'Usage of deprecated design system mixins',
-      refs: [
-        ...getStyleMixinCategoryRefs([...deprecatedMixins]),
-      ],
+      refs: [...getStyleMixinCategoryRefs([...deprecatedMixins])],
     },
   ];
 }
 
-export function getStyleTokenCategoryRefs(
+export function getStyleVariableCategoryRefs(
   tokenReplacements: DeprecationDefinition[]
 ): CategoryRef[] {
   return getDeprecatedVariableAudits(tokenReplacements).map(({ slug }) => ({

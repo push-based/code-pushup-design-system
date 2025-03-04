@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { dsQualityPluginCoreConfig } from '../../../../../src';
 import {
   readDeprecatedMixins,
@@ -10,10 +11,10 @@ export default {
     format: ['json', 'md'],
   },
   ...(await dsQualityPluginCoreConfig({
-    directory: 'plugins/mocks/fixtures/minimal-repo/packages/design-system',
+    directory: 'plugins/mocks/fixtures/minimal-repo/packages/design-system/ui',
     deprecatedVariables: await readDeprecatedVariables(
       'plugins/mocks/fixtures/minimal-repo/packages/design-system/ui/generated/deprecated.txt'
-    ),
+    ),/**/
     deprecatedMixins: await readDeprecatedMixins(
       'plugins/mocks/fixtures/minimal-repo/packages/design-system/ui/generated/deprecated-mixins.txt'
     ),

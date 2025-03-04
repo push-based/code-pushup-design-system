@@ -27,9 +27,12 @@ export async function runnerFunction({
   deprecatedVariables,
   deprecatedMixins,
 }: CreateRunnerConfig): Promise<AuditOutputs> {
-  const parsedComponents: ParsedComponent[] = parseComponents(
-    await findFilesWithPattern(directory, ANGULAR_COMPONENT_DECORATOR)
+
+  const componentFiles = await findFilesWithPattern(
+    directory,
+    ANGULAR_COMPONENT_DECORATOR
   );
+  const parsedComponents: ParsedComponent[] = parseComponents(componentFiles);
 
   // Collect issues per deprecated token
   const variableIssuesMap = new Map<DeprecationDefinition, (Issue)[]>();
