@@ -1,9 +1,8 @@
 import * as ts from 'typescript';
 
 import { Asset } from '../utils/types';
+import { QUOTE_REGEX } from './constants';
 
-// eslint-disable-next-line sonarjs/anchor-precedence
-const ANGULAR_QUOTE_REGEX = /^['"`]+|['"`]+$/g;
 
 export function isComponentDecorator(decorator: ts.Decorator): boolean {
   return isDecorator(decorator, 'Component');
@@ -70,7 +69,7 @@ export function assetFromPropertyArrayInitializer<T>(
 }
 
 export function removeQuotes(node: ts.Node, sourceFile: ts.SourceFile): string {
-  return node.getText(sourceFile).replace(ANGULAR_QUOTE_REGEX, '');
+  return node.getText(sourceFile).replace(QUOTE_REGEX, '');
 }
 
 export function hasDecorators(node: ts.Node): node is ts.Node & { decorators: readonly ts.Decorator[] } {
