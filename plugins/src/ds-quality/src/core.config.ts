@@ -21,24 +21,29 @@ export async function dsQualityPluginCategories({
   DsQualityPluginConfig,
   'deprecatedVariables' | 'deprecatedMixins'
 >): Promise<CategoryConfig[]> {
-  const refs = getStyleVariableCategoryRefs([...deprecatedVariables]);
+  const variableRefs = getStyleVariableCategoryRefs([...deprecatedVariables]);
+  const mixinsRefs = getStyleMixinCategoryRefs([...deprecatedMixins]);
   return [
-    ...(refs.length > 0
+    ...(variableRefs.length > 0
       ? [
           {
             slug: 'design-system-token-usage',
-            title: 'Design System Token Usage',
-            description: 'Usage of deprecated design system tokens',
-            refs,
+            title: 'Design System Variable Usage',
+            description: 'Usage of deprecated design system variable',
+            refs: variableRefs,
           },
         ]
       : []),
-    {
-      slug: 'design-system-mixin-usage',
-      title: 'Design System Mixin Usage',
-      description: 'Usage of deprecated design system mixins',
-      refs: [...getStyleMixinCategoryRefs([...deprecatedMixins])],
-    },
+    ...(mixinsRefs.length > 0
+      ? [
+          {
+            slug: 'design-system-mixin-usage',
+            title: 'Design System Mixin Usage',
+            description: 'Usage of deprecated design system mixins',
+            refs: mixinsRefs,
+          },
+        ]
+      : []),
   ];
 }
 
