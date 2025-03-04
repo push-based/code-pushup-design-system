@@ -1,7 +1,8 @@
 import { Issue } from '@code-pushup/models';
 import { type Root, Rule } from 'postcss';
-import { Asset } from '../utils/types';
+
 import { ParsedComponent } from '../angular/types';
+import { Asset } from '../utils/types';
 
 /**
  * Convert a Root to an Issue source object and adjust its position based on startLine.
@@ -13,12 +14,10 @@ import { ParsedComponent } from '../angular/types';
  */
 export function styleAstRuleToSource(
   { source }: Pick<Rule, 'source'>,
-  startLine = 0 // 0 indexed
+  startLine = 0, // 0 indexed
 ): Issue['source'] {
   if (source?.input.file == null) {
-    throw new Error(
-      'style parsing was not initialized with a file path. Check the postcss options.'
-    );
+    throw new Error('style parsing was not initialized with a file path. Check the postcss options.');
   }
   const offset = startLine - 1; // -1 because PostCss is 1 indexed so we have to substract 1 to make is work in 0 based index
 
@@ -36,8 +35,8 @@ export function styleAstRuleToSource(
 export async function visitComponentStyles<T>(
   component: ParsedComponent,
   visitorArgument: T,
-  getIssues: (tokenReplacement: T, asset: Asset<Root>) => Promise<Issue[]>
-): Promise<(Issue & {code?: number})[]> {
+  getIssues: (tokenReplacement: T, asset: Asset<Root>) => Promise<Issue[]>,
+): Promise<(Issue & { code?: number })[]> {
   const { styles, styleUrls, styleUrl } = component;
 
   if (styleUrls == null && styles == null && styleUrl == null) {
@@ -49,7 +48,7 @@ export async function visitComponentStyles<T>(
     await Promise.all(
       (styles ?? []).flatMap(async (style: Asset<Root>) => {
         return getIssues(visitorArgument, style);
-      })
+      }),
     )
   ).flat();
 
@@ -57,16 +56,15 @@ export async function visitComponentStyles<T>(
     await Promise.all(
       (styleUrls ?? []).flatMap(async (styleUrl: Asset<Root>) => {
         return getIssues(visitorArgument, styleUrl);
-      })
+      }),
     )
   ).flat();
 
   const styleUrlIssues: Issue[] = styleUrl
     ? await (async () => {
-        return getIssues(visitorArgument, styleUrl);
-      })()
+      return getIssues(visitorArgument, styleUrl);
+    })()
     : [];
 
   return [...styleIssues, ...styleUrlsIssues, ...styleUrlIssues];
 }
-

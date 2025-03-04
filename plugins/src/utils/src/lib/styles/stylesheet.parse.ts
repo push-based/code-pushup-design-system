@@ -10,10 +10,11 @@ import safeParser from 'postcss-safe-parser';
  */
 export function parseStylesheet(content: string, filePath: string) {
   return postcss().process(content, {
+    // @ts-expect-error : safeParser map type is compatible
     parser: safeParser,
     from: filePath,
     map: {
-      inline: false // preserve line number
+      inline: false, // preserve line number
     },
   });
 }
