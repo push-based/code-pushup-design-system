@@ -1,23 +1,29 @@
 import * as ts from 'typescript';
+
 import { Asset } from '../utils/types';
+
+// eslint-disable-next-line sonarjs/anchor-precedence
+const ANGULAR_QUOTE_REGEX = /^['"`]+|['"`]+$/g;
 
 export function isComponentDecorator(decorator: ts.Decorator): boolean {
   return isDecorator(decorator, 'Component');
 }
 
-export function getDecorators(node: ts.Node) {
-  return (ts.getDecorators ? ts.getDecorators(node as any) : (node as any).decorators) ?? []; // TS 5+ compatibility
+export function getDecorators(node: ts.Node): readonly ts.Decorator[] {
+  if (ts.getDecorators) {
+    return ts.getDecorators(node as ts.HasDecorators) ?? [];
+  }
+  if (hasDecorators(node)) {
+    return node.decorators;
+  }
+  return [];
 }
 
-export function isDecorator(
-  decorator: ts.Decorator,
-  decoratorName?: string
-): boolean {
-  const nodeObject = decorator?.expression as unknown as {expression: ts.Expression};
+export function isDecorator(decorator: ts.Decorator, decoratorName?: string): boolean {
+  const nodeObject = decorator?.expression as unknown as { expression: ts.Expression };
   const identifierObject = nodeObject?.expression;
 
-  if (identifierObject == null || !ts.isIdentifier(identifierObject))
-    return false;
+  if (identifierObject == null || !ts.isIdentifier(identifierObject)) return false;
 
   if (decoratorName == null) {
     return true;
@@ -26,18 +32,16 @@ export function isDecorator(
 }
 
 export function assetFromPropertyValueInitializer<T>({
-  prop,
-  sourceFile,
-  textParser,
-}: {
+                                                       prop,
+                                                       sourceFile,
+                                                       textParser,
+                                                     }: {
   prop: ts.PropertyAssignment;
   sourceFile: ts.SourceFile;
   textParser: (text: string) => Promise<T>;
 }): Asset<T> {
-  const { line: startLine } = sourceFile.getLineAndCharacterOfPosition(
-    prop.getStart(sourceFile)
-  );
-  const value = extractStringValue(prop.initializer, sourceFile);
+  const { line: startLine } = sourceFile.getLineAndCharacterOfPosition(prop.getStart(sourceFile));
+  const value = removeQuotes(prop.initializer, sourceFile);
   return {
     filePath: sourceFile.fileName,
     startLine,
@@ -48,14 +52,15 @@ export function assetFromPropertyValueInitializer<T>({
 export function assetFromPropertyArrayInitializer<T>(
   prop: ts.PropertyAssignment,
   sourceFile: ts.SourceFile,
-  textParser: (text: string) => Promise<T>
+  textParser: (text: string) => Promise<T>,
 ): Asset<T>[] {
-  const elements = ((prop.initializer as any).elements ?? [])
-  return elements.map((element: ts.Node) => {
-    const { line: startLine } = sourceFile.getLineAndCharacterOfPosition(
-      element.getStart(sourceFile)
-    );
-    const value = extractStringValue(element, sourceFile);
+  const elements: ts.NodeArray<ts.Expression> = ts.isArrayLiteralExpression(prop.initializer)
+    ? prop.initializer.elements
+    : ts.factory.createNodeArray();
+
+  return elements.map((element) => {
+    const { line: startLine } = sourceFile.getLineAndCharacterOfPosition(element.getStart(sourceFile));
+    const value = removeQuotes(element, sourceFile);
     return {
       filePath: sourceFile.fileName,
       startLine,
@@ -64,9 +69,10 @@ export function assetFromPropertyArrayInitializer<T>(
   });
 }
 
-export function extractStringValue(
-  node: ts.Node,
-  sourceFile: ts.SourceFile
-): string {
-  return node.getText(sourceFile).replace(/^['"]|['"]$/g, '');
+export function removeQuotes(node: ts.Node, sourceFile: ts.SourceFile): string {
+  return node.getText(sourceFile).replace(ANGULAR_QUOTE_REGEX, '');
+}
+
+export function hasDecorators(node: ts.Node): node is ts.Node & { decorators: readonly ts.Decorator[] } {
+  return 'decorators' in node && Array.isArray(node.decorators);
 }

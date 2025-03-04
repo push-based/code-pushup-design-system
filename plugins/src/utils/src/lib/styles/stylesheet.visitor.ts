@@ -1,5 +1,5 @@
-import AtRule from 'postcss/lib/at-rule.js';
 import { Comment, Container, Declaration, Rule } from 'postcss';
+import AtRule from 'postcss/lib/at-rule.js';
 
 export interface CssAstVisitor<T = void> {
   // Called once for the root node

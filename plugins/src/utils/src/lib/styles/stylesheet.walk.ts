@@ -1,4 +1,6 @@
 import { Root, Rule } from 'postcss';
+
+import { NodeType } from '../utils/types';
 import { CssAstVisitor } from './stylesheet.visitor';
 
 /**
@@ -9,12 +11,9 @@ export function visitEachChild<T>(root: Root, visitor: CssAstVisitor<T>) {
   visitor.visitRoot?.(root);
 
   root.walk((node) => {
-    // node.type can be 'rule', 'atrule', 'decl', 'comment', etc.
-    // Dispatch to your visitor if desired "visitRule", "visitAtRule", etc.
-    const visitMethodName = `visit${
-      node.type[0].toUpperCase() + node.type.slice(1)
-    }`;
-    visitor[visitMethodName as keyof CssAstVisitor]?.(node as any);
+    const visitMethodName = `visit${node.type[0].toUpperCase() + node.type.slice(1)}` as keyof CssAstVisitor<T>;
+    const visitMethod = visitor[visitMethodName] as ((node: NodeType<typeof visitMethodName, T>) => void) | undefined;
+    visitMethod?.(node as NodeType<typeof visitMethodName, T>);
   });
 }
 
@@ -39,10 +38,7 @@ export function visitStyleSheet<T>(root: Root, visitor: CssAstVisitor<T>) {
   }
 }
 
-export function visitEachStyleNode<T>(
-  nodes: Root['nodes'],
-  visitor: CssAstVisitor<T>
-) {
+export function visitEachStyleNode<T>(nodes: Root['nodes'], visitor: CssAstVisitor<T>) {
   for (const node of nodes) {
     switch (node.type) {
       case 'rule':
