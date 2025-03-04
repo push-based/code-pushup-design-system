@@ -1,42 +1,19 @@
-import * as ts from 'typescript';
-import {
-  assetFromPropertyArrayInitializer,
-  assetFromPropertyValueInitializer,
-  extractStringValue,
-  isComponentDecorator,
-} from './utils';
-import {
-  visitAngularDecoratorProperties,
-  visitAngularDecorators,
-} from './ts.walk';
 import { parseTemplate } from '@angular/compiler';
-import { resolveFileCached } from '../utils/file.resolver';
+
 import * as path from 'node:path';
+import * as ts from 'typescript';
+
 import { ParsedComponent } from '../angular/types';
 import { parseStylesheet } from '../styles/stylesheet.parse';
+import { resolveFileCached } from '../utils/file.resolver';
+import { visitAngularDecoratorProperties, visitAngularDecorators } from './ts.walk';
+import { assetFromPropertyArrayInitializer, assetFromPropertyValueInitializer, isComponentDecorator, removeQuotes } from './utils';
 
 const DEBUG = false;
-const debug = ({
-  step,
-  title,
-  info,
-}: {
-  step: string;
-  title: string;
-  info: string | null | undefined;
-}) =>
-  DEBUG &&
-  console.log(
-    `─── 📌 [${step}]: ${title} ${
-      info ? '-' + info : ''
-    }──────────────────────────────`
-  );
+const debug = ({ step, title, info }: { step: string; title: string; info: string | null | undefined }) =>
+  DEBUG && console.log(`─── 📌 [${step}]: ${title} ${info ? '-' + info : ''}──────────────────────────────`);
 
-export function classDecoratorVisitor({
-  sourceFile,
-}: {
-  sourceFile: ts.SourceFile;
-}) {
+export function classDecoratorVisitor({ sourceFile }: { sourceFile: ts.SourceFile }) {
   const components: ParsedComponent[] = [];
   let activeComponent: ParsedComponent | null = null;
   let currentClassName: string | null = null;
@@ -50,14 +27,13 @@ export function classDecoratorVisitor({
         title: 'ClassDeclaration',
         info: `class ${currentClassName}`,
       });
+      /* eslint-disable @typescript-eslint/consistent-type-assertions */
       activeComponent = {
-        startLine: ts.getLineAndCharacterOfPosition(
-          sourceFile,
-          node.getStart(sourceFile)
-        ).line,
+        startLine: ts.getLineAndCharacterOfPosition(sourceFile, node.getStart(sourceFile)).line,
         className: currentClassName,
         fileName: sourceFile.fileName,
       } as ParsedComponent;
+      /* eslint-enable @typescript-eslint/consistent-type-assertions */
 
       visitAngularDecorators(node, (decorator: ts.Decorator) => {
         debug({
@@ -66,39 +42,28 @@ export function classDecoratorVisitor({
           info: 'of ' + currentClassName,
         });
         if (isComponentDecorator(decorator)) {
-          // console.log(`[ENTER]: ComponentDecorator ->${currentClassName}`);
           debug({
             step: 'ENTER',
             title: 'ClassDecorator',
             info: '@Component',
           });
-          visitAngularDecoratorProperties(
-            decorator,
-            (prop: ts.PropertyAssignment) => {
-              if (
-                !ts.isPropertyAssignment(prop) ||
-                !ts.isIdentifier(prop.name)
-              ) {
-                return;
-              }
-
-              const propName = prop.name.escapedText as string;
-              const propValue = getPropValue(
-                prop,
-                sourceFile,
-                currentClassName ?? 'undefined-calss'
-              );
-              if (activeComponent) {
-                (activeComponent as any)[propName] = propValue;
-
-                debug({
-                  step: 'Update',
-                  title: 'ParsedComponent',
-                  info: `add ${propName}`,
-                });
-              }
+          visitAngularDecoratorProperties(decorator, (prop: ts.PropertyAssignment) => {
+            if (!ts.isPropertyAssignment(prop) || !ts.isIdentifier(prop.name)) {
+              return;
             }
-          );
+
+            const propName = prop.name.escapedText as string;
+            const propValue = getPropValue(prop, sourceFile, currentClassName ?? 'undefined-class');
+            if (activeComponent) {
+              (activeComponent as ParsedComponent)[propName] = propValue as unknown as string;
+
+              debug({
+                step: 'Update',
+                title: 'ParsedComponent',
+                info: `add ${propName}`,
+              });
+            }
+          });
 
           if (activeComponent) {
             debug({
@@ -119,7 +84,6 @@ export function classDecoratorVisitor({
       });
       currentClassName = null;
     }
-
     return node;
   };
 
@@ -127,12 +91,13 @@ export function classDecoratorVisitor({
   return visitor;
 }
 
-function getPropValue(
-  prop: ts.PropertyAssignment,
-  sourceFile: ts.SourceFile,
-  currentClassName: string
-) {
-  const propName = (prop.name as any).escapedText as string;
+function getPropValue(prop: ts.PropertyAssignment, sourceFile: ts.SourceFile, currentClassName: string) {
+  let propName = '';
+  if (ts.isIdentifier(prop.name)) {
+    propName = prop.name.escapedText as string;
+  } else {
+    throw new Error('Property name is not an identifier');
+  }
   switch (propName) {
     case 'templateUrl':
     case 'template':
@@ -140,14 +105,8 @@ function getPropValue(
         prop,
         sourceFile,
         textParser: async (text: string) => {
-          const filePath =
-            propName === 'templateUrl'
-              ? path.join(path.dirname(sourceFile.fileName), text)
-              : sourceFile.fileName;
-          const content =
-            propName === 'templateUrl'
-              ? await resolveFileCached(filePath)
-              : text;
+          const filePath = propName === 'templateUrl' ? path.join(path.dirname(sourceFile.fileName), text) : sourceFile.fileName;
+          const content = propName === 'templateUrl' ? await resolveFileCached(filePath) : text;
 
           debug({
             step: 'RESOLVE',
@@ -176,31 +135,23 @@ function getPropValue(
             info: `${currentClassName}; file ${filePath}`,
           });
           return parseStylesheet(content, filePath);
-        }
-  })
+        },
+      });
     case 'styles':
     case 'styleUrls':
-      return assetFromPropertyArrayInitializer(
-        prop,
-        sourceFile,
-        async (text: string) => {
-          const filePath =
-            propName === 'styleUrls'
-              ? path.join(path.dirname(sourceFile.fileName), text)
-              : sourceFile.fileName;
-          const content =
-            propName === 'styleUrls' ? await resolveFileCached(filePath) : text;
+      return assetFromPropertyArrayInitializer(prop, sourceFile, async (text: string) => {
+        const filePath = propName === 'styleUrls' ? path.join(path.dirname(sourceFile.fileName), text) : sourceFile.fileName;
+        const content = propName === 'styleUrls' ? await resolveFileCached(filePath) : text;
 
-          debug({
-            step: 'RESOLVE',
-            title: 'Styles',
-            info: `${currentClassName}; file ${filePath}`,
-          });
-          return parseStylesheet(content, filePath);
-        }
-      );
+        debug({
+          step: 'RESOLVE',
+          title: 'Styles',
+          info: `${currentClassName}; file ${filePath}`,
+        });
+        return parseStylesheet(content, filePath);
+      });
     default:
       // @TODO: Implement all of the decorator props
-      return extractStringValue(prop.initializer, sourceFile);
+      return removeQuotes(prop.initializer, sourceFile);
   }
 }

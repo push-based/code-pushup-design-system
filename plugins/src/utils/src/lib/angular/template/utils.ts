@@ -1,7 +1,9 @@
-import { ParsedTemplate, ParseSourceSpan } from '@angular/compiler';
+import { ParseSourceSpan, ParsedTemplate } from '@angular/compiler';
+
 import { Issue } from '@code-pushup/models';
-import { ParsedComponent } from '../types';
+
 import { Asset } from '../../utils/types';
+import { ParsedComponent } from '../types';
 
 /**
  * Convert a TmplAstElement to an Issue source object and adjust its position based on startLine.
@@ -21,7 +23,7 @@ export function tmplAstElementToSource(
     startSourceSpan: ParseSourceSpan;
     endSourceSpan: ParseSourceSpan | null;
   },
-  startLine = 0
+  startLine = 0,
 ): Issue['source'] {
   const offset = startLine; // TS Ast is 0 indexed so is work in 0 based index out of the box
   return {
@@ -48,10 +50,7 @@ export function parseClassNames(classString: string): string[] {
 export async function visitComponentTemplate<T>(
   component: ParsedComponent,
   visitorArgument: T,
-  getIssues: (
-    tokenReplacement: T,
-    asset: Asset<ParsedTemplate>
-  ) => Promise<Issue[]>
+  getIssues: (tokenReplacement: T, asset: Asset<ParsedTemplate>) => Promise<Issue[]>,
 ): Promise<Issue[]> {
   const { templateUrl, template } = component;
 

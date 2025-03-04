@@ -1,7 +1,8 @@
-import * as ts from 'typescript';
-import { ParsedComponent } from './types';
-import { classDecoratorVisitor } from '../typescript/decorator-config.visitor';
 import { toUnixPath } from '@code-pushup/utils';
+import * as ts from 'typescript';
+
+import { classDecoratorVisitor } from '../typescript/decorator-config.visitor';
+import { ParsedComponent } from './types';
 
 /**
  * Parses Angular components from a `FastFindInFiles` result.
@@ -11,12 +12,8 @@ import { toUnixPath } from '@code-pushup/utils';
  *
  * @param files
  */
-export function parseComponents(
-  files: string[]
-): ParsedComponent[] {
-  const filePaths = new Set(
-    files.map((filePath ) => toUnixPath(filePath))
-  );
+export function parseComponents(files: string[]): ParsedComponent[] {
+  const filePaths = new Set(files.map((filePath) => toUnixPath(filePath)));
 
   const program = ts.createProgram([...filePaths], {
     target: ts.ScriptTarget.Latest,

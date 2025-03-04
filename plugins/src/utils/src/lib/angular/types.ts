@@ -1,5 +1,7 @@
 import { ParsedTemplate } from '@angular/compiler';
+
 import { Root } from 'postcss';
+
 import { Asset } from '../utils/types';
 
 export type ParsedComponent = {
