@@ -1,12 +1,10 @@
 import { PersistConfig, Report } from '@code-pushup/models';
 import {
   ensureDirectoryExists,
-  FOOTER_PREFIX,
   HIERARCHY,
   isPromiseFulfilledResult,
   isPromiseRejectedResult,
   readJsonFile,
-  README_LINK,
   scoreReport,
   sortReport,
   stringifyError,
@@ -16,12 +14,12 @@ import * as path from 'node:path';
 import { generateMdReportsSummaryForMonorepo } from './generate-md-monorepo-report-summary';
 import { writeFile } from 'node:fs/promises';
 import { LabeledReport, ScoredReport } from './types';
-import { MarkdownDocument, md } from 'build-md';
+import { MarkdownDocument } from 'build-md';
 import { REPORT_HEADLINE_TEXT } from '@code-pushup/utils/src/lib/reports/constants';
 import {
   categoriesDetailsSection,
   categoriesOverviewSection,
-} from '@code-pushup/utils/src/lib/reports/generate-md-report-categoy-section';
+} from '@code-pushup/utils/src/lib/reports/generate-md-report-category-section';
 
 export function isCodePushupReportFile(filePath: string): boolean {
   return (filePath.match(/report.json$/) ?? []).length > 0;
@@ -78,15 +76,14 @@ export function generateMinimalMdReport(
   report: ScoredReport,
   options?: { heading: string }
 ): string {
-  const { heading = REPORT_HEADLINE_TEXT } = options;
+  const { heading = REPORT_HEADLINE_TEXT } = options ?? {};
+  const opt = {isScoreListed: (s) => s < 1};
   return new MarkdownDocument()
     .heading(HIERARCHY.level_1, heading)
     .$concat(
       ...(hasCategories(report)
-        ? [categoriesOverviewSection(report), categoriesDetailsSection(report)]
+        ? [categoriesOverviewSection(report, opt), categoriesDetailsSection(report, opt)]
         : [])
     )
-    .rule()
-    .paragraph(md`${FOOTER_PREFIX} ${md.link(README_LINK, 'Code PushUp')}`)
     .toString();
 }
