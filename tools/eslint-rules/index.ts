@@ -1,5 +1,7 @@
-import { rule as noThisWindowDocument, RULE_NAME as noThisWindowDocumentName } from './lib/no-this-window-document';
-
+import {
+  RULE_NAME as noThisWindowDocumentName,
+  rule as noThisWindowDocumentRule,
+} from './rules/no-this-window-document';
 /**
  * Import your custom workspace rules at the top of this file.
  *
@@ -25,7 +27,5 @@ module.exports = {
    *  [myCustomRuleName]: myCustomRule
    * }
    */
-  rules: {
-    [noThisWindowDocumentName]: noThisWindowDocument,
-  },
+  rules: { [noThisWindowDocumentName]: noThisWindowDocumentRule },
 };

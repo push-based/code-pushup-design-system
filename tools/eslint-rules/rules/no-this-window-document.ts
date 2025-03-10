@@ -1,7 +1,7 @@
 import type { TSESTree } from '@typescript-eslint/types';
 import { AST_NODE_TYPES } from '@typescript-eslint/utils';
 
-import { eslintRuleFactory } from '../rule-creator-factory';
+import { eslintRuleFactory } from './rule-creator-factory';
 
 export const RULE_NAME = 'no-this-window-document';
 
