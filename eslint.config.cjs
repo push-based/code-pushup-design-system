@@ -8,10 +8,7 @@ module.exports = [
     ignores: ['**/dist'],
   },
   {
-    files: ['**/*.ts', '**/*.tsx'],
-    plugins: {
-      '@nx': nx
-    },
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {
       '@nx/enforce-module-boundaries': [
         'error',
