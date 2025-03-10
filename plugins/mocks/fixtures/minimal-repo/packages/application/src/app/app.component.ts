@@ -6,6 +6,8 @@ import { BadButtonDropdownComponent } from './components/bad-button-dropdown.com
 import { MixedStylesComponent } from './components/bad-mixed.component';
 import { BadModalProgressComponent } from './components/bad-modal-progress.component';
 import { BadMixedExternalAssetsComponent } from './components/bad-mixed-external-assets.component';
+import { BadDocumentComponent } from './components/bad-document.component';
+import { BadWindowComponent } from './components/bad-window.component';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +19,8 @@ import { BadMixedExternalAssetsComponent } from './components/bad-mixed-external
     BadButtonDropdownComponent,
     MixedStylesComponent,
     BadMixedExternalAssetsComponent,
+    BadDocumentComponent,
+    BadWindowComponent,
   ],
   template: `
     <h1>{{ title }}</h1>
@@ -27,10 +31,11 @@ import { BadMixedExternalAssetsComponent } from './components/bad-mixed-external
     <app-mixed-styles></app-mixed-styles>
     <app-bad-button-dropdown></app-bad-button-dropdown>
     <app-bad-mixed-external-assets></app-bad-mixed-external-assets>
+    <app-bad-window></app-bad-window>
+    <app-bad-document></app-bad-document>
     <router-outlet />
   `,
 })
 export class AppComponent {
   title = 'minimal';
-  w = window;
 }
