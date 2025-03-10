@@ -13,7 +13,7 @@ export default mergeConfigs(
   await ssrConfig({
     patterns: ['.'],
     eslintrc:
-      'plugins/mocks/fixtures/minimal-repo/packages/application/eslint.config.ssr.cjs',
+      'plugins/src/ssr-adoption/src/eslint.config.ssr.cjs',
   }),
   await entainDsComponentUsageConfig({
     directory: 'plugins/mocks/fixtures/minimal-repo/packages/application/src',
