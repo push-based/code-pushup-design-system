@@ -8,6 +8,7 @@ import { BadModalProgressComponent } from './components/bad-modal-progress.compo
 import { BadMixedExternalAssetsComponent } from './components/bad-mixed-external-assets.component';
 import { BadDocumentComponent } from './components/bad-document.component';
 import { BadWindowComponent } from './components/bad-window.component';
+import { BadThisWindowDocumentComponent } from './components/bad-this-window-document.component';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ import { BadWindowComponent } from './components/bad-window.component';
     BadMixedExternalAssetsComponent,
     BadDocumentComponent,
     BadWindowComponent,
+    BadThisWindowDocumentComponent
   ],
   template: `
     <h1>{{ title }}</h1>
@@ -32,6 +34,7 @@ import { BadWindowComponent } from './components/bad-window.component';
     <app-bad-button-dropdown></app-bad-button-dropdown>
     <app-bad-mixed-external-assets></app-bad-mixed-external-assets>
     <app-bad-window></app-bad-window>
+    <app-bad-this-window-document></app-bad-this-window-document>
     <app-bad-document></app-bad-document>
     <router-outlet />
   `,
