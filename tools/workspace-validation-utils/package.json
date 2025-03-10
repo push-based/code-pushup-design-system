@@ -2,11 +2,11 @@
     "name": "@frontend/workspace-validation-utils",
     "version": "0.0.1",
     "dependencies": {
-        "tslib": "^2.3.0",
-        "@nx/devkit": "19.0.8",
-        "@frontend/migration-kit": "*",
-        "@code-pushup/models": "^0.49.0",
-        "@code-pushup/utils": "^0.49.0"
+        "@nx/devkit": "20.3.2",
+        "@code-pushup/models": "^0.65.0",
+        "@code-pushup/utils": "^0.65.0",
+    "@code-pushup/eslint-plugin": "^0.65.0",
+    "dotenv": "16.4.7"
     },
     "type": "commonjs",
     "main": "./src/index.js",

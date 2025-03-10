@@ -1,4 +1,4 @@
-/* eslint-disable max-lines-per-function */
+ 
 import { executePlugin } from '@code-pushup/core';
 import { auditSchema, categoryRefSchema, pluginConfigSchema, pluginReportSchema } from '@code-pushup/models';
 import { getMigrationKitLatestVersion } from '@frontend/migration-kit';
@@ -21,7 +21,7 @@ describe('workspaceValidationPlugin', () => {
 
     it('should return valid PluginConfig', async () => {
         const pluginConfig = workspaceValidationPlugin(baseOptions);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+         
         expect(() => pluginConfigSchema.parse(pluginConfig)).not.toThrow();
         expect(pluginConfig).toEqual({
             audits,
@@ -44,7 +44,7 @@ describe('workspaceValidationPlugin', () => {
             const pluginConfig = workspaceValidationPlugin(baseOptions);
             const pluginOutput = await executePlugin(pluginConfig);
 
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+             
             expect(() => pluginReportSchema.parse(pluginOutput)).not.toThrow();
             await expect(executePlugin(pluginConfig)).resolves.toMatchObject({
                 slug,
@@ -81,14 +81,14 @@ describe('workspaceValidationPlugin', () => {
 
 describe('audits', () => {
     it.each(audits)('should be a valid audit meta info', (audit) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+         
         expect(() => auditSchema.parse(audit)).not.toThrow();
     });
 });
 
 describe('recommendedRefs', () => {
     it.each(generateCategoriesRefs())('should be a valid category reference', (categoryRef) => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+         
         expect(() => categoryRefSchema.parse(categoryRef)).not.toThrow();
     });
 });

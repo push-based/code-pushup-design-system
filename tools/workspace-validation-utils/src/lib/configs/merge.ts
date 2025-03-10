@@ -5,14 +5,14 @@ export function mergeConfigs(config: Partial<CoreConfig>, ...configs: Partial<Co
     return configs.reduce<CoreConfig>(
         (acc, obj): CoreConfig =>
             Object.entries(obj).reduce((newAcc, [key, value]): CoreConfig => {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+                 
                 if (Object.hasOwn(newAcc, key)) {
                     const newAccProp = newAcc[key as keyof CoreConfig];
                     if (Array.isArray(newAccProp) && Array.isArray(value)) {
                         return { ...newAcc, [key]: [...newAccProp, ...value] };
                     } else if (
                         typeof newAccProp === 'object' &&
-                        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                         
                         value != null &&
                         typeof value === 'object' &&
                         !Array.isArray(newAccProp) &&
@@ -26,7 +26,7 @@ export function mergeConfigs(config: Partial<CoreConfig>, ...configs: Partial<Co
                     return { ...newAcc, [key]: value };
                 }
             }, acc),
-        // eslint-disable-next-line @typescript-eslint/prefer-reduce-type-parameter
+         
         config as CoreConfig,
     );
 }
