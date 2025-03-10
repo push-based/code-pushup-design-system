@@ -1,14 +1,14 @@
 {
-    "name": "@frontend/workspace-validation-utils",
-    "version": "0.0.1",
-    "dependencies": {
-        "@nx/devkit": "20.3.2",
-        "@code-pushup/models": "^0.65.0",
-        "@code-pushup/utils": "^0.65.0",
+  "name": "@frontend/workspace-validation-utils",
+  "version": "0.0.1",
+  "dependencies": {
+    "@nx/devkit": "20.3.2",
+    "@code-pushup/models": "^0.65.0",
+    "@code-pushup/utils": "^0.65.0",
     "@code-pushup/eslint-plugin": "^0.65.0",
     "dotenv": "16.4.7"
-    },
-    "type": "commonjs",
-    "main": "./src/index.js",
-    "typings": "./src/index.d.ts"
+  },
+  "type": "commonjs",
+  "main": "./src/index.js",
+  "typings": "./src/index.d.ts"
 }

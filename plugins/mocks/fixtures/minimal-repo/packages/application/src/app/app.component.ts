@@ -32,4 +32,5 @@ import { BadMixedExternalAssetsComponent } from './components/bad-mixed-external
 })
 export class AppComponent {
   title = 'minimal';
+  w = window;
 }

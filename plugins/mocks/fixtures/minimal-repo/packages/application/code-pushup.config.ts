@@ -1,6 +1,6 @@
 import { mergeConfigs } from '@code-pushup/utils';
 import { entainDsComponentUsageConfig } from '../../../../../src/config/entain-ds-components-usage.config';
-import { join } from 'path';
+import { ssrConfig } from '../../../../../src/config/ssr';
 
 export default mergeConfigs(
   {
@@ -10,6 +10,11 @@ export default mergeConfigs(
     },
     plugins: [],
   },
+  await ssrConfig({
+    patterns: ['.'],
+    eslintrc:
+      'plugins/mocks/fixtures/minimal-repo/packages/application/eslint.config.ssr.cjs',
+  }),
   await entainDsComponentUsageConfig({
     directory: 'plugins/mocks/fixtures/minimal-repo/packages/application/src',
     dsComponents: [
