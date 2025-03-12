@@ -13,10 +13,4 @@ module.exports = [
       '@nx/workspace-no-this-window-document': 'error',
     },
   },
-  {
-    files: ['**/*.spec.ts'],
-    rules: {
-      'no-restricted-globals': 'off',
-    },
-  },
 ];
