@@ -45,7 +45,7 @@ export async function findFilesWithPattern(
   baseDir: string,
   searchPattern: string
 ) {
-  return (await findInFiles(baseDir, searchPattern)).map(({ file }) => file);
+  return (await findInFiles(baseDir, searchPattern, '.ts$', true)).map(({ file }) => file);
 }
 
 /**
