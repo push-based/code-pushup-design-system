@@ -10,17 +10,19 @@ import {
   stringifyError,
   ui,
   toTitleCase,
+  formatReportScore
 } from '@code-pushup/utils';
 import * as path from 'node:path';
 import { generateMdReportsSummaryForMonorepo } from './generate-md-monorepo-report-summary';
 import { writeFile } from 'node:fs/promises';
 import { LabeledReport, ScoredReport } from './types';
-import { MarkdownDocument } from 'build-md';
+import { MarkdownDocument, md } from 'build-md';
 import { REPORT_HEADLINE_TEXT } from '@code-pushup/utils/src/lib/reports/constants';
 import {
   categoriesDetailsSection,
   categoriesOverviewSection,
 } from '@code-pushup/utils/src/lib/reports/generate-md-report-category-section';
+import { formatScoreWithColor } from '@code-pushup/utils/src/lib/reports/utils';
 
 export function isCodePushupReportFile(filePath: string): boolean {
   return (filePath.match(/report.json$/) ?? []).length > 0;
@@ -98,17 +100,21 @@ function generateMdReportSummaryTable(labeledReports: LabeledReport[]): string {
 
   const uniqueCategoriesSorted = Array.from(new Set(uniqueCategories.sort()));
   return new MarkdownDocument()
+    .heading(HIERARCHY.level_1, 'Entain Monorepo Report Summary')
+    .heading(HIERARCHY.level_2, 'Repository Overview')
+    .rule()
     .table(
-      ['Category', ...uniqueCategoriesSorted.map(toTitleCase)],
+      ['💼 Project', ...uniqueCategoriesSorted.map((cat) => '🏷 ' + toTitleCase(cat))],
       cats.map(({ label, categories }) => [
         toTitleCase(label),
         ...uniqueCategoriesSorted.map((categorySlug) => {
           const { score } =
             categories.find(({ slug }) => categorySlug === slug) ?? {};
-          return score ? Number(score * 100).toFixed(0) : '-';
+          return score ? formatScoreWithColor(score) : '-';
         }),
       ])
     )
+    .rule()
     .toString();
 }
 
