@@ -9,6 +9,7 @@ import {
   sortReport,
   stringifyError,
   ui,
+  toTitleCase,
 } from '@code-pushup/utils';
 import * as path from 'node:path';
 import { generateMdReportsSummaryForMonorepo } from './generate-md-monorepo-report-summary';
@@ -56,7 +57,8 @@ export async function mergeReports(
     label: path.basename(path.dirname(report.file)),
   }));
 
-  const markdown = generateMdReportsSummaryForMonorepo(labeledReports);
+  let markdown = generateMdReportSummaryTable(labeledReports);
+  markdown += generateMdReportsSummaryForMonorepo(labeledReports);
 
   const { outputDir, filename } = persistConfig;
   const outputPath = path.join(outputDir, `${filename}-summary.md`);
@@ -64,6 +66,50 @@ export async function mergeReports(
   await writeFile(outputPath, markdown);
 
   return outputPath;
+}
+
+function generateMdReportSummaryTable(labeledReports: LabeledReport[]): string {
+  const cats = labeledReports.reduce(
+    (acc, { label, ...report }) => {
+      acc.push({
+        label,
+        categories: report.categories
+          .reduce((acc, { slug, score }) => {
+            acc.push({
+              slug,
+              score,
+            });
+            return acc;
+          }, [] as { slug: string; score: number }[])
+          .sort((a, b) => (b.slug < a.slug ? 1 : -1)),
+      });
+      return acc;
+    },
+    [] as {
+      label: string;
+      categories: { slug: string; score: number }[];
+    }[]
+  );
+
+  const uniqueCategories = cats.flatMap(
+    ({ categories }) => categories.map(({ slug }) => slug),
+    [] as string[]
+  );
+
+  const uniqueCategoriesSorted = Array.from(new Set(uniqueCategories.sort()));
+  return new MarkdownDocument()
+    .table(
+      ['Category', ...uniqueCategoriesSorted.map(toTitleCase)],
+      cats.map(({ label, categories }) => [
+        toTitleCase(label),
+        ...uniqueCategoriesSorted.map((categorySlug) => {
+          const { score } =
+            categories.find(({ slug }) => categorySlug === slug) ?? {};
+          return score ? Number(score * 100).toFixed(0) : '-';
+        }),
+      ])
+    )
+    .toString();
 }
 
 function hasCategories(
@@ -77,12 +123,12 @@ export function generateMinimalMdReport(
   options?: { heading: string }
 ): string {
   const { heading = REPORT_HEADLINE_TEXT } = options ?? {};
-  const opt = {isScoreListed: (s) => s < 1};
+
   return new MarkdownDocument()
     .heading(HIERARCHY.level_1, heading)
     .$concat(
       ...(hasCategories(report)
-        ? [categoriesOverviewSection(report, opt), categoriesDetailsSection(report, opt)]
+        ? [categoriesOverviewSection(report), categoriesDetailsSection(report)]
         : [])
     )
     .toString();
