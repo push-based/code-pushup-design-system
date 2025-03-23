@@ -9,6 +9,7 @@ import { BadMixedExternalAssetsComponent } from './components/bad-mixed-external
 import { BadDocumentComponent } from './components/bad-document.component';
 import { BadWindowComponent } from './components/bad-window.component';
 import { BadThisWindowDocumentComponent } from './components/bad-this-window-document.component';
+import { BadGlobalThisComponent } from './components/bad-global-this.component';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ import { BadThisWindowDocumentComponent } from './components/bad-this-window-doc
     MixedStylesComponent,
     BadMixedExternalAssetsComponent,
     BadDocumentComponent,
+    BadGlobalThisComponent,
     BadWindowComponent,
     BadThisWindowDocumentComponent
   ],
@@ -36,6 +38,7 @@ import { BadThisWindowDocumentComponent } from './components/bad-this-window-doc
     <app-bad-window></app-bad-window>
     <app-bad-this-window-document></app-bad-this-window-document>
     <app-bad-document></app-bad-document>
+    <app-bad-global-this></app-bad-global-this>
     <router-outlet />
   `,
 })

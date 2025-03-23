@@ -7,7 +7,7 @@ module.exports = [
   {
     files: ['**/*.ts'],
     rules: {
-      'no-restricted-globals': ['error', 'document', 'window'],
+      'no-restricted-globals': ['error', 'document', 'window', 'globalThis'],
       'no-restricted-properties': [
         'error',
         {
@@ -18,4 +18,12 @@ module.exports = [
       '@nx/workspace-no-this-window-document': 'error',
     },
   },
+  {
+    files: ['**/*.spec.ts'],
+    rules: {
+      'no-restricted-globals': 'off',
+      'no-restricted-properties': 'off',
+      '@nx/workspace-no-this-window-document': 'off',
+    },
+  }
 ];
