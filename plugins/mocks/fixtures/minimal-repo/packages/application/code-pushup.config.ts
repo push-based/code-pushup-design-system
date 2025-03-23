@@ -1,6 +1,6 @@
 import { mergeConfigs } from '@code-pushup/utils';
 import { entainDsComponentUsageConfig } from '../../../../../src/config/entain-ds-components-usage.config';
-import { ssrConfig } from '../../../../../src/config/ssr';
+import { ssrAdoptionPluginCoreConfig } from '../../../../../src/ssr-adoption/src/core.config';
 
 export default mergeConfigs(
   {
@@ -10,7 +10,7 @@ export default mergeConfigs(
     },
     plugins: [],
   },
-  await ssrConfig({
+  await ssrAdoptionPluginCoreConfig({
     patterns: ['.'],
     eslintrc:
       'plugins/src/ssr-adoption/src/eslint.config.ssr.cjs',
