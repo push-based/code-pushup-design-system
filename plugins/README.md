@@ -1,13 +1,12 @@
-# Design System Status Tracking
+# Repository Goals as audits
 
-The design systems health and implementation status can be tracked using the Angular Design System plugins.
-It provides a comprehensive overview of the design system's usage across projects, components, and teams.
-Further is checks if changed made in figma are reflected in the codebase.
+Custom reporting on development goals and progress.
 
 ## Plugins
 
 - [Design System Component Coverage](./src/ds-component-coverage/README.md)
 - [Design System Quality](./src/ds-quality/README.md)
+- [SSR Adoption](./src/ssr-adoption/README.md)
 
 ### Design System Component Coverage Audit
 
@@ -43,3 +42,14 @@ This plugin checks the usage of deprecated CSS mixins:
   - ✏️ Recognises one or many inline styles under `styles`
 
 Read more about the [Design System Quality](./src/ds-quality/README.md) plugin.
+
+### SSR Adoption Audit
+
+This plugin checks the readiness of a project for SSR:
+
+- Usage of document or window globals
+  - Recognises direct usage
+  - Recognises object usage
+- Usage of globalThis
+
+Read more about the [SSR Adoption](./src/ssr-adoption/README.md) plugin.
