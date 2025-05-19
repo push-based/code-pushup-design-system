@@ -1,84 +1,64 @@
-import * as readline from 'node:readline';
-import * as fs from 'node:fs';
+import { Dirent } from 'node:fs';
+import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
 /**
- * Reads a file line-by-line and checks if it contains the search pattern.
- * @param {string} filePath - The file to check.
- * @param {RegExp | string} searchPattern - The pattern to match.
- * @returns {Promise<boolean>} - True if the pattern is found.
- */
-async function fileContainsPattern(
-  filePath: string,
-  searchPattern: string | RegExp
-): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    const stream = fs.createReadStream(filePath, { encoding: 'utf8' });
-    const rl = readline.createInterface({ input: stream });
-
-    let searchPatternFound = false;
-
-    rl.on('line', (line) => {
-      if (
-        typeof searchPattern === 'string'
-          ? line.includes(searchPattern)
-          : searchPattern.test(line)
-      ) {
-        searchPatternFound = true;
-        resolve(searchPatternFound);
-        rl.close();
-        stream.destroy();
-      }
-    });
-
-    rl.on('close', () => resolve(searchPatternFound));
-    rl.on('error', reject);
-  });
-}
-
-/**
  * Searches for `.ts` files containing the search pattern.
- * @param {string} baseDir - The directory to search.
+ * @param {string} baseDir - The directory to search. Should be absolute or resolved by the caller.
  * @param {RegExp | string} searchPattern - The pattern to match.
  */
-export async function findFilesWithPattern(
-  baseDir: string,
-  searchPattern: string
-) {
-  return (await findInFiles(baseDir, searchPattern, '.ts$', true)).map(({ file }) => file);
+export async function findFilesWithPattern(baseDir: string, searchPattern: string) {
+  const resolvedBaseDir = path.resolve(baseDir);
+
+  const tsFiles: string[] = [];
+  for await (const file of findAllFiles(resolvedBaseDir, (file) => file.endsWith('.ts') && !file.endsWith('.spec.ts'))) {
+    tsFiles.push(file);
+  }
+
+  const results: SourceLocation[] = [];
+  for (const file of tsFiles) {
+    try {
+      const hits = await findInFile(file, searchPattern);
+      if (hits.length > 0) {
+        results.push(...hits);
+      }
+    } catch (error) {
+      console.error(`Error searching file ${file}:`, error);
+    }
+  }
+
+  return results.map((r: SourceLocation) => r.file);
 }
 
 /**
- * Asynchronously iterates over all `.ts` files in a directory using a queue-based stream-like approach.
- * @param {string} baseDir - The directory to search.
- * @param check
- * @returns {AsyncGenerator<string>} - Yields `.ts` file paths one by one.
+ * Finds all files in a directory and its subdirectories that match a predicate
  */
-export async function* findFiles(
-  baseDir: string,
-  check: (filePath: string) => boolean = (fullPath) => fullPath.endsWith('.ts')
-): AsyncGenerator<string> {
-  const queue: string[] = [baseDir];
+async function* findAllFiles(baseDir: string, predicate: (file: string) => boolean = (fullPath) => fullPath.endsWith('.ts')): AsyncGenerator<string> {
+  const entries = await getDirectoryEntries(baseDir);
 
-  while (queue.length > 0) {
-    const dir = queue.shift()!;
-
-    let entries;
-    try {
-      entries = await fs.promises.readdir(dir, { withFileTypes: true });
-    } catch (err) {
-      console.error(`Error reading directory ${dir}:`, err);
-      continue;
-    }
-
-    for (const entry of entries) {
-      const fullPath = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        queue.push(fullPath);
-      } else if (entry.isFile() && check(fullPath)) {
-        yield fullPath;
+  for (const entry of entries) {
+    const fullPath = path.join(baseDir, entry.name);
+    if (entry.isDirectory()) {
+      // Skip node_modules and other common exclude directories
+      if (!isExcludedDirectory(entry.name)) {
+        yield* findAllFiles(fullPath, predicate);
       }
+    } else if (entry.isFile() && predicate(fullPath)) {
+      yield fullPath;
     }
+  }
+}
+
+export function isExcludedDirectory(fileName: string) {
+  return fileName.startsWith('.') || fileName === 'node_modules' || fileName === 'dist' || fileName === 'coverage';
+}
+
+async function getDirectoryEntries(dir: string): Promise<Dirent[]> {
+  try {
+    return await fs.readdir(dir, { withFileTypes: true });
+  } catch (error) {
+    console.error(`Error reading directory ${dir}:`, error);
+    return [];
   }
 }
 
@@ -88,12 +68,8 @@ export function* accessContent(content: string): Generator<string> {
   }
 }
 
-export function getLineHits(
-  content: string,
-  pattern: string,
-  bail = false
-): LinePosition[] {
-  const hits = [];
+export function getLineHits(content: string, pattern: string, bail = false): LinePosition[] {
+  const hits: LinePosition[] = [];
   let index = content.indexOf(pattern);
 
   while (index !== -1) {
@@ -121,13 +97,9 @@ export type SourceLocation = {
   position: SourcePosition;
 };
 
-export async function findInFile(
-  file: string,
-  searchPattern: string,
-  bail = false
-): Promise<SourceLocation[]> {
+export async function findInFile(file: string, searchPattern: string, bail = false): Promise<SourceLocation[]> {
   const hits: SourceLocation[] = [];
-  const content = fs.readFileSync(file, 'utf8');
+  const content = await fs.readFile(file, 'utf8');
   let startLine = 0;
   for (const line of accessContent(content)) {
     startLine++;
@@ -142,40 +114,4 @@ export async function findInFile(
     });
   }
   return hits;
-}
-
-export async function findInFiles(
-  baseDir: string,
-  pattern: string,
-  glob = '.ts$',
-  bail = false
-): Promise<SourceLocation[]> {
-  const globRegex = glob && typeof glob === 'string' ? new RegExp(glob) : glob;
-  const queue: string[] = [baseDir];
-  const results: SourceLocation[] = [];
-
-  while (queue.length > 0) {
-    const dir = queue.shift()!;
-
-    let entries;
-    try {
-      entries = fs.readdirSync(dir, { withFileTypes: true });
-    } catch (error) {
-      console.error(`Error reading directory ${dir}:`, error);
-      continue;
-    }
-
-    for (const entry of entries) {
-      const fullPath = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        queue.push(fullPath);
-      } else if (entry.isFile() && fullPath.match(globRegex)) {
-        for (const result of await findInFile(fullPath, pattern, bail)) {
-          results.push(result);
-        }
-      }
-    }
-  }
-
-  return results;
 }
