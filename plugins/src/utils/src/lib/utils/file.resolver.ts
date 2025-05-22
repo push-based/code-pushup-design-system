@@ -1,6 +1,4 @@
-import { existsSync } from 'fs';
-import { readFile } from 'fs/promises';
-import * as path from 'path';
+import { readFile } from 'node:fs/promises';
 
 export const fileResolverCache = new Map<string, Promise<string>>();
 
@@ -13,29 +11,18 @@ export const fileResolverCache = new Map<string, Promise<string>>();
  * @param filePath
  */
 export async function resolveFileCached(filePath: string): Promise<string> {
-  const normalizedPath = path.normalize(filePath);
-  if (!existsSync(normalizedPath)) {
-    throw new Error(`File not found: ${normalizedPath}`);
-  }
-
-  if (fileResolverCache.has(normalizedPath)) {
-    const cachedPromise = fileResolverCache.get(normalizedPath);
-    if (cachedPromise) {
-      return cachedPromise;
-    }
-  }
-
-  // Store the promise in the cache immediately (forwarding concurrent requests into the same Promise)
-  const fileContentPromise = readFile(normalizedPath, 'utf-8')
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  if (fileResolverCache.has(filePath)) return fileResolverCache.get(filePath)!;
+  const fileContent = readFile(filePath, 'utf8')
     .then((content) => {
-      fileResolverCache.set(normalizedPath, Promise.resolve(content)); // Store resolved content
+      fileResolverCache.set(filePath, Promise.resolve(content));
       return content;
     })
     .catch((error) => {
       throw error;
     });
 
-  fileResolverCache.set(normalizedPath, fileContentPromise);
+  fileResolverCache.set(filePath, fileContent);
 
-  return fileContentPromise;
+  return fileContent;
 }
