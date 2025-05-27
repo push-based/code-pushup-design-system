@@ -6,6 +6,7 @@ import {
 } from '../../../../utils/src';
 import { dsCompCoverageAuditOutputs } from './audits/ds-coverage/ds-coverage.audit';
 import { ComponentReplacement } from './audits/ds-coverage/types';
+import { SEARCH_EXCLUDED_DIRS } from '../../../../utils/src/lib/angular/constants';
 
 export type CreateRunnerConfig = ComponentCoverageRunnerOptions;
 
@@ -24,7 +25,8 @@ export async function runnerFunction({
 }: CreateRunnerConfig): Promise<AuditOutputs> {
   const componentFiles = await findFilesWithPattern(
     directory,
-    ANGULAR_COMPONENT_DECORATOR
+    ANGULAR_COMPONENT_DECORATOR,
+    SEARCH_EXCLUDED_DIRS
   );
   const parsedComponents = parseComponents(componentFiles);
   return dsCompCoverageAuditOutputs(dsComponents, parsedComponents);

@@ -11,6 +11,7 @@ import { DeprecationDefinition } from './audits/types';
 import { getMixinUsageIssues } from './audits/mixin-usage/utils';
 import { getVariableUsageIssues } from './audits/variable-usage/utils';
 import { getMixinUsageAuditOutput } from './audits/mixin-usage/mixin-usage.audit';
+import { SEARCH_EXCLUDED_DIRS } from '../../../../utils/src/lib/angular/constants';
 
 export type CreateRunnerConfig = {
   directory: string;
@@ -29,7 +30,8 @@ export async function runnerFunction({
 }: CreateRunnerConfig): Promise<AuditOutputs> {
   const componentFiles = await findFilesWithPattern(
     directory,
-    ANGULAR_COMPONENT_DECORATOR
+    ANGULAR_COMPONENT_DECORATOR,
+    SEARCH_EXCLUDED_DIRS
   );
   const parsedComponents: ParsedComponent[] = parseComponents(componentFiles);
 

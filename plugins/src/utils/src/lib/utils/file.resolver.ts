@@ -1,4 +1,4 @@
-import { readFile } from 'fs/promises';
+import { readFile } from 'node:fs/promises';
 
 export const fileResolverCache = new Map<string, Promise<string>>();
 
@@ -11,28 +11,18 @@ export const fileResolverCache = new Map<string, Promise<string>>();
  * @param filePath
  */
 export async function resolveFileCached(filePath: string): Promise<string> {
-  if (fileResolverCache.has(filePath)) {
-    const cachedPromise = fileResolverCache.get(filePath);
-    if (cachedPromise) {
-      return cachedPromise;
-    }
-  }
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  if (fileResolverCache.has(filePath)) return fileResolverCache.get(filePath)!;
+  const fileContent = readFile(filePath, 'utf8')
+    .then((content) => {
+      fileResolverCache.set(filePath, Promise.resolve(content));
+      return content;
+    })
+    .catch((error) => {
+      throw error;
+    });
 
-  // Store the promise in the cache immediately (forwarding concurrent requests into the same Promise)
-  const fileContentPromise = readFile(filePath, 'utf-8').then((content) => {
-    fileResolverCache.set(filePath, Promise.resolve(content)); // Store resolved content
-    return content;
-  });
+  fileResolverCache.set(filePath, fileContent);
 
-  fileResolverCache.set(filePath, fileContentPromise);
-
-  return fileContentPromise;
-}
-
-export function invalidateFileCache(filePath?: string): void {
-  if (filePath) {
-    fileResolverCache.delete(filePath);
-  } else {
-    fileResolverCache.clear();
-  }
+  return fileContent;
 }
