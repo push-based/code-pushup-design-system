@@ -172,3 +172,39 @@ _button-dropdown.component.ts_
 | 🚨 _error_ | 🎨 ????????? | [`button.component.ts`](./button.component.ts) |  4-20   |
 | 🚨 _error_ | 🎨 ????????? | [`button.component.html`](./button.component.html) |  4-20   |
 ```
+
+## Scoring (Design-System Coverage Errors Only)
+
+Each component (or file selection) is graded against a simple **error budget**:  
+no warnings, no weighting—only the number of deprecated-class errors found.
+
+---
+
+### Scoring Parameters
+
+| **Parameter** | **Description**                                            |
+|--------------:|------------------------------------------------------------|
+| `E`           | Count of deprecated-class **errors** (🚨)                  |
+| `L`           | Allowed error budget (e.g. `L = 10`)                       |
+
+---
+
+#### Coverage score
+
+$`
+\mathrm{dsScore} =
+\begin{cases}
+1, & E = 0\\[6pt]
+\max\!\bigl(0,\;1 - \tfrac{E}{L}\bigr), & E > 0
+\end{cases}
+`$
+
+If `E` equals or exceeds `L`, the score bottoms out at `0`.
+
+```mermaid
+xychart-beta
+    title "Score vs Deprecated-Class Errors"
+    x-axis [0, 2, 4, 6, 8, 10]
+    y-axis "Score" 0 --> 1
+    line dsScore [1, 0.8, 0.6, 0.4, 0.2, 0]
+```
